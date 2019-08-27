@@ -22,11 +22,13 @@ import { formatLabel } from '../label.helper';
         [countTo]="roundedTotal"
         [valueFormatting]="valueFormatting"
       ></div>
-      <div class="total-value" *ngIf="!animations">
-        {{ valueFormatting ? valueFormatting(roundedTotal) : defaultValueFormatting(roundedTotal) }}
-      </div>
-      <div class="total-label">
-        {{ label }}
+      <div class="total-value-container">
+        <div class="total-value" *ngIf="!animations" (click)="select.emit(totalJson)>
+          {{ valueFormatting ? valueFormatting(roundedTotal) : defaultValueFormatting(roundedTotal) }}
+        </div>
+        <div class="total-label" (click)="select.emit(totalJson)>
+          {{ label }}
+        </div>
       </div>
       <div class="legend-items-container">
         <div class="legend-items">
@@ -80,6 +82,7 @@ export class AdvancedLegendComponent implements OnChanges {
 
   legendItems: any[] = [];
   total: number;
+  totalJson = {};
   roundedTotal: number;
 
   @Input() valueFormatting: (value: number) => any;
@@ -98,9 +101,11 @@ export class AdvancedLegendComponent implements OnChanges {
 
   update(): void {
     this.total = this.getTotal();
+
     this.roundedTotal = this.total;
 
     this.legendItems = this.getLegendItems();
+    this.totalJson[this.label] = this.total;
   }
 
   getLegendItems(): any {

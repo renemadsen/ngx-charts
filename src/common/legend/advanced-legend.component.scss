@@ -4,13 +4,24 @@
   top: 50%;
   transform: translate(0, -50%);
 
-  .total-value {
-    font-size: 36px
-  }
+  .total-value-container {
+    cursor: pointer;
 
-  .total-label {
-    font-size: 24px;
-    margin-bottom: 19px;
+    &:hover {
+      color: #000;
+      -webkit-transition: 0.2s;
+      -moz-transition: 0.2s;
+      transition: 0.2s;
+    }
+
+    .total-value {
+      font-size: 36px
+    }
+  
+    .total-label {
+      font-size: 24px;
+      margin-bottom: 19px;
+    }
   }
 
   .legend-items-container {
