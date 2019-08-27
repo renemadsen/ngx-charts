@@ -10,6 +10,10 @@ export declare class AdvancedLegendComponent implements OnChanges {
     deactivate: EventEmitter<any>;
     legendItems: any[];
     total: number;
+    totalJson: {
+        name: string;
+        value: number;
+    };
     roundedTotal: number;
     valueFormatting: (value: number) => any;
     labelFormatting: (value: string) => any;

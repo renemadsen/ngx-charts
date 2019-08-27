@@ -3,11 +3,21 @@
   position: relative;
   top: 50%;
   transform: translate(0, -50%); }
-  .advanced-pie-legend .total-value {
-    font-size: 36px; }
-  .advanced-pie-legend .total-label {
-    font-size: 24px;
-    margin-bottom: 19px; }
+  .advanced-pie-legend .total-value-container {
+    display: inline-block;
+    clear: both;
+    cursor: pointer;
+    width: auto; }
+    .advanced-pie-legend .total-value-container:hover {
+      color: #000;
+      -webkit-transition: 0.2s;
+      -moz-transition: 0.2s;
+      transition: 0.2s; }
+    .advanced-pie-legend .total-value-container .total-value {
+      font-size: 36px; }
+    .advanced-pie-legend .total-value-container .total-label {
+      font-size: 24px;
+      margin-bottom: 19px; }
   .advanced-pie-legend .legend-items-container {
     width: 100%; }
     .advanced-pie-legend .legend-items-container .legend-items {

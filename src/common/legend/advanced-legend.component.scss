@@ -5,7 +5,10 @@
   transform: translate(0, -50%);
 
   .total-value-container {
+    display: inline-block;
+    clear: both;
     cursor: pointer;
+    width: auto;
 
     &:hover {
       color: #000;
