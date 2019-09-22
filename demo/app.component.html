@@ -985,6 +985,36 @@
       [maxYAxisTickLength]="maxYAxisTickLength"
       (select)="select($event)">
     </ngx-charts-bar-horizontal-stacked>
+    <ngx-charts-bar-horizontal-stacked-percent
+      *ngIf="chartType === 'bar-horizontal-stacked-percent'"
+      class="chart-container"
+      [view]="view"
+      [scheme]="colorScheme"
+      [schemeType]="schemeType"
+      [results]="fiscalYearReport"
+      [animations]="animations"
+      [gradient]="gradient"
+      [tooltipDisabled]="tooltipDisabled"
+      [xAxis]="showXAxis"
+      [yAxis]="showYAxis"
+      [legend]="showLegend"
+      [legendTitle]="legendTitle"
+      [legendPosition]="legendPosition"
+      (legendLabelClick)="onLegendLabelClick($event)"
+      [showXAxisLabel]="showXAxisLabel"
+      [showYAxisLabel]="showYAxisLabel"
+      [xAxisLabel]="xAxisLabel"
+      [yAxisLabel]="'Fiscal Year Report'"
+      [showGridLines]="showGridLines"
+      [barPadding]="barPadding"
+      [roundDomains]="roundDomains"
+      [showDataLabel]="showDataLabel"
+      [trimXAxisTicks]="trimXAxisTicks"
+      [trimYAxisTicks]="trimYAxisTicks"
+      [maxXAxisTickLength]="maxXAxisTickLength"
+      [maxYAxisTickLength]="maxYAxisTickLength"
+      (select)="select($event)">
+    </ngx-charts-bar-horizontal-stacked-percent>
   </div>
   <div class="sidebar">
     <h1>

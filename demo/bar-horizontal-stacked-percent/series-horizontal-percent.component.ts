@@ -14,11 +14,11 @@ import {
   animate,
   transition
 } from '@angular/animations';
-import { formatLabel } from '../common/label.helper';
-import { D0Types } from './series-vertical.component';
+import { formatLabel } from '../../src/common/label.helper';
+import { D0Types } from '../../src/bar-chart/series-vertical.component';
 
 @Component({
-  selector: 'g[ngx-charts-series-horizontal]',
+  selector: 'g[ngx-charts-series-horizontal-percent]',
   template: `
     <svg:g ngx-charts-bar
       *ngFor="let bar of bars; trackBy:trackBy"
@@ -72,7 +72,7 @@ import { D0Types } from './series-vertical.component';
     ])
   ]
 })
-export class SeriesHorizontal implements OnChanges {
+export class SeriesHorizontalPercent implements OnChanges {
   bars: any;
   x: any;
   y: any;       
@@ -219,7 +219,7 @@ export class SeriesHorizontal implements OnChanges {
       const totalPositive = this.series.map(d => d.value).reduce((sum, d) => d > 0 ? sum + d : sum, 0);
       const totalNegative = this.series.map(d => d.value).reduce((sum, d) => d < 0 ? sum + d : sum, 0);
       section.total = totalPositive + totalNegative;
-      section.totalPercent = ((section.total * 100) / (totalPositive + Math.abs(totalNegative))).toFixed(1);
+      section.totalPercent = ((section.total * 100) / (totalPositive + Math.abs(totalNegative))).toFixed(2);
       section.x = 0;
       section.y = 0;        
       // if total is positive then we show it on the right, otherwise on the left

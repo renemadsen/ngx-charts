@@ -18,11 +18,11 @@ import {
 import { scaleLinear, scaleTime, scalePoint } from 'd3-scale';
 import { curveLinear } from 'd3-shape';
 
-import { calculateViewDimensions, ViewDimensions } from '../common/view-dimensions.helper';
-import { ColorHelper } from '../common/color.helper';
-import { BaseChartComponent } from '../common';
-import { id } from '../utils/id';
-import { getUniqueXDomainValues, getScaleType } from '../common/domain.helper';
+import { calculateViewDimensions, ViewDimensions } from '../../src/common/view-dimensions.helper';
+import { ColorHelper } from '../../src/common/color.helper';
+import { BaseChartComponent } from '../../src/common';
+import { id } from '../../src/utils/id';
+import { getUniqueXDomainValues, getScaleType } from '../../src/common/domain.helper';
 
 @Component({
   selector: 'ngx-charts-line-chart-with-icons',
@@ -186,7 +186,7 @@ import { getUniqueXDomainValues, getScaleType } from '../common/domain.helper';
       </svg:g>
     </ngx-charts-chart>
   `,
-  styleUrls: ['../common/base-chart.component.scss'],
+  styleUrls: ['../../src/common/base-chart.component.scss'],
   encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
   animations: [

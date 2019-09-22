@@ -9,6 +9,11 @@ import { TimelineFilterBarChartComponent } from './timeline-filter-bar-chart/tim
 import { NgxChartsModule } from '../src';
 import { NgxUIModule } from '@swimlane/ngx-ui';
 import { ComboChartComponent, ComboSeriesVerticalComponent } from './combo-chart';
+import { LineChartWithIconsComponent } from './line-chart-with-icons/line-chart-with-icons.component';
+import { BarHorizontalStackedPercentComponent } from './bar-horizontal-stacked-percent/bar-horizontal-stacked-percent.component';
+import { SeriesHorizontalPercent } from './bar-horizontal-stacked-percent/series-horizontal-percent.component';
+import { XAxisStrongZeroTickComponent } from './bar-horizontal-stacked-percent/x-axis-strong-zero-tick.component';
+import { XAxisTicksStrongZeroTickComponent } from './bar-horizontal-stacked-percent/x-axis-ticks-strong-zero-tick.component';
 
 @NgModule({
   providers: [
@@ -29,7 +34,12 @@ import { ComboChartComponent, ComboSeriesVerticalComponent } from './combo-chart
     SparklineComponent,
     TimelineFilterBarChartComponent,
     ComboChartComponent,
-    ComboSeriesVerticalComponent
+    ComboSeriesVerticalComponent,
+    LineChartWithIconsComponent,
+    BarHorizontalStackedPercentComponent,
+    SeriesHorizontalPercent,
+    XAxisStrongZeroTickComponent,
+    XAxisTicksStrongZeroTickComponent
   ],
   bootstrap: [AppComponent]
 })
