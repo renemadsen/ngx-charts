@@ -28,6 +28,7 @@ const chartGroups = [
           'roundEdges',
           'yScaleMax',
           'showDataLabel',
+          'barWidth',
           'trimXAxisTicks',
           'trimYAxisTicks',
           'rotateXAxisTicks',

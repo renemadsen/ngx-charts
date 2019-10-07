@@ -28,6 +28,7 @@
         [yScaleMax]="yScaleMax"
         [noBarWhenZero]="noBarWhenZero"
         [showDataLabel]="showDataLabel"
+        [barWidth]="barWidth"
         [trimXAxisTicks]="trimXAxisTicks"
         [trimYAxisTicks]="trimYAxisTicks"
         [rotateXAxisTicks]="rotateXAxisTicks"
@@ -1391,6 +1392,10 @@
         <div *ngIf="chart.options.includes('maxYAxisTickLength')">
           <label>Max Y Axis Tick Length:</label><br />
           <input type="text" [(ngModel)]="maxYAxisTickLength" /><br />
+        </div>
+        <div *ngIf="chart.options.includes('barWidth')">
+          <label>Max Bar Width:</label><br />
+          <input type="text" [(ngModel)]="barWidth" /><br />
         </div>
         <div *ngIf="chart.options.includes('doughnut')">
           <label>

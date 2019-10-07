@@ -84,6 +84,7 @@ import { BaseChartComponent } from '../common/base-chart.component';
           [dataLabelFormatting]="dataLabelFormatting"
           [seriesName]="group.name"
           [roundEdges]="roundEdges"
+          [barWidth]="barWidth"
           [animations]="animations"
           [noBarWhenZero]="noBarWhenZero"
           (select)="onClick($event, group)"
@@ -138,6 +139,7 @@ export class BarVertical2DComponent extends BaseChartComponent {
   @Input() barPadding = 8;
   @Input() roundDomains: boolean = false;
   @Input() roundEdges: boolean = true;
+  @Input() barWidth: number;
   @Input() yScaleMax: number;
   @Input() showDataLabel: boolean = false;
   @Input() dataLabelFormatting: any;

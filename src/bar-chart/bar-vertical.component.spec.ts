@@ -126,4 +126,32 @@ describe('<ngx-charts-bar-vertical>', () => {
       });
     }));
   });
+
+  describe('bar-max-width', () => {
+
+    it('should render correct cell size, with zero padding, but fixed width', async(() => {
+      TestBed.overrideComponent(TestComponent, {
+        set: {
+          template: `
+               <ngx-charts-bar-vertical
+                [view]="[400,800]"
+                [scheme]="colorScheme"
+                [results]="single"
+                [barPadding]="0"
+                [barWidth]="30">
+              </ngx-charts-bar-vertical>`
+        }
+      });
+
+      TestBed.compileComponents().then(() => {
+        const fixture = TestBed.createComponent(TestComponent);
+        fixture.detectChanges();
+
+        const bar = fixture.debugElement.query(By.directive(BarComponent));
+
+        expect(bar.componentInstance.width).toEqual(30); 
+      });
+    }));
+
+  });
 });

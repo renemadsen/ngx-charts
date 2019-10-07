@@ -85,6 +85,7 @@ export class SeriesVerticalComponent implements OnChanges {
   @Input() showDataLabel: boolean = false;
   @Input() dataLabelFormatting: any;
   @Input() noBarWhenZero: boolean = true;
+  @Input() barWidth: number;
 
   @Output() select = new EventEmitter();
   @Output() activate = new EventEmitter();
@@ -106,10 +107,13 @@ export class SeriesVerticalComponent implements OnChanges {
   update(): void {
     this.updateTooltipSettings();
     let width;
+    
     if (this.series.length) {
-      width = this.xScale.bandwidth();
+      width = this.barWidth ? this.barWidth : this.xScale.bandwidth();
     }
+
     width = Math.round(width);
+
     const yScaleMin = Math.max(this.yScale.domain()[0], 0);
 
     const d0 = {
@@ -144,7 +148,12 @@ export class SeriesVerticalComponent implements OnChanges {
 
       if (this.type === 'standard') {
         bar.height = Math.abs(this.yScale(value) - this.yScale(yScaleMin));
-        bar.x = this.xScale(label);
+
+        if (this.barWidth) {
+          bar.x = Math.round(this.xScale(label) + this.xScale.bandwidth() / 2 - this.barWidth / 2);
+        } else {
+          bar.x = this.xScale(label);
+        }
 
         if (value < 0) {
           bar.y = this.yScale(0);

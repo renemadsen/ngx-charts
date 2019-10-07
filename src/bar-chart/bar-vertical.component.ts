@@ -73,6 +73,7 @@ import { DataItem } from '../models/chart-data.model';
           [activeEntries]="activeEntries"
           [roundEdges]="roundEdges"
           [animations]="animations"
+          [barWidth]="barWidth"
           [noBarWhenZero]="noBarWhenZero"
           (activate)="onActivate($event)"
           (deactivate)="onDeactivate($event)"
@@ -111,6 +112,7 @@ export class BarVerticalComponent extends BaseChartComponent {
   @Input() xAxisTicks: any[];
   @Input() yAxisTicks: any[];
   @Input() barPadding = 8;
+  @Input() barWidth: number;
   @Input() roundDomains: boolean = false;
   @Input() roundEdges: boolean = true;
   @Input() yScaleMax: number;
@@ -177,8 +179,9 @@ export class BarVerticalComponent extends BaseChartComponent {
   getXScale(): any {
     this.xDomain = this.getXDomain();
     const spacing = this.xDomain.length / (this.dims.width / this.barPadding + 1);
+
     return scaleBand()
-      .range([0, this.dims.width])
+      .rangeRound([0, this.dims.width])
       .paddingInner(spacing)
       .domain(this.xDomain);
   }
