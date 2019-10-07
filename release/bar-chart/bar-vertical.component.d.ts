@@ -28,6 +28,7 @@ export declare class BarVerticalComponent extends BaseChartComponent {
     xAxisTicks: any[];
     yAxisTicks: any[];
     barPadding: number;
+    barWidth: number;
     roundDomains: boolean;
     roundEdges: boolean;
     yScaleMax: number;

@@ -31,6 +31,7 @@ export declare class BarVertical2DComponent extends BaseChartComponent {
     barPadding: number;
     roundDomains: boolean;
     roundEdges: boolean;
+    barWidth: number;
     yScaleMax: number;
     showDataLabel: boolean;
     dataLabelFormatting: any;

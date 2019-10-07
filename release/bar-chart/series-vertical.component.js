@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy, TemplateRef } from '@angular/core';
 import { trigger, style, animate, transition } from '@angular/animations';
-import { formatLabel } from '../common/label.helper';
+import { formatLabel, escapeLabel } from '../common/label.helper';
 export var D0Types;
 (function (D0Types) {
     D0Types["positive"] = "positive";
@@ -37,7 +37,7 @@ var SeriesVerticalComponent = /** @class */ (function () {
         this.updateTooltipSettings();
         var width;
         if (this.series.length) {
-            width = this.xScale.bandwidth();
+            width = this.barWidth ? this.barWidth : this.xScale.bandwidth();
         }
         width = Math.round(width);
         var yScaleMin = Math.max(this.yScale.domain()[0], 0);
@@ -69,7 +69,12 @@ var SeriesVerticalComponent = /** @class */ (function () {
             };
             if (_this.type === 'standard') {
                 bar.height = Math.abs(_this.yScale(value) - _this.yScale(yScaleMin));
-                bar.x = _this.xScale(label);
+                if (_this.barWidth) {
+                    bar.x = Math.round(_this.xScale(label) + _this.xScale.bandwidth() / 2 - _this.barWidth / 2);
+                }
+                else {
+                    bar.x = _this.xScale(label);
+                }
                 if (value < 0) {
                     bar.y = _this.yScale(0);
                 }
@@ -128,7 +133,7 @@ var SeriesVerticalComponent = /** @class */ (function () {
             }
             bar.tooltipText = _this.tooltipDisabled
                 ? undefined
-                : "\n        <span class=\"tooltip-label\">" + tooltipLabel + "</span>\n        <span class=\"tooltip-val\">" + value.toLocaleString() + "</span>\n      ";
+                : "\n        <span class=\"tooltip-label\">" + escapeLabel(tooltipLabel) + "</span>\n        <span class=\"tooltip-val\">" + value.toLocaleString() + "</span>\n      ";
             return bar;
         });
         this.updateDataLabels();
@@ -257,6 +262,10 @@ var SeriesVerticalComponent = /** @class */ (function () {
         Input(),
         __metadata("design:type", Boolean)
     ], SeriesVerticalComponent.prototype, "noBarWhenZero", void 0);
+    __decorate([
+        Input(),
+        __metadata("design:type", Number)
+    ], SeriesVerticalComponent.prototype, "barWidth", void 0);
     __decorate([
         Output(),
         __metadata("design:type", Object)
