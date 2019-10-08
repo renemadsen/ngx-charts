@@ -56,6 +56,9 @@ var SeriesHorizontal = /** @class */ (function () {
                 formattedLabel: formattedLabel
             };
             bar.height = _this.yScale.bandwidth();
+            if (_this.series.length) {
+                bar.height = _this.barWidth ? _this.barWidth : _this.yScale.bandwidth();
+            }
             if (_this.type === 'standard') {
                 bar.width = Math.abs(_this.xScale(value) - _this.xScale(xScaleMin));
                 if (value < 0) {
@@ -64,7 +67,12 @@ var SeriesHorizontal = /** @class */ (function () {
                 else {
                     bar.x = _this.xScale(xScaleMin);
                 }
-                bar.y = _this.yScale(label);
+                if (_this.barWidth) {
+                    bar.y = Math.round(_this.yScale(label) + _this.yScale.bandwidth() / 2 - _this.barWidth / 2);
+                }
+                else {
+                    bar.y = _this.yScale(label);
+                }
             }
             else if (_this.type === 'stacked') {
                 var offset0 = d0[d0Type];
@@ -75,6 +83,12 @@ var SeriesHorizontal = /** @class */ (function () {
                 bar.y = 0;
                 bar.offset0 = offset0;
                 bar.offset1 = offset1;
+                if (_this.barWidth) {
+                    bar.y = Math.round(_this.yScale.bandwidth() / 2 - _this.barWidth / 2);
+                }
+                else {
+                    bar.y = 0;
+                }
             }
             else if (_this.type === 'normalized') {
                 var offset0 = d0[d0Type];
@@ -90,7 +104,12 @@ var SeriesHorizontal = /** @class */ (function () {
                 }
                 bar.width = _this.xScale(offset1) - _this.xScale(offset0);
                 bar.x = _this.xScale(offset0);
-                bar.y = 0;
+                if (_this.barWidth) {
+                    bar.y = Math.round(_this.yScale.bandwidth() / 2 - _this.barWidth / 2);
+                }
+                else {
+                    bar.y = 0;
+                }
                 bar.offset0 = offset0;
                 bar.offset1 = offset1;
                 value = (offset1 - offset0).toFixed(2) + '%';
@@ -231,6 +250,10 @@ var SeriesHorizontal = /** @class */ (function () {
         Input(),
         __metadata("design:type", Boolean)
     ], SeriesHorizontal.prototype, "roundEdges", void 0);
+    __decorate([
+        Input(),
+        __metadata("design:type", Number)
+    ], SeriesHorizontal.prototype, "barWidth", void 0);
     __decorate([
         Input(),
         __metadata("design:type", Boolean)

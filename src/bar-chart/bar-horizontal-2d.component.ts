@@ -86,6 +86,7 @@ import { BaseChartComponent } from '../common/base-chart.component';
             [seriesName]="group.name"
             [roundEdges]="roundEdges"
             [animations]="animations"
+            [barWidth]="barWidth"
             [showDataLabel]="showDataLabel"
             [dataLabelFormatting]="dataLabelFormatting"
             [noBarWhenZero]="noBarWhenZero"
@@ -139,6 +140,7 @@ export class BarHorizontal2DComponent extends BaseChartComponent {
   @Input() yAxisTicks: any[];
   @Input() groupPadding = 16;
   @Input() barPadding = 8;
+  @Input() barWidth: number;
   @Input() roundDomains: boolean = false;
   @Input() roundEdges: boolean = true;
   @Input() xScaleMax: number;

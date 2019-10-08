@@ -28,6 +28,7 @@ export declare class BarHorizontal2DComponent extends BaseChartComponent {
     yAxisTicks: any[];
     groupPadding: number;
     barPadding: number;
+    barWidth: number;
     roundDomains: boolean;
     roundEdges: boolean;
     xScaleMax: number;

@@ -27,6 +27,7 @@ export declare class BarHorizontalNormalizedComponent extends BaseChartComponent
     xAxisTicks: any[];
     yAxisTicks: any[];
     barPadding: number;
+    barWidth: number;
     roundDomains: boolean;
     noBarWhenZero: boolean;
     activate: EventEmitter<any>;

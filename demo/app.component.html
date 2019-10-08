@@ -138,6 +138,7 @@
         [yAxisLabel]="yAxisLabel"
         [showGridLines]="showGridLines"
         [barPadding]="barPadding"
+        [barWidth]="barWidth"
         [groupPadding]="groupPadding"
         [roundDomains]="roundDomains"
         [roundEdges]="roundEdges"
@@ -320,6 +321,7 @@
         (legendLabelClick)="onLegendLabelClick($event)"
         [showGridLines]="showGridLines"
         [barPadding]="barPadding"
+        [barWidth]="barWidth"
         [roundDomains]="roundDomains"
         [noBarWhenZero]="noBarWhenZero"
         [trimXAxisTicks]="trimXAxisTicks"
@@ -1124,7 +1126,7 @@
       (deactivate)="deactivate($event)"
     >
     </ngx-charts-bar-vertical-stacked>
-    <ngx-charts-bar-horizontal-stacked
+    <ngx-charts-bar-horizontal-2d
       *ngIf="chartType === 'bar-horizontal-stacked-negative'"
       class="chart-container"
       [view]="view"
@@ -1157,7 +1159,7 @@
       (activate)="activate($event)"
       (deactivate)="deactivate($event)"
     >
-    </ngx-charts-bar-horizontal-stacked>
+    </ngx-charts-bar-horizontal-2d>
   </div>
   <div class="sidebar">
     <h1>

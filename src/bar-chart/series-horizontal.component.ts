@@ -90,6 +90,7 @@ export class SeriesHorizontal implements OnChanges {
   @Input() seriesName: string;
   @Input() tooltipTemplate: TemplateRef<any>;
   @Input() roundEdges: boolean;
+  @Input() barWidth: number;
   @Input() animations: boolean = true;
   @Input() showDataLabel: boolean = false;
   @Input() dataLabelFormatting: any;
@@ -137,6 +138,9 @@ export class SeriesHorizontal implements OnChanges {
       };
 
       bar.height = this.yScale.bandwidth();
+      if (this.series.length) {
+        bar.height = this.barWidth ? this.barWidth : this.yScale.bandwidth();
+      }
 
       if (this.type === 'standard') {
         bar.width = Math.abs(this.xScale(value) - this.xScale(xScaleMin));
@@ -145,7 +149,12 @@ export class SeriesHorizontal implements OnChanges {
         } else {
           bar.x = this.xScale(xScaleMin);
         }
-        bar.y = this.yScale(label);
+
+        if (this.barWidth) {
+          bar.y = Math.round(this.yScale(label) + this.yScale.bandwidth() / 2 - this.barWidth / 2);
+        } else {
+          bar.y = this.yScale(label);
+        }
       } else if (this.type === 'stacked') {
         const offset0 = d0[d0Type];
         const offset1 = offset0 + value;
@@ -156,6 +165,12 @@ export class SeriesHorizontal implements OnChanges {
         bar.y = 0;
         bar.offset0 = offset0;
         bar.offset1 = offset1;
+
+        if (this.barWidth) {
+          bar.y = Math.round(this.yScale.bandwidth() / 2 - this.barWidth / 2);
+        } else {
+          bar.y = 0;
+        }
       } else if (this.type === 'normalized') {
         let offset0 = d0[d0Type];
         let offset1 = offset0 + value;
@@ -171,7 +186,11 @@ export class SeriesHorizontal implements OnChanges {
 
         bar.width = this.xScale(offset1) - this.xScale(offset0);
         bar.x = this.xScale(offset0);
-        bar.y = 0;
+        if (this.barWidth) {
+          bar.y = Math.round(this.yScale.bandwidth() / 2 - this.barWidth / 2);
+        } else {
+          bar.y = 0;
+        }
         bar.offset0 = offset0;
         bar.offset1 = offset1;
         value = (offset1 - offset0).toFixed(2) + '%';

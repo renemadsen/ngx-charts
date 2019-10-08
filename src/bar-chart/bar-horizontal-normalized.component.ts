@@ -72,6 +72,7 @@ import { BaseChartComponent } from '../common/base-chart.component';
             [colors]="colors"
             [series]="group.series"
             [dims]="dims"
+            [barWidth]="barWidth"
             [gradient]="gradient"
             [tooltipDisabled]="tooltipDisabled"
             [tooltipTemplate]="tooltipTemplate"
@@ -126,6 +127,7 @@ export class BarHorizontalNormalizedComponent extends BaseChartComponent {
   @Input() xAxisTicks: any[];
   @Input() yAxisTicks: any[];
   @Input() barPadding = 8;
+  @Input() barWidth: number;
   @Input() roundDomains: boolean = false;
   @Input() noBarWhenZero: boolean = true;
 

@@ -24,6 +24,7 @@ export declare class SeriesHorizontal implements OnChanges {
     seriesName: string;
     tooltipTemplate: TemplateRef<any>;
     roundEdges: boolean;
+    barWidth: number;
     animations: boolean;
     showDataLabel: boolean;
     dataLabelFormatting: any;
