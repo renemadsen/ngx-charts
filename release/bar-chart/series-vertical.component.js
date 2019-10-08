@@ -55,6 +55,9 @@ var SeriesVerticalComponent = /** @class */ (function () {
             var label = _this.getLabel(d);
             var formattedLabel = formatLabel(label);
             var roundEdges = _this.roundEdges;
+            if (_this.type === 'stacked') {
+                roundEdges = _this.roundEdges && index === _this.series.length - 1;
+            }
             d0Type = value > 0 ? D0Types.positive : D0Types.negative;
             var bar = {
                 value: value,
@@ -87,7 +90,12 @@ var SeriesVerticalComponent = /** @class */ (function () {
                 var offset1 = offset0 + value;
                 d0[d0Type] += value;
                 bar.height = _this.yScale(offset0) - _this.yScale(offset1);
-                bar.x = 0;
+                if (_this.barWidth) {
+                    bar.x = Math.round(_this.xScale.bandwidth() / 2 - _this.barWidth / 2);
+                }
+                else {
+                    bar.x = 0;
+                }
                 bar.y = _this.yScale(offset1);
                 bar.offset0 = offset0;
                 bar.offset1 = offset1;
@@ -104,8 +112,13 @@ var SeriesVerticalComponent = /** @class */ (function () {
                     offset0 = 0;
                     offset1 = 0;
                 }
+                if (_this.barWidth) {
+                    bar.x = Math.round(_this.xScale.bandwidth() / 2 - _this.barWidth / 2);
+                }
+                else {
+                    bar.x = 0;
+                }
                 bar.height = _this.yScale(offset0) - _this.yScale(offset1);
-                bar.x = 0;
                 bar.y = _this.yScale(offset1);
                 bar.offset0 = offset0;
                 bar.offset1 = offset1;
