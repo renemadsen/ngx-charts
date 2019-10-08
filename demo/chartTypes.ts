@@ -98,6 +98,7 @@ const chartGroups = [
           'roundDomains',
           'tooltipDisabled',
           'roundEdges',
+          'barWidth',
           'yScaleMax',
           'showDataLabel',
           'trimXAxisTicks',
