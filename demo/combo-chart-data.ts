@@ -124,3 +124,5 @@ export let barChart: any = [
     value: 500
   }
 ];
+
+

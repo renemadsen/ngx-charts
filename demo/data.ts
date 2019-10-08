@@ -1,5 +1,5 @@
 import { data as countries } from 'emoji-flags';
-import { SingleSeries, MultiSeries, BubbleChartMultiSeries, Series, TreeMapData } from '../src/models/chart-data.model';
+import { SingleSeries, MultiSeries, BubbleChartMultiSeries, Series, TreeMapData, GroupedStackedBarChartData } from '../src/models/chart-data.model';
 
 export const single: SingleSeries = [
   {
@@ -756,6 +756,97 @@ export const treemap: TreeMapData = [
             ]
           },
           { name: 'Visualization', size: 16540 }
+        ]
+      }
+    ]
+  }
+];
+
+export const groupedStacked: GroupedStackedBarChartData = [
+  {
+    name: 'October',
+    series: 
+      [
+        {
+          name: '18',
+          series: [
+          {
+            name: 'France',
+            value: 400,
+            extra: {
+              code: 'fr'
+            }
+          },
+          {
+            name: 'Japan',
+            value: 600,
+            extra: {
+              code: 'jp'
+            }
+          }
+        ]
+        },
+        {
+          name: '19',
+          series: [
+          {
+            name: 'France',
+            value: 500,
+            extra: {
+              code: 'fr'
+            }
+          },
+          {
+            name: 'Japan',
+            value: 300,
+            extra: {
+              code: 'jp'
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    name: 'November',
+    series: 
+      [
+        {
+          name: '18',
+          series: [
+          {
+            name: 'France',
+            value: 300,
+            extra: {
+              code: 'fr'
+            }
+          },
+          {
+            name: 'Japan',
+            value: 100,
+            extra: {
+              code: 'jp'
+            }
+          }
+        ]
+        },
+        {
+          name: '19',
+          series: [
+          {
+            name: 'France',
+            value: 100,
+            extra: {
+              code: 'fr'
+            }
+          },
+          {
+            name: 'Japan',
+            value: 50,
+            extra: {
+              code: 'jp'
+            }
+          }
         ]
       }
     ]

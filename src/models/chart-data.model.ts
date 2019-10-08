@@ -16,6 +16,13 @@ export interface Series {
 
 export interface MultiSeries extends Array<Series> {}
 
+export interface Group {
+  name: string | number  | Date;
+  series: MultiSeries;
+}
+
+export interface GroupedStackedBarChartData extends Array<Group> {}
+
 export interface BubbleChartDataItem {
   name: string | number | Date;
   x: string | number | Date;

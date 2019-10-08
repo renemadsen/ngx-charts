@@ -7,6 +7,7 @@ import { BarHorizontalNormalizedComponent } from './bar-horizontal-normalized.co
 import { BarHorizontalStackedComponent } from './bar-horizontal-stacked.component';
 import { BarVerticalComponent } from './bar-vertical.component';
 import { BarVertical2DComponent } from './bar-vertical-2d.component';
+import { BarVertical2DStackedComponent } from './bar-vertical-2d-stacked.component';
 import { BarVerticalNormalizedComponent } from './bar-vertical-normalized.component';
 import { BarVerticalStackedComponent } from './bar-vertical-stacked.component';
 import { SeriesHorizontal } from './series-horizontal.component';
@@ -23,6 +24,7 @@ import { BarLabelComponent } from './bar-label.component';
     BarHorizontalStackedComponent,
     BarVerticalComponent,
     BarVertical2DComponent,
+    BarVertical2DStackedComponent,
     BarVerticalNormalizedComponent,
     BarVerticalStackedComponent,
     BarLabelComponent,
@@ -37,6 +39,7 @@ import { BarLabelComponent } from './bar-label.component';
     BarHorizontalStackedComponent,
     BarVerticalComponent,
     BarVertical2DComponent,
+    BarVertical2DStackedComponent,
     BarVerticalNormalizedComponent,
     BarVerticalStackedComponent,
     BarLabelComponent,

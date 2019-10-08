@@ -15,7 +15,8 @@ import {
   generateGraph,
   treemap,
   timelineFilterBarData,
-  fiscalYearReport
+  fiscalYearReport,
+  groupedStacked
 } from './data';
 import { bubbleDemoData } from './bubble-chart-interactive/data';
 import { BubbleChartInteractiveServerDataModel } from './bubble-chart-interactive/models';
@@ -252,7 +253,8 @@ export class AppComponent implements OnInit {
       plotData: this.generatePlotData(),
       treemap,
       bubbleDemoData,
-      fiscalYearReport
+      fiscalYearReport,
+      groupedStacked
     });
 
     // interactive drilldown demos

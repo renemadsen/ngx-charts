@@ -131,7 +131,8 @@ export class SeriesVerticalComponent implements OnChanges {
       let value = d.value;
       const label = this.getLabel(d);
       const formattedLabel = formatLabel(label);
-      const roundEdges = this.roundEdges;
+      const roundEdges = this.roundEdges && index === this.series.length - 1;
+      
       d0Type = value > 0 ? D0Types.positive : D0Types.negative;
 
       const bar: any = {
@@ -166,7 +167,12 @@ export class SeriesVerticalComponent implements OnChanges {
         d0[d0Type] += value;
 
         bar.height = this.yScale(offset0) - this.yScale(offset1);
-        bar.x = 0;
+
+        if (this.barWidth) {
+          bar.x = Math.round(this.xScale.bandwidth() / 2 - this.barWidth / 2);
+        } else {
+          bar.x = 0;
+        }
         bar.y = this.yScale(offset1);
         bar.offset0 = offset0;
         bar.offset1 = offset1;

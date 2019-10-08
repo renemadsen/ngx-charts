@@ -2,8 +2,8 @@ import {
   Component,
   Input,
   Output,
-  EventEmitter,
   ViewEncapsulation,
+  EventEmitter,
   ChangeDetectionStrategy,
   ContentChild,
   TemplateRef
@@ -16,7 +16,7 @@ import { ColorHelper } from '../common/color.helper';
 import { BaseChartComponent } from '../common/base-chart.component';
 
 @Component({
-  selector: 'ngx-charts-bar-vertical-stacked',
+  selector: 'ngx-charts-bar-vertical-2d-stacked',
   template: `
     <ngx-charts-chart
       [view]="[width, height]"
@@ -30,9 +30,17 @@ import { BaseChartComponent } from '../common/base-chart.component';
     >
       <svg:g [attr.transform]="transform" class="bar-chart chart">
         <svg:g
+          ngx-charts-grid-panel-series
+          [xScale]="groupScale"
+          [yScale]="valueScale"
+          [data]="results"
+          [dims]="dims"
+          orient="vertical"
+        ></svg:g>
+        <svg:g
           ngx-charts-x-axis
           *ngIf="xAxis"
-          [xScale]="xScale"
+          [xScale]="groupScale"
           [dims]="dims"
           [showLabel]="showXAxisLabel"
           [labelText]="xAxisLabel"
@@ -47,7 +55,7 @@ import { BaseChartComponent } from '../common/base-chart.component';
         <svg:g
           ngx-charts-y-axis
           *ngIf="yAxis"
-          [yScale]="yScale"
+          [yScale]="valueScale"
           [dims]="dims"
           [showGridLines]="showGridLines"
           [showLabel]="showYAxisLabel"
@@ -60,33 +68,41 @@ import { BaseChartComponent } from '../common/base-chart.component';
         ></svg:g>
         <svg:g
           *ngFor="let group of results; let index = index; trackBy: trackBy"
-          [@animationState]="'active'"
           [attr.transform]="groupTransform(group)"
         >
           <svg:g
-            ngx-charts-series-vertical
-            type="stacked"
-            [xScale]="xScale"
-            [yScale]="yScale"
-            [activeEntries]="activeEntries"
-            [colors]="colors"
-            [series]="group.series"
-            [dims]="dims"
-            [roundEdges]="roundEdges"
-            [gradient]="gradient"
-            [tooltipDisabled]="tooltipDisabled"
-            [tooltipTemplate]="tooltipTemplate"
-            [showDataLabel]="showDataLabel"
-            [barWidth]="barWidth"
-            [dataLabelFormatting]="dataLabelFormatting"
-            [seriesName]="group.name"
-            [animations]="animations"
-            [noBarWhenZero]="noBarWhenZero"
-            (select)="onClick($event, group)"
-            (activate)="onActivate($event, group)"
-            (deactivate)="onDeactivate($event, group)"
-            (dataLabelHeightChanged)="onDataLabelMaxHeightChanged($event, index)"
-          />
+          *ngFor="let stack of group.series; let index = index; trackBy: trackBy"
+          [@animationState]="'active'"
+          [attr.transform]="groupTransform(stack)"
+          >
+            <svg:g
+              ngx-charts-series-vertical
+              
+              type="stacked"
+              [@animationState]="'active'"
+              
+              [activeEntries]="activeEntries"
+              [xScale]="xScale"
+              [yScale]="yScale"
+              [colors]="colors"
+              [series]="stack.series"
+              [dims]="dims"
+              [gradient]="gradient"
+              [tooltipDisabled]="tooltipDisabled"
+              [tooltipTemplate]="tooltipTemplate"
+              [showDataLabel]="showDataLabel"
+              [dataLabelFormatting]="dataLabelFormatting"
+              [seriesName]="stack.name"
+              [roundEdges]="roundEdges"
+              [barWidth]="10"
+              [animations]="animations"
+              [noBarWhenZero]="noBarWhenZero"
+              (select)="onClick($event, group)"
+              (activate)="onActivate($event, group)"
+              (deactivate)="onDeactivate($event, group)"
+              (dataLabelHeightChanged)="onDataLabelMaxHeightChanged($event, index)"
+            />
+          </svg:g>
         </svg:g>
       </svg:g>
     </ngx-charts-chart>
@@ -106,7 +122,7 @@ import { BaseChartComponent } from '../common/base-chart.component';
     ])
   ]
 })
-export class BarVerticalStackedComponent extends BaseChartComponent {
+export class BarVertical2DStackedComponent extends BaseChartComponent {
   @Input() legend = false;
   @Input() legendTitle: string = 'Legend';
   @Input() legendPosition: string = 'right';
@@ -117,6 +133,7 @@ export class BarVerticalStackedComponent extends BaseChartComponent {
   @Input() xAxisLabel;
   @Input() yAxisLabel;
   @Input() tooltipDisabled: boolean = false;
+  @Input() scaleType = 'ordinal';
   @Input() gradient: boolean;
   @Input() showGridLines: boolean = true;
   @Input() activeEntries: any[] = [];
@@ -130,10 +147,11 @@ export class BarVerticalStackedComponent extends BaseChartComponent {
   @Input() yAxisTickFormatting: any;
   @Input() xAxisTicks: any[];
   @Input() yAxisTicks: any[];
+  @Input() groupPadding = 16;
   @Input() barPadding = 8;
-  @Input() roundEdges: boolean = false;
-  @Input() barWidth: number;
   @Input() roundDomains: boolean = false;
+  @Input() roundEdges: boolean = true;
+  @Input() barWidth: number;
   @Input() yScaleMax: number;
   @Input() showDataLabel: boolean = false;
   @Input() dataLabelFormatting: any;
@@ -146,12 +164,18 @@ export class BarVerticalStackedComponent extends BaseChartComponent {
 
   dims: ViewDimensions;
   groupDomain: any[];
+  groupStackedDomain: any[];
   innerDomain: any[];
+  innerStackedDomain: any[];
+  valuesDomain: any[];
+  valuesStackedDomain: any[];
   valueDomain: any[];
   xScale: any;
   yScale: any;
+  groupScale: any;
+  innerScale: any;
+  valueScale: any;
   transform: string;
-  tickFormatting: (label: string) => string;
   colors: ColorHelper;
   margin = [10, 20, 10, 20];
   xAxisHeight: number = 0;
@@ -189,16 +213,71 @@ export class BarVerticalStackedComponent extends BaseChartComponent {
     this.formatDates();
 
     this.groupDomain = this.getGroupDomain();
+    this.groupStackedDomain = this.getGroupStackedDomain();
     this.innerDomain = this.getInnerDomain();
-    this.valueDomain = this.getValueDomain();
+    this.innerStackedDomain = this.getInnerStackedDomain();
+    this.valuesDomain = this.getValueDomain();
+    this.valuesStackedDomain = this.getValueStackedDomain();
 
-    this.xScale = this.getXScale();
-    this.yScale = this.getYScale();
+    this.groupScale = this.getGroupScale();
+    this.innerScale = this.getInnerScale();
+    this.valueScale = this.getValueScale();
 
     this.setColors();
     this.legendOptions = this.getLegendOptions();
-
     this.transform = `translate(${this.dims.xOffset} , ${this.margin[0] + this.dataLabelMaxHeight.negative})`;
+  }
+
+  onDataLabelMaxHeightChanged(event, groupIndex) {
+    if (event.size.negative) {
+      this.dataLabelMaxHeight.negative = Math.max(this.dataLabelMaxHeight.negative, event.size.height);
+    } else {
+      this.dataLabelMaxHeight.positive = Math.max(this.dataLabelMaxHeight.positive, event.size.height);
+    }
+    if (groupIndex === this.results.length - 1) {
+      setTimeout(() => this.update());
+    }
+  }
+
+  getGroupScale(): any {
+    const spacing = this.groupDomain.length / (this.dims.height / this.groupPadding + 1);
+
+    return scaleBand()
+      .rangeRound([0, this.dims.width])
+      .paddingInner(spacing)
+      .paddingOuter(spacing / 2)
+      .domain(this.groupDomain);
+  }
+
+  getInnerScale(): any {
+    const width = this.groupScale.bandwidth();
+    const spacing = this.innerDomain.length / (width / this.barPadding + 1);
+    return scaleBand()
+      .rangeRound([0, width])
+      .paddingInner(spacing)
+      .domain(this.innerDomain);
+  }
+
+  getValueScale(): any {
+    const scale = scaleLinear()
+      .range([this.dims.height, 0])
+      .domain(this.valuesDomain);
+    return this.roundDomains ? scale.nice() : scale;
+  }
+
+  getXScale(): any {
+    const spacing = this.groupStackedDomain.length / (this.dims.width / this.barPadding + 1);
+    return scaleBand()
+      .rangeRound([0, this.dims.width])
+      .paddingInner(spacing)
+      .domain(this.groupStackedDomain);
+  }
+
+  getYScale(): any {
+    const scale = scaleLinear()
+      .range([this.dims.height, 0])
+      .domain(this.valueDomain);
+    return this.roundDomains ? scale.nice() : scale;
   }
 
   getGroupDomain() {
@@ -206,6 +285,20 @@ export class BarVerticalStackedComponent extends BaseChartComponent {
     for (const group of this.results) {
       if (!domain.includes(group.label)) {
         domain.push(group.label);
+      }
+    }
+
+    return domain;
+  }
+
+  getGroupStackedDomain() {
+    const domain = [];
+    
+    for (const group of this.results) {
+      for(const stack of group.series){
+        if (!domain.includes(stack.label)) {
+          domain.push(stack.label);
+        }
       }
     }
     return domain;
@@ -220,27 +313,61 @@ export class BarVerticalStackedComponent extends BaseChartComponent {
         }
       }
     }
+
+    return domain;
+  }
+
+  getInnerStackedDomain() {
+    const domain = [];
+    for (const group of this.results) {
+      for(const stack of group.series){
+        for (const d of stack.series) {
+          if (!domain.includes(d.label)) {
+            domain.push(d.label);
+          }
+        }
+      }
+    }
     return domain;
   }
 
   getValueDomain() {
     const domain = [];
+    for (const group of this.results) {
+      for (const d of group.series) {
+        if (!domain.includes(d.value)) {
+          domain.push(d.value);
+        }
+      }
+    }
+
+    const min = Math.min(0, ...domain);
+    const max = this.yScaleMax ? Math.max(this.yScaleMax, ...domain) : Math.max(0, ...domain);
+
+    return [min, max];
+  }
+
+  getValueStackedDomain() {
+    const domain = [];
     let smallest = 0;
     let biggest = 0;
+    
     for (const group of this.results) {
-      let smallestSum = 0;
-      let biggestSum = 0;
-      for (const d of group.series) {
-        if (d.value < 0) {
-          smallestSum += d.value;
-        } else {
-          biggestSum += d.value;
+      for(const stack of group.series){
+        let smallestSum = 0;
+        let biggestSum = 0;
+        for (const d of stack.series) {
+          if (d.value < 0) {
+            smallestSum += d.value;
+          } else {
+            biggestSum += d.value;
+          }
+          smallest = d.value < smallest ? d.value : smallest;
+          biggest = d.value > biggest ? d.value : biggest;
         }
-        smallest = d.value < smallest ? d.value : smallest;
-        biggest = d.value > biggest ? d.value : biggest;
+        domain.push(smallestSum);
+        domain.push(biggestSum);
       }
-      domain.push(smallestSum);
-      domain.push(biggestSum);
     }
     domain.push(smallest);
     domain.push(biggest);
@@ -250,34 +377,8 @@ export class BarVerticalStackedComponent extends BaseChartComponent {
     return [min, max];
   }
 
-  getXScale(): any {
-    const spacing = this.groupDomain.length / (this.dims.width / this.barPadding + 1);
-    return scaleBand()
-      .rangeRound([0, this.dims.width])
-      .paddingInner(spacing)
-      .domain(this.groupDomain);
-  }
-
-  getYScale(): any {
-    const scale = scaleLinear()
-      .range([this.dims.height, 0])
-      .domain(this.valueDomain);
-    return this.roundDomains ? scale.nice() : scale;
-  }
-
-  onDataLabelMaxHeightChanged(event, groupIndex) {
-    if (event.size.negative) {
-      this.dataLabelMaxHeight.negative = Math.max(this.dataLabelMaxHeight.negative, event.size.height);
-    } else {
-      this.dataLabelMaxHeight.positive = Math.max(this.dataLabelMaxHeight.positive, event.size.height);
-    }
-    if (groupIndex === this.results.length - 1) {
-      setTimeout(() => this.update());
-    }
-  }
-
   groupTransform(group) {
-    return `translate(${this.xScale(group.name)}, 0)`;
+    return `translate(${this.groupScale(group.label)}, 0)`;
   }
 
   onClick(data, group?) {
@@ -297,7 +398,7 @@ export class BarVerticalStackedComponent extends BaseChartComponent {
     if (this.schemeType === 'ordinal') {
       domain = this.innerDomain;
     } else {
-      domain = this.valueDomain;
+      domain = this.valuesDomain;
     }
 
     this.colors = new ColorHelper(this.scheme, this.schemeType, domain, this.customColors);
@@ -316,7 +417,7 @@ export class BarVerticalStackedComponent extends BaseChartComponent {
       opts.colors = this.colors;
       opts.title = this.legendTitle;
     } else {
-      opts.domain = this.valueDomain;
+      opts.domain = this.valuesDomain;
       opts.colors = this.colors.scale;
     }
 

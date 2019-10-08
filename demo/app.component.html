@@ -175,7 +175,9 @@
         [yAxisLabel]="yAxisLabel"
         [showGridLines]="showGridLines"
         [barPadding]="barPadding"
+        [barWidth]="barWidth"
         [roundDomains]="roundDomains"
+        [roundEdges]="roundEdges"
         [yScaleMax]="yScaleMax"
         [noBarWhenZero]="noBarWhenZero"
         [showDataLabel]="showDataLabel"
@@ -189,6 +191,41 @@
         (deactivate)="deactivate($event)"
       >
       </ngx-charts-bar-vertical-stacked>
+      <ngx-charts-bar-vertical-2d-stacked
+        *ngIf="chartType === 'bar-vertical-2d-stacked'"
+        class="chart-container"
+        [view]="view"
+        [scheme]="colorScheme"
+        [schemeType]="schemeType"
+        [results]="groupedStacked"
+        [animations]="animations"
+        [gradient]="gradient"
+        [tooltipDisabled]="tooltipDisabled"
+        [xAxis]="showXAxis"
+        [yAxis]="showYAxis"
+        [legend]="showLegend"
+        [legendTitle]="legendTitle"
+        [legendPosition]="legendPosition"
+        [showXAxisLabel]="showXAxisLabel"
+        (legendLabelClick)="onLegendLabelClick($event)"
+        [showYAxisLabel]="showYAxisLabel"
+        [xAxisLabel]="xAxisLabel"
+        [yAxisLabel]="yAxisLabel"
+        [showGridLines]="showGridLines"
+        [barPadding]="barPadding"
+        [roundDomains]="roundDomains"
+        [showDataLabel]="showDataLabel"
+        [noBarWhenZero]="noBarWhenZero"
+        [trimXAxisTicks]="trimXAxisTicks"
+        [trimYAxisTicks]="trimYAxisTicks"
+        [rotateXAxisTicks]="rotateXAxisTicks"
+        [maxXAxisTickLength]="maxXAxisTickLength"
+        [maxYAxisTickLength]="maxYAxisTickLength"
+        (select)="select($event)"
+        (activate)="activate($event)"
+        (deactivate)="deactivate($event)"
+      >
+      </ngx-charts-bar-vertical-2d-stacked>
       <ngx-charts-bar-horizontal-stacked
         *ngIf="chartType === 'bar-horizontal-stacked'"
         class="chart-container"
@@ -1149,6 +1186,7 @@
       </h3>
       <div [hidden]="!dataVisable" style="margin-left: 10px;">
         <pre *ngIf="chart.inputFormat === 'singleSeries'">{{ single | json }}</pre>
+        <pre *ngIf="chart.inputFormat === 'groupedStackedBarChart'">{{ groupedStacked | json }}</pre>
         <pre *ngIf="chart.inputFormat === 'multiSeries' && !linearScale">{{ multi | json }}</pre>
         <pre *ngIf="chart.inputFormat === 'multiSeriesNegative' && !linearScale">{{ fiscalYearReport | json }}</pre>
         <pre *ngIf="chart.inputFormat === 'multiSeries' && linearScale && !range">{{ dateData | json }}</pre>
