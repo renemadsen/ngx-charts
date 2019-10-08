@@ -224,6 +224,7 @@ export class AppComponent implements OnInit {
   mathText = '3 - 1.5*sin(x) + cos(2*x) - 1.5*abs(cos(x))';
   mathFunction: (o: any) => any;
 
+  showLabel = true;
   treemap: any[];
   treemapPath: any[] = [];
   sumBy: string = 'Size';

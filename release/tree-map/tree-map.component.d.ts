@@ -7,6 +7,7 @@ export declare class TreeMapComponent extends BaseChartComponent {
     valueFormatting: any;
     labelFormatting: any;
     gradient: boolean;
+    showLabel: boolean;
     select: EventEmitter<{}>;
     tooltipTemplate: TemplateRef<any>;
     dims: any;

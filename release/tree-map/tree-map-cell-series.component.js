@@ -14,6 +14,7 @@ var TreeMapCellSeriesComponent = /** @class */ (function () {
         this.gradient = false;
         this.tooltipDisabled = false;
         this.animations = true;
+        this.showLabel = true;
         this.select = new EventEmitter();
     }
     TreeMapCellSeriesComponent.prototype.ngOnChanges = function (changes) {
@@ -87,13 +88,17 @@ var TreeMapCellSeriesComponent = /** @class */ (function () {
         __metadata("design:type", Boolean)
     ], TreeMapCellSeriesComponent.prototype, "animations", void 0);
     __decorate([
+        Input(),
+        __metadata("design:type", Boolean)
+    ], TreeMapCellSeriesComponent.prototype, "showLabel", void 0);
+    __decorate([
         Output(),
         __metadata("design:type", Object)
     ], TreeMapCellSeriesComponent.prototype, "select", void 0);
     TreeMapCellSeriesComponent = __decorate([
         Component({
             selector: 'g[ngx-charts-tree-map-cell-series]',
-            template: "\n    <svg:g\n      ngx-charts-tree-map-cell\n      *ngFor=\"let c of cells; trackBy: trackBy\"\n      [data]=\"c.data\"\n      [x]=\"c.x\"\n      [y]=\"c.y\"\n      [width]=\"c.width\"\n      [height]=\"c.height\"\n      [fill]=\"c.fill\"\n      [label]=\"c.label\"\n      [value]=\"c.value\"\n      [valueType]=\"c.valueType\"\n      [valueFormatting]=\"valueFormatting\"\n      [labelFormatting]=\"labelFormatting\"\n      [gradient]=\"gradient\"\n      [animations]=\"animations\"\n      (select)=\"onClick($event)\"\n      ngx-tooltip\n      [tooltipDisabled]=\"tooltipDisabled\"\n      [tooltipPlacement]=\"'top'\"\n      [tooltipType]=\"'tooltip'\"\n      [tooltipTitle]=\"tooltipTemplate ? undefined : getTooltipText(c)\"\n      [tooltipTemplate]=\"tooltipTemplate\"\n      [tooltipContext]=\"c.data\"\n    ></svg:g>\n  ",
+            template: "\n    <svg:g\n      ngx-charts-tree-map-cell\n      *ngFor=\"let c of cells; trackBy: trackBy\"\n      [data]=\"c.data\"\n      [x]=\"c.x\"\n      [y]=\"c.y\"\n      [width]=\"c.width\"\n      [height]=\"c.height\"\n      [fill]=\"c.fill\"\n      [label]=\"c.label\"\n      [value]=\"c.value\"\n      [valueType]=\"c.valueType\"\n      [valueFormatting]=\"valueFormatting\"\n      [labelFormatting]=\"labelFormatting\"\n      [gradient]=\"gradient\"\n      [showLabel]=\"showLabel\"\n      [animations]=\"animations\"\n      (select)=\"onClick($event)\"\n      ngx-tooltip\n      [tooltipDisabled]=\"tooltipDisabled\"\n      [tooltipPlacement]=\"'top'\"\n      [tooltipType]=\"'tooltip'\"\n      [tooltipTitle]=\"tooltipTemplate ? undefined : getTooltipText(c)\"\n      [tooltipTemplate]=\"tooltipTemplate\"\n      [tooltipContext]=\"c.data\"\n    ></svg:g>\n  ",
             changeDetection: ChangeDetectionStrategy.OnPush
         })
     ], TreeMapCellSeriesComponent);

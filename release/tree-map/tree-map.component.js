@@ -31,6 +31,7 @@ var TreeMapComponent = /** @class */ (function (_super) {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.tooltipDisabled = false;
         _this.gradient = false;
+        _this.showLabel = true;
         _this.select = new EventEmitter();
         _this.margin = [10, 10, 10, 10];
         return _this;
@@ -96,6 +97,10 @@ var TreeMapComponent = /** @class */ (function (_super) {
         __metadata("design:type", Boolean)
     ], TreeMapComponent.prototype, "gradient", void 0);
     __decorate([
+        Input(),
+        __metadata("design:type", Boolean)
+    ], TreeMapComponent.prototype, "showLabel", void 0);
+    __decorate([
         Output(),
         __metadata("design:type", Object)
     ], TreeMapComponent.prototype, "select", void 0);
@@ -106,7 +111,7 @@ var TreeMapComponent = /** @class */ (function (_super) {
     TreeMapComponent = __decorate([
         Component({
             selector: 'ngx-charts-tree-map',
-            template: "\n    <ngx-charts-chart [view]=\"[width, height]\" [showLegend]=\"false\" [animations]=\"animations\">\n      <svg:g [attr.transform]=\"transform\" class=\"tree-map chart\">\n        <svg:g\n          ngx-charts-tree-map-cell-series\n          [colors]=\"colors\"\n          [data]=\"data\"\n          [dims]=\"dims\"\n          [tooltipDisabled]=\"tooltipDisabled\"\n          [tooltipTemplate]=\"tooltipTemplate\"\n          [valueFormatting]=\"valueFormatting\"\n          [labelFormatting]=\"labelFormatting\"\n          [gradient]=\"gradient\"\n          [animations]=\"animations\"\n          (select)=\"onClick($event)\"\n        />\n      </svg:g>\n    </ngx-charts-chart>\n  ",
+            template: "\n    <ngx-charts-chart [view]=\"[width, height]\" [showLegend]=\"false\" [animations]=\"animations\">\n      <svg:g [attr.transform]=\"transform\" class=\"tree-map chart\">\n        <svg:g\n          ngx-charts-tree-map-cell-series\n          [colors]=\"colors\"\n          [data]=\"data\"\n          [dims]=\"dims\"\n          [tooltipDisabled]=\"tooltipDisabled\"\n          [tooltipTemplate]=\"tooltipTemplate\"\n          [valueFormatting]=\"valueFormatting\"\n          [labelFormatting]=\"labelFormatting\"\n          [gradient]=\"gradient\"\n          [showLabel]=\"showLabel\"\n          [animations]=\"animations\"\n          (select)=\"onClick($event)\"\n        />\n      </svg:g>\n    </ngx-charts-chart>\n  ",
             styleUrls: ['./tree-map.component.css'],
             encapsulation: ViewEncapsulation.None,
             changeDetection: ChangeDetectionStrategy.OnPush

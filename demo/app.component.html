@@ -734,6 +734,7 @@
         [labelFormatting]="gdpLabelFormatting"
         [valueFormatting]="currencyFormatting"
         [gradient]="gradient"
+        [showLabel]="showLabel"
         (select)="select($event)"
         (activate)="activate($event)"
         (deactivate)="deactivate($event)"
@@ -1126,7 +1127,7 @@
       (deactivate)="deactivate($event)"
     >
     </ngx-charts-bar-vertical-stacked>
-    <ngx-charts-bar-horizontal-2d
+    <ngx-charts-bar-horizontal-stacked
       *ngIf="chartType === 'bar-horizontal-stacked-negative'"
       class="chart-container"
       [view]="view"
@@ -1159,7 +1160,7 @@
       (activate)="activate($event)"
       (deactivate)="deactivate($event)"
     >
-    </ngx-charts-bar-horizontal-2d>
+    </ngx-charts-bar-horizontal-stacked>
   </div>
   <div class="sidebar">
     <h1>

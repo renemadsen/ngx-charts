@@ -28,6 +28,7 @@ import { escapeLabel } from '../common/label.helper';
       [valueFormatting]="valueFormatting"
       [labelFormatting]="labelFormatting"
       [gradient]="gradient"
+      [showLabel]="showLabel"
       [animations]="animations"
       (select)="onClick($event)"
       ngx-tooltip
@@ -51,6 +52,7 @@ export class TreeMapCellSeriesComponent implements OnChanges {
   @Input() tooltipDisabled: boolean = false;
   @Input() tooltipTemplate: TemplateRef<any>;
   @Input() animations: boolean = true;
+  @Input() showLabel: boolean = true;
 
   @Output() select = new EventEmitter();
 

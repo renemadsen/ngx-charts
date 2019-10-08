@@ -32,7 +32,7 @@ import { id } from '../utils/id';
         class="treemap-label"
         [style.pointer-events]="'none'"
       >
-        <xhtml:p [style.color]="getTextColor()" [style.height]="height + 'px'" [style.width]="width + 'px'">
+        <xhtml:p [style.color]="getTextColor()" [style.height]="height + 'px'" [style.width]="width + 'px'"  *ngIf="showLabel">
           <xhtml:span class="treemap-label" [innerHTML]="formattedLabel"> </xhtml:span>
           <xhtml:br />
           <xhtml:span
@@ -66,6 +66,7 @@ export class TreeMapCellComponent implements OnChanges {
   @Input() labelFormatting: any;
   @Input() gradient: boolean = false;
   @Input() animations: boolean = true;
+  @Input() showLabel: boolean = true;
 
   @Output() select = new EventEmitter();
 

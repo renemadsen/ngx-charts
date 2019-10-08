@@ -13,6 +13,7 @@ export declare class TreeMapCellComponent implements OnChanges {
     labelFormatting: any;
     gradient: boolean;
     animations: boolean;
+    showLabel: boolean;
     select: EventEmitter<{}>;
     gradientStops: any[];
     gradientId: string;

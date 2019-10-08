@@ -29,6 +29,7 @@ import { ColorHelper } from '../common/color.helper';
           [valueFormatting]="valueFormatting"
           [labelFormatting]="labelFormatting"
           [gradient]="gradient"
+          [showLabel]="showLabel"
           [animations]="animations"
           (select)="onClick($event)"
         />
@@ -45,6 +46,7 @@ export class TreeMapComponent extends BaseChartComponent {
   @Input() valueFormatting: any;
   @Input() labelFormatting: any;
   @Input() gradient: boolean = false;
+  @Input() showLabel: boolean = true;
 
   @Output() select = new EventEmitter();
 
