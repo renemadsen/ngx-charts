@@ -1,5 +1,5 @@
-$tooltip-bg: rgba(0, 0, 0, .75);
-$tooltip-color: #fff;
+$tooltip-bg: rgba(255, 255, 255, 1);
+$tooltip-color: #414141;
 $tooltip-caret-bg: $tooltip-bg;
 $tooltip-border: transparent;
 $tooltip-spacing: 10px;
@@ -75,6 +75,7 @@ $shadow:
    padding: 0 10px;
    text-align: center;
    pointer-events: auto;
+   box-shadow: 0 2px 4px 0 rgba(65,65,65,0.50);
 
    .tooltip-caret {
      &.position-left {
@@ -150,7 +151,7 @@ $shadow:
 }
 
 .area-tooltip-container {
-  padding: 5px 0;
+  padding: 10px 0;
   pointer-events: none;
 }
 
