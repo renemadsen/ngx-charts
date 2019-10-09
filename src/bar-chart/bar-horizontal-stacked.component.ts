@@ -78,6 +78,7 @@ import { BaseChartComponent } from '../common/base-chart.component';
             [tooltipTemplate]="tooltipTemplate"
             [seriesName]="group.name"
             [animations]="animations"
+            [barWidth]="barWidth"
             [showDataLabel]="showDataLabel"
             [dataLabelFormatting]="dataLabelFormatting"
             [noBarWhenZero]="noBarWhenZero"
@@ -130,6 +131,7 @@ export class BarHorizontalStackedComponent extends BaseChartComponent {
   @Input() xAxisTicks: any[];
   @Input() yAxisTicks: any[];
   @Input() barPadding = 8;
+  @Input() barWidth: number;
   @Input() roundDomains: boolean = false;
   @Input() xScaleMax: number;
   @Input() showDataLabel: boolean = false;

@@ -69,6 +69,7 @@ import { BaseChartComponent } from '../common/base-chart.component';
           [tooltipTemplate]="tooltipTemplate"
           [activeEntries]="activeEntries"
           [roundEdges]="roundEdges"
+          [barWidth]="barWidth"
           [animations]="animations"
           [showDataLabel]="showDataLabel"
           [dataLabelFormatting]="dataLabelFormatting"
@@ -110,6 +111,7 @@ export class BarHorizontalComponent extends BaseChartComponent {
   @Input() xAxisTicks: any[];
   @Input() yAxisTicks: any[];
   @Input() barPadding = 8;
+  @Input() barWidth: number;
   @Input() roundDomains: boolean = false;
   @Input() roundEdges: boolean = true;
   @Input() xScaleMax: number;
