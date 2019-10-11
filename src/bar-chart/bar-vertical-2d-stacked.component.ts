@@ -295,7 +295,8 @@ export class BarVertical2DStackedComponent extends BaseChartComponent {
     const domain = [];
     
     for (const group of this.results) {
-      for(const stack of group.series){
+      for(const stack of group.series) {
+
         if (!domain.includes(stack.label)) {
           domain.push(stack.label);
         }
@@ -319,8 +320,9 @@ export class BarVertical2DStackedComponent extends BaseChartComponent {
 
   getInnerStackedDomain() {
     const domain = [];
+
     for (const group of this.results) {
-      for(const stack of group.series){
+      for(const stack of group.series) {
         for (const d of stack.series) {
           if (!domain.includes(d.label)) {
             domain.push(d.label);
@@ -353,10 +355,14 @@ export class BarVertical2DStackedComponent extends BaseChartComponent {
     let biggest = 0;
     
     for (const group of this.results) {
-      for(const stack of group.series){
+
+      for(const stack of group.series) {
+
         let smallestSum = 0;
         let biggestSum = 0;
+
         for (const d of stack.series) {
+
           if (d.value < 0) {
             smallestSum += d.value;
           } else {

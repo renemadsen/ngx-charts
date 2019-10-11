@@ -29,10 +29,17 @@ var TreeMapComponent = /** @class */ (function (_super) {
     __extends(TreeMapComponent, _super);
     function TreeMapComponent() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
+        // @Input() results;
+        _this.activeEntries = [];
+        _this.legend = true;
+        _this.legendTitle = 'Legend';
+        _this.legendPosition = 'bottom';
         _this.tooltipDisabled = false;
         _this.gradient = false;
         _this.showLabel = true;
         _this.select = new EventEmitter();
+        _this.activate = new EventEmitter();
+        _this.deactivate = new EventEmitter();
         _this.margin = [10, 10, 10, 10];
         return _this;
     }
@@ -41,7 +48,9 @@ var TreeMapComponent = /** @class */ (function (_super) {
         this.dims = calculateViewDimensions({
             width: this.width,
             height: this.height,
-            margins: this.margin
+            margins: this.margin,
+            showLegend: this.legend,
+            legendPosition: this.legendPosition
         });
         this.domain = this.getDomain();
         this.treemap = treemap().size([this.dims.width, this.dims.height]);
@@ -65,7 +74,53 @@ var TreeMapComponent = /** @class */ (function (_super) {
             .sum(function (d) { return d.value; });
         this.data = this.treemap(root);
         this.setColors();
+        this.legendOptions = this.getLegendOptions();
         this.transform = "translate(" + this.dims.xOffset + " , " + this.margin[0] + ")";
+    };
+    TreeMapComponent.prototype.getLegendOptions = function () {
+        return {
+            scaleType: 'ordinal',
+            domain: this.domain,
+            colors: this.colors,
+            title: this.legendTitle,
+            position: this.legendPosition
+        };
+    };
+    TreeMapComponent.prototype.onActivate = function (item, fromLegend) {
+        if (fromLegend === void 0) { fromLegend = false; }
+        item = this.results.find(function (d) {
+            if (fromLegend) {
+                return d.label === item.name;
+            }
+            else {
+                return d.name === item.name;
+            }
+        });
+        var idx = this.activeEntries.findIndex(function (d) {
+            return d.name === item.name && d.value === item.value && d.series === item.series;
+        });
+        if (idx > -1) {
+            return;
+        }
+        this.activeEntries = [item].concat(this.activeEntries);
+        this.activate.emit({ value: item, entries: this.activeEntries });
+    };
+    TreeMapComponent.prototype.onDeactivate = function (item, fromLegend) {
+        if (fromLegend === void 0) { fromLegend = false; }
+        item = this.results.find(function (d) {
+            if (fromLegend) {
+                return d.label === item.name;
+            }
+            else {
+                return d.name === item.name;
+            }
+        });
+        var idx = this.activeEntries.findIndex(function (d) {
+            return d.name === item.name && d.value === item.value && d.series === item.series;
+        });
+        this.activeEntries.splice(idx, 1);
+        this.activeEntries = this.activeEntries.slice();
+        this.deactivate.emit({ value: item, entries: this.activeEntries });
     };
     TreeMapComponent.prototype.getDomain = function () {
         return this.results.map(function (d) { return d.name; });
@@ -78,8 +133,20 @@ var TreeMapComponent = /** @class */ (function (_super) {
     };
     __decorate([
         Input(),
+        __metadata("design:type", Array)
+    ], TreeMapComponent.prototype, "activeEntries", void 0);
+    __decorate([
+        Input(),
         __metadata("design:type", Object)
-    ], TreeMapComponent.prototype, "results", void 0);
+    ], TreeMapComponent.prototype, "legend", void 0);
+    __decorate([
+        Input(),
+        __metadata("design:type", String)
+    ], TreeMapComponent.prototype, "legendTitle", void 0);
+    __decorate([
+        Input(),
+        __metadata("design:type", String)
+    ], TreeMapComponent.prototype, "legendPosition", void 0);
     __decorate([
         Input(),
         __metadata("design:type", Boolean)
@@ -105,13 +172,21 @@ var TreeMapComponent = /** @class */ (function (_super) {
         __metadata("design:type", Object)
     ], TreeMapComponent.prototype, "select", void 0);
     __decorate([
+        Output(),
+        __metadata("design:type", EventEmitter)
+    ], TreeMapComponent.prototype, "activate", void 0);
+    __decorate([
+        Output(),
+        __metadata("design:type", EventEmitter)
+    ], TreeMapComponent.prototype, "deactivate", void 0);
+    __decorate([
         ContentChild('tooltipTemplate', { static: false }),
         __metadata("design:type", TemplateRef)
     ], TreeMapComponent.prototype, "tooltipTemplate", void 0);
     TreeMapComponent = __decorate([
         Component({
             selector: 'ngx-charts-tree-map',
-            template: "\n    <ngx-charts-chart [view]=\"[width, height]\" [showLegend]=\"false\" [animations]=\"animations\">\n      <svg:g [attr.transform]=\"transform\" class=\"tree-map chart\">\n        <svg:g\n          ngx-charts-tree-map-cell-series\n          [colors]=\"colors\"\n          [data]=\"data\"\n          [dims]=\"dims\"\n          [tooltipDisabled]=\"tooltipDisabled\"\n          [tooltipTemplate]=\"tooltipTemplate\"\n          [valueFormatting]=\"valueFormatting\"\n          [labelFormatting]=\"labelFormatting\"\n          [gradient]=\"gradient\"\n          [showLabel]=\"showLabel\"\n          [animations]=\"animations\"\n          (select)=\"onClick($event)\"\n        />\n      </svg:g>\n    </ngx-charts-chart>\n  ",
+            template: "\n    <ngx-charts-chart \n    [view]=\"[width, height]\"\n    [showLegend]=\"legend\"\n    [legendOptions]=\"legendOptions\"\n    [activeEntries]=\"activeEntries\"\n    [animations]=\"animations\"\n    (legendLabelActivate)=\"onActivate($event)\"\n    (legendLabelDeactivate)=\"onDeactivate($event)\"\n    (legendLabelClick)=\"onClick($event)\"\n    >\n      <svg:g [attr.transform]=\"transform\" class=\"tree-map chart\">\n        <svg:g\n          ngx-charts-tree-map-cell-series\n          [colors]=\"colors\"\n          [data]=\"data\"\n          [dims]=\"dims\"\n          [activeEntries]=\"activeEntries\"\n          [tooltipDisabled]=\"tooltipDisabled\"\n          [tooltipTemplate]=\"tooltipTemplate\"\n          [valueFormatting]=\"valueFormatting\"\n          [labelFormatting]=\"labelFormatting\"\n          [gradient]=\"gradient\"\n          [showLabel]=\"showLabel\"\n          [animations]=\"animations\"\n          (activate)=\"onActivate($event)\"\n          (deactivate)=\"onDeactivate($event)\"\n          (select)=\"onClick($event)\"\n        />\n      </svg:g>\n    </ngx-charts-chart>\n  ",
             styleUrls: ['./tree-map.component.css'],
             encapsulation: ViewEncapsulation.None,
             changeDetection: ChangeDetectionStrategy.OnPush

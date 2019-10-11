@@ -28,9 +28,12 @@ import { escapeLabel } from '../common/label.helper';
       [valueFormatting]="valueFormatting"
       [labelFormatting]="labelFormatting"
       [gradient]="gradient"
+      [isActive]="isActive(c.data)"
       [showLabel]="showLabel"
       [animations]="animations"
       (select)="onClick($event)"
+      (activate)="activate.emit($event)"
+      (deactivate)="deactivate.emit($event)"
       ngx-tooltip
       [tooltipDisabled]="tooltipDisabled"
       [tooltipPlacement]="'top'"
@@ -53,8 +56,12 @@ export class TreeMapCellSeriesComponent implements OnChanges {
   @Input() tooltipTemplate: TemplateRef<any>;
   @Input() animations: boolean = true;
   @Input() showLabel: boolean = true;
+  @Input() activeEntries: any[];
 
   @Output() select = new EventEmitter();
+  @Output() activate = new EventEmitter();
+  @Output() deactivate = new EventEmitter();
+  @Output() dblclick = new EventEmitter();
 
   cells: any[];
 
@@ -97,5 +104,14 @@ export class TreeMapCellSeriesComponent implements OnChanges {
 
   trackBy(index, item): string {
     return item.label;
+  }
+
+  isActive(entry): boolean {
+    if (!this.activeEntries) return false;
+    const item = this.activeEntries.find(d => {
+      return entry.name === d.name && entry.series === d.series;
+    });
+    
+    return item !== undefined;
   }
 }

@@ -1,14 +1,20 @@
 import { EventEmitter, TemplateRef } from '@angular/core';
 import { BaseChartComponent } from '../common/base-chart.component';
 import { ColorHelper } from '../common/color.helper';
+import { DataItem } from '../models/chart-data.model';
 export declare class TreeMapComponent extends BaseChartComponent {
-    results: any;
+    activeEntries: any[];
+    legend: boolean;
+    legendTitle: string;
+    legendPosition: string;
     tooltipDisabled: boolean;
     valueFormatting: any;
     labelFormatting: any;
     gradient: boolean;
     showLabel: boolean;
     select: EventEmitter<{}>;
+    activate: EventEmitter<any>;
+    deactivate: EventEmitter<any>;
     tooltipTemplate: TemplateRef<any>;
     dims: any;
     domain: any;
@@ -16,9 +22,20 @@ export declare class TreeMapComponent extends BaseChartComponent {
     colors: ColorHelper;
     treemap: any;
     data: any;
+    legendData: any;
     margin: number[];
+    legendOptions: any;
     update(): void;
+    getLegendOptions(): {
+        scaleType: string;
+        domain: any;
+        colors: ColorHelper;
+        title: string;
+        position: string;
+    };
+    onActivate(item: any, fromLegend?: boolean): void;
+    onDeactivate(item: any, fromLegend?: boolean): void;
     getDomain(): any[];
-    onClick(data: any): void;
+    onClick(data: DataItem): void;
     setColors(): void;
 }

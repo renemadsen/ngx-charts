@@ -35,28 +35,29 @@
         border-right: 7px solid transparent;
         border-bottom: 7px solid #fff; }
   .ngx-charts-tooltip-content.type-tooltip {
-    color: #fff;
-    background: rgba(0, 0, 0, 0.75);
+    color: #414141;
+    background: white;
     font-size: 12px;
     padding: 0 10px;
     text-align: center;
-    pointer-events: auto; }
+    pointer-events: auto;
+    box-shadow: 0 2px 4px 0 rgba(65, 65, 65, 0.5); }
     .ngx-charts-tooltip-content.type-tooltip .tooltip-caret.position-left {
       border-top: 7px solid transparent;
       border-bottom: 7px solid transparent;
-      border-left: 7px solid rgba(0, 0, 0, 0.75); }
+      border-left: 7px solid white; }
     .ngx-charts-tooltip-content.type-tooltip .tooltip-caret.position-top {
       border-left: 7px solid transparent;
       border-right: 7px solid transparent;
-      border-top: 7px solid rgba(0, 0, 0, 0.75); }
+      border-top: 7px solid white; }
     .ngx-charts-tooltip-content.type-tooltip .tooltip-caret.position-right {
       border-top: 7px solid transparent;
       border-bottom: 7px solid transparent;
-      border-right: 7px solid rgba(0, 0, 0, 0.75); }
+      border-right: 7px solid white; }
     .ngx-charts-tooltip-content.type-tooltip .tooltip-caret.position-bottom {
       border-left: 7px solid transparent;
       border-right: 7px solid transparent;
-      border-bottom: 7px solid rgba(0, 0, 0, 0.75); }
+      border-bottom: 7px solid white; }
   .ngx-charts-tooltip-content .tooltip-label {
     display: block;
     line-height: 1em;
@@ -87,7 +88,7 @@
     pointer-events: auto; }
 
 .area-tooltip-container {
-  padding: 5px 0;
+  padding: 10px 0;
   pointer-events: none; }
 
 .tooltip-item {

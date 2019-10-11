@@ -14548,7 +14548,11 @@ var TreeMapCellComponent = /** @class */ (function () {
         this.gradient = false;
         this.animations = true;
         this.showLabel = true;
+        this.pointerEvents = true;
+        this.isActive = false;
         this.select = new EventEmitter();
+        this.activate = new EventEmitter();
+        this.deactivate = new EventEmitter();
         this.initialized = false;
         this.element = element.nativeElement;
     }
@@ -14585,6 +14589,9 @@ var TreeMapCellComponent = /** @class */ (function () {
             .attr('x', this.x)
             .attr('y', this.y);
         this.animateToCurrentForm();
+    };
+    TreeMapCellComponent.prototype.getPointerEvents = function () {
+        return this.pointerEvents ? 'auto' : 'none';
     };
     TreeMapCellComponent.prototype.getTextColor = function () {
         return invertColor(this.fill);
@@ -14685,13 +14692,29 @@ var TreeMapCellComponent = /** @class */ (function () {
         __metadata("design:type", Boolean)
     ], TreeMapCellComponent.prototype, "showLabel", void 0);
     __decorate([
+        Input(),
+        __metadata("design:type", Boolean)
+    ], TreeMapCellComponent.prototype, "pointerEvents", void 0);
+    __decorate([
+        Input(),
+        __metadata("design:type", Boolean)
+    ], TreeMapCellComponent.prototype, "isActive", void 0);
+    __decorate([
         Output(),
         __metadata("design:type", Object)
     ], TreeMapCellComponent.prototype, "select", void 0);
+    __decorate([
+        Output(),
+        __metadata("design:type", Object)
+    ], TreeMapCellComponent.prototype, "activate", void 0);
+    __decorate([
+        Output(),
+        __metadata("design:type", Object)
+    ], TreeMapCellComponent.prototype, "deactivate", void 0);
     TreeMapCellComponent = __decorate([
         Component({
             selector: 'g[ngx-charts-tree-map-cell]',
-            template: "\n    <svg:g>\n      <defs *ngIf=\"gradient\">\n        <svg:g ngx-charts-svg-linear-gradient orientation=\"vertical\" [name]=\"gradientId\" [stops]=\"gradientStops\" />\n      </defs>\n      <svg:rect\n        [attr.fill]=\"gradient ? gradientUrl : fill\"\n        [attr.width]=\"width\"\n        [attr.height]=\"height\"\n        [attr.x]=\"x\"\n        [attr.y]=\"y\"\n        [style.cursor]=\"'pointer'\"\n        class=\"cell\"\n        (click)=\"onClick()\"\n      />\n      <svg:foreignObject\n        *ngIf=\"width >= 70 && height >= 35\"\n        [attr.x]=\"x\"\n        [attr.y]=\"y\"\n        [attr.width]=\"width\"\n        [attr.height]=\"height\"\n        class=\"treemap-label\"\n        [style.pointer-events]=\"'none'\"\n      >\n        <xhtml:p [style.color]=\"getTextColor()\" [style.height]=\"height + 'px'\" [style.width]=\"width + 'px'\"  *ngIf=\"showLabel\">\n          <xhtml:span class=\"treemap-label\" [innerHTML]=\"formattedLabel\"> </xhtml:span>\n          <xhtml:br />\n          <xhtml:span\n            *ngIf=\"animations\"\n            class=\"treemap-val\"\n            ngx-charts-count-up\n            [countTo]=\"value\"\n            [valueFormatting]=\"valueFormatting\"\n          >\n          </xhtml:span>\n          <xhtml:span *ngIf=\"!animations\" class=\"treemap-val\">\n            {{ formattedValue }}\n          </xhtml:span>\n        </xhtml:p>\n      </svg:foreignObject>\n    </svg:g>\n  ",
+            template: "\n    <svg:g>\n      <defs *ngIf=\"gradient\">\n        <svg:g \n        ngx-charts-svg-linear-gradient \n        orientation=\"vertical\" \n        [name]=\"gradientId\" \n        [stops]=\"gradientStops\" />\n      </defs>\n      <svg:rect\n        [attr.fill]=\"gradient ? gradientUrl : fill\"\n        [attr.width]=\"width\"\n        [attr.height]=\"height\"\n        [class.active]=\"isActive\"\n        [attr.x]=\"x\"\n        [attr.y]=\"y\"\n        [style.cursor]=\"'pointer'\"\n        class=\"cell\"\n        (click)=\"onClick()\"\n        (mouseenter)=\"activate.emit(data)\"\n        (mouseleave)=\"deactivate.emit(data)\"\n        [style.pointer-events]=\"getPointerEvents()\"\n      />\n      <svg:foreignObject\n        *ngIf=\"width >= 70 && height >= 35\"\n        [attr.x]=\"x\"\n        [attr.y]=\"y\"\n        [attr.width]=\"width\"\n        [attr.height]=\"height\"\n        class=\"treemap-label\"\n        [style.pointer-events]=\"'none'\"\n      >\n        <xhtml:p \n        [style.color]=\"getTextColor()\" \n        [style.height]=\"height + 'px'\" \n        [style.width]=\"width + 'px'\"  \n        *ngIf=\"showLabel\">\n          <xhtml:span class=\"treemap-label\" [innerHTML]=\"formattedLabel\"> </xhtml:span>\n          <xhtml:br />\n          <xhtml:span\n            *ngIf=\"animations\"\n            class=\"treemap-val\"\n            ngx-charts-count-up\n            [countTo]=\"value\"\n            [valueFormatting]=\"valueFormatting\"\n          >\n          </xhtml:span>\n          <xhtml:span *ngIf=\"!animations\" class=\"treemap-val\">\n            {{ formattedValue }}\n          </xhtml:span>\n        </xhtml:p>\n      </svg:foreignObject>\n    </svg:g>\n  ",
             changeDetection: ChangeDetectionStrategy.OnPush
         }),
         __metadata("design:paramtypes", [typeof (_a = typeof ElementRef !== "undefined" && ElementRef) === "function" ? _a : Object])
@@ -14706,6 +14729,9 @@ var TreeMapCellSeriesComponent = /** @class */ (function () {
         this.animations = true;
         this.showLabel = true;
         this.select = new EventEmitter();
+        this.activate = new EventEmitter();
+        this.deactivate = new EventEmitter();
+        this.dblclick = new EventEmitter();
     }
     TreeMapCellSeriesComponent.prototype.ngOnChanges = function (changes) {
         this.cells = this.getCells();
@@ -14740,6 +14766,14 @@ var TreeMapCellSeriesComponent = /** @class */ (function () {
     };
     TreeMapCellSeriesComponent.prototype.trackBy = function (index, item) {
         return item.label;
+    };
+    TreeMapCellSeriesComponent.prototype.isActive = function (entry) {
+        if (!this.activeEntries)
+            return false;
+        var item = this.activeEntries.find(function (d) {
+            return entry.name === d.name && entry.series === d.series;
+        });
+        return item !== undefined;
     };
     var _a;
     __decorate([
@@ -14783,13 +14817,29 @@ var TreeMapCellSeriesComponent = /** @class */ (function () {
         __metadata("design:type", Boolean)
     ], TreeMapCellSeriesComponent.prototype, "showLabel", void 0);
     __decorate([
+        Input(),
+        __metadata("design:type", Array)
+    ], TreeMapCellSeriesComponent.prototype, "activeEntries", void 0);
+    __decorate([
         Output(),
         __metadata("design:type", Object)
     ], TreeMapCellSeriesComponent.prototype, "select", void 0);
+    __decorate([
+        Output(),
+        __metadata("design:type", Object)
+    ], TreeMapCellSeriesComponent.prototype, "activate", void 0);
+    __decorate([
+        Output(),
+        __metadata("design:type", Object)
+    ], TreeMapCellSeriesComponent.prototype, "deactivate", void 0);
+    __decorate([
+        Output(),
+        __metadata("design:type", Object)
+    ], TreeMapCellSeriesComponent.prototype, "dblclick", void 0);
     TreeMapCellSeriesComponent = __decorate([
         Component({
             selector: 'g[ngx-charts-tree-map-cell-series]',
-            template: "\n    <svg:g\n      ngx-charts-tree-map-cell\n      *ngFor=\"let c of cells; trackBy: trackBy\"\n      [data]=\"c.data\"\n      [x]=\"c.x\"\n      [y]=\"c.y\"\n      [width]=\"c.width\"\n      [height]=\"c.height\"\n      [fill]=\"c.fill\"\n      [label]=\"c.label\"\n      [value]=\"c.value\"\n      [valueType]=\"c.valueType\"\n      [valueFormatting]=\"valueFormatting\"\n      [labelFormatting]=\"labelFormatting\"\n      [gradient]=\"gradient\"\n      [showLabel]=\"showLabel\"\n      [animations]=\"animations\"\n      (select)=\"onClick($event)\"\n      ngx-tooltip\n      [tooltipDisabled]=\"tooltipDisabled\"\n      [tooltipPlacement]=\"'top'\"\n      [tooltipType]=\"'tooltip'\"\n      [tooltipTitle]=\"tooltipTemplate ? undefined : getTooltipText(c)\"\n      [tooltipTemplate]=\"tooltipTemplate\"\n      [tooltipContext]=\"c.data\"\n    ></svg:g>\n  ",
+            template: "\n    <svg:g\n      ngx-charts-tree-map-cell\n      *ngFor=\"let c of cells; trackBy: trackBy\"\n      [data]=\"c.data\"\n      [x]=\"c.x\"\n      [y]=\"c.y\"\n      [width]=\"c.width\"\n      [height]=\"c.height\"\n      [fill]=\"c.fill\"\n      [label]=\"c.label\"\n      [value]=\"c.value\"\n      [valueType]=\"c.valueType\"\n      [valueFormatting]=\"valueFormatting\"\n      [labelFormatting]=\"labelFormatting\"\n      [gradient]=\"gradient\"\n      [isActive]=\"isActive(c.data)\"\n      [showLabel]=\"showLabel\"\n      [animations]=\"animations\"\n      (select)=\"onClick($event)\"\n      (activate)=\"activate.emit($event)\"\n      (deactivate)=\"deactivate.emit($event)\"\n      ngx-tooltip\n      [tooltipDisabled]=\"tooltipDisabled\"\n      [tooltipPlacement]=\"'top'\"\n      [tooltipType]=\"'tooltip'\"\n      [tooltipTitle]=\"tooltipTemplate ? undefined : getTooltipText(c)\"\n      [tooltipTemplate]=\"tooltipTemplate\"\n      [tooltipContext]=\"c.data\"\n    ></svg:g>\n  ",
             changeDetection: ChangeDetectionStrategy.OnPush
         })
     ], TreeMapCellSeriesComponent);
@@ -14800,10 +14850,16 @@ var TreeMapComponent = /** @class */ (function (_super) {
     __extends(TreeMapComponent, _super);
     function TreeMapComponent() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this.activeEntries = [];
+        _this.legend = true;
+        _this.legendTitle = 'Legend';
+        _this.legendPosition = 'bottom';
         _this.tooltipDisabled = false;
         _this.gradient = false;
         _this.showLabel = true;
         _this.select = new EventEmitter();
+        _this.activate = new EventEmitter();
+        _this.deactivate = new EventEmitter();
         _this.margin = [10, 10, 10, 10];
         return _this;
     }
@@ -14812,7 +14868,9 @@ var TreeMapComponent = /** @class */ (function (_super) {
         this.dims = calculateViewDimensions({
             width: this.width,
             height: this.height,
-            margins: this.margin
+            margins: this.margin,
+            showLegend: this.legend,
+            legendPosition: this.legendPosition
         });
         this.domain = this.getDomain();
         this.treemap = treemap().size([this.dims.width, this.dims.height]);
@@ -14836,7 +14894,53 @@ var TreeMapComponent = /** @class */ (function (_super) {
             .sum(function (d) { return d.value; });
         this.data = this.treemap(root);
         this.setColors();
+        this.legendOptions = this.getLegendOptions();
         this.transform = "translate(" + this.dims.xOffset + " , " + this.margin[0] + ")";
+    };
+    TreeMapComponent.prototype.getLegendOptions = function () {
+        return {
+            scaleType: 'ordinal',
+            domain: this.domain,
+            colors: this.colors,
+            title: this.legendTitle,
+            position: this.legendPosition
+        };
+    };
+    TreeMapComponent.prototype.onActivate = function (item, fromLegend) {
+        if (fromLegend === void 0) { fromLegend = false; }
+        item = this.results.find(function (d) {
+            if (fromLegend) {
+                return d.label === item.name;
+            }
+            else {
+                return d.name === item.name;
+            }
+        });
+        var idx = this.activeEntries.findIndex(function (d) {
+            return d.name === item.name && d.value === item.value && d.series === item.series;
+        });
+        if (idx > -1) {
+            return;
+        }
+        this.activeEntries = [item].concat(this.activeEntries);
+        this.activate.emit({ value: item, entries: this.activeEntries });
+    };
+    TreeMapComponent.prototype.onDeactivate = function (item, fromLegend) {
+        if (fromLegend === void 0) { fromLegend = false; }
+        item = this.results.find(function (d) {
+            if (fromLegend) {
+                return d.label === item.name;
+            }
+            else {
+                return d.name === item.name;
+            }
+        });
+        var idx = this.activeEntries.findIndex(function (d) {
+            return d.name === item.name && d.value === item.value && d.series === item.series;
+        });
+        this.activeEntries.splice(idx, 1);
+        this.activeEntries = this.activeEntries.slice();
+        this.deactivate.emit({ value: item, entries: this.activeEntries });
     };
     TreeMapComponent.prototype.getDomain = function () {
         return this.results.map(function (d) { return d.name; });
@@ -14847,11 +14951,23 @@ var TreeMapComponent = /** @class */ (function (_super) {
     TreeMapComponent.prototype.setColors = function () {
         this.colors = new ColorHelper(this.scheme, 'ordinal', this.domain, this.customColors);
     };
-    var _a;
+    var _a, _b, _c;
+    __decorate([
+        Input(),
+        __metadata("design:type", Array)
+    ], TreeMapComponent.prototype, "activeEntries", void 0);
     __decorate([
         Input(),
         __metadata("design:type", Object)
-    ], TreeMapComponent.prototype, "results", void 0);
+    ], TreeMapComponent.prototype, "legend", void 0);
+    __decorate([
+        Input(),
+        __metadata("design:type", String)
+    ], TreeMapComponent.prototype, "legendTitle", void 0);
+    __decorate([
+        Input(),
+        __metadata("design:type", String)
+    ], TreeMapComponent.prototype, "legendPosition", void 0);
     __decorate([
         Input(),
         __metadata("design:type", Boolean)
@@ -14877,13 +14993,21 @@ var TreeMapComponent = /** @class */ (function (_super) {
         __metadata("design:type", Object)
     ], TreeMapComponent.prototype, "select", void 0);
     __decorate([
+        Output(),
+        __metadata("design:type", typeof (_a = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _a : Object)
+    ], TreeMapComponent.prototype, "activate", void 0);
+    __decorate([
+        Output(),
+        __metadata("design:type", typeof (_b = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _b : Object)
+    ], TreeMapComponent.prototype, "deactivate", void 0);
+    __decorate([
         ContentChild('tooltipTemplate', { static: false }),
-        __metadata("design:type", typeof (_a = typeof TemplateRef !== "undefined" && TemplateRef) === "function" ? _a : Object)
+        __metadata("design:type", typeof (_c = typeof TemplateRef !== "undefined" && TemplateRef) === "function" ? _c : Object)
     ], TreeMapComponent.prototype, "tooltipTemplate", void 0);
     TreeMapComponent = __decorate([
         Component({
             selector: 'ngx-charts-tree-map',
-            template: "\n    <ngx-charts-chart [view]=\"[width, height]\" [showLegend]=\"false\" [animations]=\"animations\">\n      <svg:g [attr.transform]=\"transform\" class=\"tree-map chart\">\n        <svg:g\n          ngx-charts-tree-map-cell-series\n          [colors]=\"colors\"\n          [data]=\"data\"\n          [dims]=\"dims\"\n          [tooltipDisabled]=\"tooltipDisabled\"\n          [tooltipTemplate]=\"tooltipTemplate\"\n          [valueFormatting]=\"valueFormatting\"\n          [labelFormatting]=\"labelFormatting\"\n          [gradient]=\"gradient\"\n          [showLabel]=\"showLabel\"\n          [animations]=\"animations\"\n          (select)=\"onClick($event)\"\n        />\n      </svg:g>\n    </ngx-charts-chart>\n  ",
+            template: "\n    <ngx-charts-chart \n    [view]=\"[width, height]\"\n    [showLegend]=\"legend\"\n    [legendOptions]=\"legendOptions\"\n    [activeEntries]=\"activeEntries\"\n    [animations]=\"animations\"\n    (legendLabelActivate)=\"onActivate($event)\"\n    (legendLabelDeactivate)=\"onDeactivate($event)\"\n    (legendLabelClick)=\"onClick($event)\"\n    >\n      <svg:g [attr.transform]=\"transform\" class=\"tree-map chart\">\n        <svg:g\n          ngx-charts-tree-map-cell-series\n          [colors]=\"colors\"\n          [data]=\"data\"\n          [dims]=\"dims\"\n          [activeEntries]=\"activeEntries\"\n          [tooltipDisabled]=\"tooltipDisabled\"\n          [tooltipTemplate]=\"tooltipTemplate\"\n          [valueFormatting]=\"valueFormatting\"\n          [labelFormatting]=\"labelFormatting\"\n          [gradient]=\"gradient\"\n          [showLabel]=\"showLabel\"\n          [animations]=\"animations\"\n          (activate)=\"onActivate($event)\"\n          (deactivate)=\"onDeactivate($event)\"\n          (select)=\"onClick($event)\"\n        />\n      </svg:g>\n    </ngx-charts-chart>\n  ",
             styles: [".tree-map .treemap-val{font-size:1.3em;padding-top:5px;display:inline-block}.tree-map .treemap-label p{display:table-cell;text-align:center;line-height:1.2em;vertical-align:middle}"],
             encapsulation: ViewEncapsulation.None,
             changeDetection: ChangeDetectionStrategy.OnPush

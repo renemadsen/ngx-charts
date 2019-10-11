@@ -18,7 +18,11 @@ var TreeMapCellComponent = /** @class */ (function () {
         this.gradient = false;
         this.animations = true;
         this.showLabel = true;
+        this.pointerEvents = true;
+        this.isActive = false;
         this.select = new EventEmitter();
+        this.activate = new EventEmitter();
+        this.deactivate = new EventEmitter();
         this.initialized = false;
         this.element = element.nativeElement;
     }
@@ -55,6 +59,9 @@ var TreeMapCellComponent = /** @class */ (function () {
             .attr('x', this.x)
             .attr('y', this.y);
         this.animateToCurrentForm();
+    };
+    TreeMapCellComponent.prototype.getPointerEvents = function () {
+        return this.pointerEvents ? 'auto' : 'none';
     };
     TreeMapCellComponent.prototype.getTextColor = function () {
         return invertColor(this.fill);
@@ -154,13 +161,29 @@ var TreeMapCellComponent = /** @class */ (function () {
         __metadata("design:type", Boolean)
     ], TreeMapCellComponent.prototype, "showLabel", void 0);
     __decorate([
+        Input(),
+        __metadata("design:type", Boolean)
+    ], TreeMapCellComponent.prototype, "pointerEvents", void 0);
+    __decorate([
+        Input(),
+        __metadata("design:type", Boolean)
+    ], TreeMapCellComponent.prototype, "isActive", void 0);
+    __decorate([
         Output(),
         __metadata("design:type", Object)
     ], TreeMapCellComponent.prototype, "select", void 0);
+    __decorate([
+        Output(),
+        __metadata("design:type", Object)
+    ], TreeMapCellComponent.prototype, "activate", void 0);
+    __decorate([
+        Output(),
+        __metadata("design:type", Object)
+    ], TreeMapCellComponent.prototype, "deactivate", void 0);
     TreeMapCellComponent = __decorate([
         Component({
             selector: 'g[ngx-charts-tree-map-cell]',
-            template: "\n    <svg:g>\n      <defs *ngIf=\"gradient\">\n        <svg:g ngx-charts-svg-linear-gradient orientation=\"vertical\" [name]=\"gradientId\" [stops]=\"gradientStops\" />\n      </defs>\n      <svg:rect\n        [attr.fill]=\"gradient ? gradientUrl : fill\"\n        [attr.width]=\"width\"\n        [attr.height]=\"height\"\n        [attr.x]=\"x\"\n        [attr.y]=\"y\"\n        [style.cursor]=\"'pointer'\"\n        class=\"cell\"\n        (click)=\"onClick()\"\n      />\n      <svg:foreignObject\n        *ngIf=\"width >= 70 && height >= 35\"\n        [attr.x]=\"x\"\n        [attr.y]=\"y\"\n        [attr.width]=\"width\"\n        [attr.height]=\"height\"\n        class=\"treemap-label\"\n        [style.pointer-events]=\"'none'\"\n      >\n        <xhtml:p [style.color]=\"getTextColor()\" [style.height]=\"height + 'px'\" [style.width]=\"width + 'px'\"  *ngIf=\"showLabel\">\n          <xhtml:span class=\"treemap-label\" [innerHTML]=\"formattedLabel\"> </xhtml:span>\n          <xhtml:br />\n          <xhtml:span\n            *ngIf=\"animations\"\n            class=\"treemap-val\"\n            ngx-charts-count-up\n            [countTo]=\"value\"\n            [valueFormatting]=\"valueFormatting\"\n          >\n          </xhtml:span>\n          <xhtml:span *ngIf=\"!animations\" class=\"treemap-val\">\n            {{ formattedValue }}\n          </xhtml:span>\n        </xhtml:p>\n      </svg:foreignObject>\n    </svg:g>\n  ",
+            template: "\n    <svg:g>\n      <defs *ngIf=\"gradient\">\n        <svg:g \n        ngx-charts-svg-linear-gradient \n        orientation=\"vertical\" \n        [name]=\"gradientId\" \n        [stops]=\"gradientStops\" />\n      </defs>\n      <svg:rect\n        [attr.fill]=\"gradient ? gradientUrl : fill\"\n        [attr.width]=\"width\"\n        [attr.height]=\"height\"\n        [class.active]=\"isActive\"\n        [attr.x]=\"x\"\n        [attr.y]=\"y\"\n        [style.cursor]=\"'pointer'\"\n        class=\"cell\"\n        (click)=\"onClick()\"\n        (mouseenter)=\"activate.emit(data)\"\n        (mouseleave)=\"deactivate.emit(data)\"\n        [style.pointer-events]=\"getPointerEvents()\"\n      />\n      <svg:foreignObject\n        *ngIf=\"width >= 70 && height >= 35\"\n        [attr.x]=\"x\"\n        [attr.y]=\"y\"\n        [attr.width]=\"width\"\n        [attr.height]=\"height\"\n        class=\"treemap-label\"\n        [style.pointer-events]=\"'none'\"\n      >\n        <xhtml:p \n        [style.color]=\"getTextColor()\" \n        [style.height]=\"height + 'px'\" \n        [style.width]=\"width + 'px'\"  \n        *ngIf=\"showLabel\">\n          <xhtml:span class=\"treemap-label\" [innerHTML]=\"formattedLabel\"> </xhtml:span>\n          <xhtml:br />\n          <xhtml:span\n            *ngIf=\"animations\"\n            class=\"treemap-val\"\n            ngx-charts-count-up\n            [countTo]=\"value\"\n            [valueFormatting]=\"valueFormatting\"\n          >\n          </xhtml:span>\n          <xhtml:span *ngIf=\"!animations\" class=\"treemap-val\">\n            {{ formattedValue }}\n          </xhtml:span>\n        </xhtml:p>\n      </svg:foreignObject>\n    </svg:g>\n  ",
             changeDetection: ChangeDetectionStrategy.OnPush
         }),
         __metadata("design:paramtypes", [ElementRef])

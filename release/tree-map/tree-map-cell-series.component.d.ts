@@ -10,7 +10,11 @@ export declare class TreeMapCellSeriesComponent implements OnChanges {
     tooltipTemplate: TemplateRef<any>;
     animations: boolean;
     showLabel: boolean;
+    activeEntries: any[];
     select: EventEmitter<{}>;
+    activate: EventEmitter<{}>;
+    deactivate: EventEmitter<{}>;
+    dblclick: EventEmitter<{}>;
     cells: any[];
     ngOnChanges(changes: SimpleChanges): void;
     getCells(): any[];
@@ -20,4 +24,5 @@ export declare class TreeMapCellSeriesComponent implements OnChanges {
     }): string;
     onClick(data: any): void;
     trackBy(index: any, item: any): string;
+    isActive(entry: any): boolean;
 }

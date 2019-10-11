@@ -16,6 +16,9 @@ var TreeMapCellSeriesComponent = /** @class */ (function () {
         this.animations = true;
         this.showLabel = true;
         this.select = new EventEmitter();
+        this.activate = new EventEmitter();
+        this.deactivate = new EventEmitter();
+        this.dblclick = new EventEmitter();
     }
     TreeMapCellSeriesComponent.prototype.ngOnChanges = function (changes) {
         this.cells = this.getCells();
@@ -50,6 +53,14 @@ var TreeMapCellSeriesComponent = /** @class */ (function () {
     };
     TreeMapCellSeriesComponent.prototype.trackBy = function (index, item) {
         return item.label;
+    };
+    TreeMapCellSeriesComponent.prototype.isActive = function (entry) {
+        if (!this.activeEntries)
+            return false;
+        var item = this.activeEntries.find(function (d) {
+            return entry.name === d.name && entry.series === d.series;
+        });
+        return item !== undefined;
     };
     __decorate([
         Input(),
@@ -92,13 +103,29 @@ var TreeMapCellSeriesComponent = /** @class */ (function () {
         __metadata("design:type", Boolean)
     ], TreeMapCellSeriesComponent.prototype, "showLabel", void 0);
     __decorate([
+        Input(),
+        __metadata("design:type", Array)
+    ], TreeMapCellSeriesComponent.prototype, "activeEntries", void 0);
+    __decorate([
         Output(),
         __metadata("design:type", Object)
     ], TreeMapCellSeriesComponent.prototype, "select", void 0);
+    __decorate([
+        Output(),
+        __metadata("design:type", Object)
+    ], TreeMapCellSeriesComponent.prototype, "activate", void 0);
+    __decorate([
+        Output(),
+        __metadata("design:type", Object)
+    ], TreeMapCellSeriesComponent.prototype, "deactivate", void 0);
+    __decorate([
+        Output(),
+        __metadata("design:type", Object)
+    ], TreeMapCellSeriesComponent.prototype, "dblclick", void 0);
     TreeMapCellSeriesComponent = __decorate([
         Component({
             selector: 'g[ngx-charts-tree-map-cell-series]',
-            template: "\n    <svg:g\n      ngx-charts-tree-map-cell\n      *ngFor=\"let c of cells; trackBy: trackBy\"\n      [data]=\"c.data\"\n      [x]=\"c.x\"\n      [y]=\"c.y\"\n      [width]=\"c.width\"\n      [height]=\"c.height\"\n      [fill]=\"c.fill\"\n      [label]=\"c.label\"\n      [value]=\"c.value\"\n      [valueType]=\"c.valueType\"\n      [valueFormatting]=\"valueFormatting\"\n      [labelFormatting]=\"labelFormatting\"\n      [gradient]=\"gradient\"\n      [showLabel]=\"showLabel\"\n      [animations]=\"animations\"\n      (select)=\"onClick($event)\"\n      ngx-tooltip\n      [tooltipDisabled]=\"tooltipDisabled\"\n      [tooltipPlacement]=\"'top'\"\n      [tooltipType]=\"'tooltip'\"\n      [tooltipTitle]=\"tooltipTemplate ? undefined : getTooltipText(c)\"\n      [tooltipTemplate]=\"tooltipTemplate\"\n      [tooltipContext]=\"c.data\"\n    ></svg:g>\n  ",
+            template: "\n    <svg:g\n      ngx-charts-tree-map-cell\n      *ngFor=\"let c of cells; trackBy: trackBy\"\n      [data]=\"c.data\"\n      [x]=\"c.x\"\n      [y]=\"c.y\"\n      [width]=\"c.width\"\n      [height]=\"c.height\"\n      [fill]=\"c.fill\"\n      [label]=\"c.label\"\n      [value]=\"c.value\"\n      [valueType]=\"c.valueType\"\n      [valueFormatting]=\"valueFormatting\"\n      [labelFormatting]=\"labelFormatting\"\n      [gradient]=\"gradient\"\n      [isActive]=\"isActive(c.data)\"\n      [showLabel]=\"showLabel\"\n      [animations]=\"animations\"\n      (select)=\"onClick($event)\"\n      (activate)=\"activate.emit($event)\"\n      (deactivate)=\"deactivate.emit($event)\"\n      ngx-tooltip\n      [tooltipDisabled]=\"tooltipDisabled\"\n      [tooltipPlacement]=\"'top'\"\n      [tooltipType]=\"'tooltip'\"\n      [tooltipTitle]=\"tooltipTemplate ? undefined : getTooltipText(c)\"\n      [tooltipTemplate]=\"tooltipTemplate\"\n      [tooltipContext]=\"c.data\"\n    ></svg:g>\n  ",
             changeDetection: ChangeDetectionStrategy.OnPush
         })
     ], TreeMapCellSeriesComponent);

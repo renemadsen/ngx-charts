@@ -11,17 +11,25 @@ import { id } from '../utils/id';
   template: `
     <svg:g>
       <defs *ngIf="gradient">
-        <svg:g ngx-charts-svg-linear-gradient orientation="vertical" [name]="gradientId" [stops]="gradientStops" />
+        <svg:g 
+        ngx-charts-svg-linear-gradient 
+        orientation="vertical" 
+        [name]="gradientId" 
+        [stops]="gradientStops" />
       </defs>
       <svg:rect
         [attr.fill]="gradient ? gradientUrl : fill"
         [attr.width]="width"
         [attr.height]="height"
+        [class.active]="isActive"
         [attr.x]="x"
         [attr.y]="y"
         [style.cursor]="'pointer'"
         class="cell"
         (click)="onClick()"
+        (mouseenter)="activate.emit(data)"
+        (mouseleave)="deactivate.emit(data)"
+        [style.pointer-events]="getPointerEvents()"
       />
       <svg:foreignObject
         *ngIf="width >= 70 && height >= 35"
@@ -32,7 +40,11 @@ import { id } from '../utils/id';
         class="treemap-label"
         [style.pointer-events]="'none'"
       >
-        <xhtml:p [style.color]="getTextColor()" [style.height]="height + 'px'" [style.width]="width + 'px'"  *ngIf="showLabel">
+        <xhtml:p 
+        [style.color]="getTextColor()" 
+        [style.height]="height + 'px'" 
+        [style.width]="width + 'px'"  
+        *ngIf="showLabel">
           <xhtml:span class="treemap-label" [innerHTML]="formattedLabel"> </xhtml:span>
           <xhtml:br />
           <xhtml:span
@@ -67,8 +79,12 @@ export class TreeMapCellComponent implements OnChanges {
   @Input() gradient: boolean = false;
   @Input() animations: boolean = true;
   @Input() showLabel: boolean = true;
+  @Input() pointerEvents: boolean = true;
+  @Input() isActive: boolean = false;
 
   @Output() select = new EventEmitter();
+  @Output() activate = new EventEmitter();
+  @Output() deactivate = new EventEmitter();
 
   gradientStops: any[];
   gradientId: string;
@@ -124,6 +140,10 @@ export class TreeMapCellComponent implements OnChanges {
       .attr('y', this.y);
 
     this.animateToCurrentForm();
+  }
+
+  getPointerEvents() {
+    return this.pointerEvents ? 'auto' : 'none';
   }
 
   getTextColor(): string {

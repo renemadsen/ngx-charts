@@ -14,7 +14,11 @@ export declare class TreeMapCellComponent implements OnChanges {
     gradient: boolean;
     animations: boolean;
     showLabel: boolean;
+    pointerEvents: boolean;
+    isActive: boolean;
     select: EventEmitter<{}>;
+    activate: EventEmitter<{}>;
+    deactivate: EventEmitter<{}>;
     gradientStops: any[];
     gradientId: string;
     gradientUrl: string;
@@ -27,6 +31,7 @@ export declare class TreeMapCellComponent implements OnChanges {
     ngOnChanges(): void;
     update(): void;
     loadAnimation(): void;
+    getPointerEvents(): "auto" | "none";
     getTextColor(): string;
     animateToCurrentForm(): void;
     onClick(): void;

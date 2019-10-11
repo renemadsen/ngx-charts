@@ -13,17 +13,28 @@ import { treemap, stratify } from 'd3-hierarchy';
 import { BaseChartComponent } from '../common/base-chart.component';
 import { calculateViewDimensions } from '../common/view-dimensions.helper';
 import { ColorHelper } from '../common/color.helper';
+import { DataItem } from '../models/chart-data.model';
 
 @Component({
   selector: 'ngx-charts-tree-map',
   template: `
-    <ngx-charts-chart [view]="[width, height]" [showLegend]="false" [animations]="animations">
+    <ngx-charts-chart 
+    [view]="[width, height]"
+    [showLegend]="legend"
+    [legendOptions]="legendOptions"
+    [activeEntries]="activeEntries"
+    [animations]="animations"
+    (legendLabelActivate)="onActivate($event)"
+    (legendLabelDeactivate)="onDeactivate($event)"
+    (legendLabelClick)="onClick($event)"
+    >
       <svg:g [attr.transform]="transform" class="tree-map chart">
         <svg:g
           ngx-charts-tree-map-cell-series
           [colors]="colors"
           [data]="data"
           [dims]="dims"
+          [activeEntries]="activeEntries"
           [tooltipDisabled]="tooltipDisabled"
           [tooltipTemplate]="tooltipTemplate"
           [valueFormatting]="valueFormatting"
@@ -31,6 +42,8 @@ import { ColorHelper } from '../common/color.helper';
           [gradient]="gradient"
           [showLabel]="showLabel"
           [animations]="animations"
+          (activate)="onActivate($event)"
+          (deactivate)="onDeactivate($event)"
           (select)="onClick($event)"
         />
       </svg:g>
@@ -41,7 +54,11 @@ import { ColorHelper } from '../common/color.helper';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class TreeMapComponent extends BaseChartComponent {
-  @Input() results;
+  // @Input() results;
+  @Input() activeEntries: any[] = [];
+  @Input() legend = true;
+  @Input() legendTitle: string = 'Legend';
+  @Input() legendPosition: string = 'bottom';
   @Input() tooltipDisabled: boolean = false;
   @Input() valueFormatting: any;
   @Input() labelFormatting: any;
@@ -49,6 +66,8 @@ export class TreeMapComponent extends BaseChartComponent {
   @Input() showLabel: boolean = true;
 
   @Output() select = new EventEmitter();
+  @Output() activate: EventEmitter<any> = new EventEmitter();
+  @Output() deactivate: EventEmitter<any> = new EventEmitter();
 
   @ContentChild('tooltipTemplate', { static: false }) tooltipTemplate: TemplateRef<any>;
 
@@ -58,7 +77,9 @@ export class TreeMapComponent extends BaseChartComponent {
   colors: ColorHelper;
   treemap: any;
   data: any;
+  legendData: any;
   margin = [10, 10, 10, 10];
+  legendOptions: any;
 
   update(): void {
     super.update();
@@ -66,7 +87,9 @@ export class TreeMapComponent extends BaseChartComponent {
     this.dims = calculateViewDimensions({
       width: this.width,
       height: this.height,
-      margins: this.margin
+      margins: this.margin,
+      showLegend: this.legend,
+      legendPosition: this.legendPosition
     });
 
     this.domain = this.getDomain();
@@ -96,15 +119,66 @@ export class TreeMapComponent extends BaseChartComponent {
     this.data = this.treemap(root);
 
     this.setColors();
+    this.legendOptions = this.getLegendOptions();
 
     this.transform = `translate(${this.dims.xOffset} , ${this.margin[0]})`;
+  }
+
+  getLegendOptions() {
+    return {
+      scaleType: 'ordinal',
+      domain: this.domain,
+      colors: this.colors,
+      title: this.legendTitle,
+      position: this.legendPosition
+    };
+  }
+
+  onActivate(item, fromLegend = false) {
+    
+    item = this.results.find(d => {
+      if (fromLegend) {
+        return d.label === item.name;
+      } else {
+        return d.name === item.name;
+      }
+    });
+
+    const idx = this.activeEntries.findIndex(d => {
+      return d.name === item.name && d.value === item.value && d.series === item.series;
+    });
+    if (idx > -1) {
+      return;
+    }
+
+    this.activeEntries = [item, ...this.activeEntries];
+    this.activate.emit({ value: item, entries: this.activeEntries });
+  }
+
+  onDeactivate(item, fromLegend = false) {
+    item = this.results.find(d => {
+      if (fromLegend) {
+        return d.label === item.name;
+      } else {
+        return d.name === item.name;
+      }
+    });
+
+    const idx = this.activeEntries.findIndex(d => {
+      return d.name === item.name && d.value === item.value && d.series === item.series;
+    });
+
+    this.activeEntries.splice(idx, 1);
+    this.activeEntries = [...this.activeEntries];
+
+    this.deactivate.emit({ value: item, entries: this.activeEntries });
   }
 
   getDomain(): any[] {
     return this.results.map(d => d.name);
   }
 
-  onClick(data): void {
+  onClick(data: DataItem): void {
     this.select.emit(data);
   }
 
