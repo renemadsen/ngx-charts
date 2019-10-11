@@ -40,7 +40,7 @@ var TreeMapComponent = /** @class */ (function (_super) {
         _this.select = new EventEmitter();
         _this.activate = new EventEmitter();
         _this.deactivate = new EventEmitter();
-        _this.margin = [10, 10, 10, 10];
+        _this.margin = [0, 0, 0, 0];
         return _this;
     }
     TreeMapComponent.prototype.update = function () {

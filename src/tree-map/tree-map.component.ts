@@ -78,7 +78,7 @@ export class TreeMapComponent extends BaseChartComponent {
   treemap: any;
   data: any;
   legendData: any;
-  margin = [10, 10, 10, 10];
+  margin = [0, 0, 0, 0];
   legendOptions: any;
 
   update(): void {
