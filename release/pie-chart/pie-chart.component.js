@@ -97,7 +97,6 @@ var PieChartComponent = /** @class */ (function (_super) {
         var xOffset = this.margins[3] + this.dims.width / 2;
         var yOffset = this.margins[0] + this.dims.height / 2;
         this.labelWidth = this.outerRadius * 0.8;
-        console.log(this.labelWidth);
         var styles = {
             'position': 'absolute',
             'width': this.labelWidth + 'px',

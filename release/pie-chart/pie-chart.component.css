@@ -6,9 +6,10 @@ text.total-attribute {
   font-size: 30px;
   color: #414141; }
   .totalValue p {
-    margin: 0;
+    margin: 0.5em 0 0 0;
     font-size: 14px;
-    color: #999999; }
+    color: #999999;
+    font-weight: normal; }
 
 .pie-label {
   font-size: 11px; }

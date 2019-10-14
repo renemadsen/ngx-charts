@@ -167,6 +167,7 @@ export class AppComponent implements OnInit {
   explodeSlices = false;
   doughnut = false;
   arcWidth = 0.25;
+  totalLabel = 'This is some lorem headline';
 
   // line, area
   autoScale = true;

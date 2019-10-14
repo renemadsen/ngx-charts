@@ -268,7 +268,7 @@ exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/cs
 
 
 // module
-exports.push([module.i, "text.total-attribute {\n  fill: white; }\n\n.totalValue {\n  font-weight: bold;\n  font-size: 30px;\n  color: #414141; }\n  .totalValue p {\n    margin: 0;\n    font-size: 14px;\n    color: #999999; }\n\n.pie-label {\n  font-size: 11px; }\n  .pie-label.animation {\n    animation: 750ms ease-in fadeIn; }\n\n@keyframes fadeIn {\n  from {\n    opacity: 0; }\n  to {\n    opacity: 1; } }\n\n.pie-label-line {\n  stroke-dasharray: 100%; }\n  .pie-label-line.animation {\n    animation: 3s linear drawOut;\n    transition: d 750ms; }\n\n@keyframes drawOut {\n  from {\n    stroke-dashoffset: 100%; }\n  to {\n    stroke-dashoffset: 0; } }\n", ""]);
+exports.push([module.i, "text.total-attribute {\n  fill: white; }\n\n.totalValue {\n  font-weight: bold;\n  font-size: 30px;\n  color: #414141; }\n  .totalValue p {\n    margin: 0.5em 0 0 0;\n    font-size: 14px;\n    color: #999999;\n    font-weight: normal; }\n\n.pie-label {\n  font-size: 11px; }\n  .pie-label.animation {\n    animation: 750ms ease-in fadeIn; }\n\n@keyframes fadeIn {\n  from {\n    opacity: 0; }\n  to {\n    opacity: 1; } }\n\n.pie-label-line {\n  stroke-dasharray: 100%; }\n  .pie-label-line.animation {\n    animation: 3s linear drawOut;\n    transition: d 750ms; }\n\n@keyframes drawOut {\n  from {\n    stroke-dashoffset: 100%; }\n  to {\n    stroke-dashoffset: 0; } }\n", ""]);
 
 // exports
 
@@ -17220,7 +17220,6 @@ var PieChartComponent = /** @class */ (function (_super) {
         var xOffset = this.margins[3] + this.dims.width / 2;
         var yOffset = this.margins[0] + this.dims.height / 2;
         this.labelWidth = this.outerRadius * 0.8;
-        console.log(this.labelWidth);
         var styles = {
             'position': 'absolute',
             'width': this.labelWidth + 'px',

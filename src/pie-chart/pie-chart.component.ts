@@ -166,9 +166,7 @@ export class PieChartComponent extends BaseChartComponent {
   setMyStyles() {
     const xOffset = this.margins[3] + this.dims.width / 2;
     const yOffset = this.margins[0] + this.dims.height / 2;
-    
     this.labelWidth = this.outerRadius * 0.8;
-    console.log( this.labelWidth)
 
     let styles = {
       'position': 'absolute',
