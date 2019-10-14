@@ -27,6 +27,7 @@ import { formatLabel } from '../label.helper';
           >
             <div class="item-color" [style.background]="legendItem.color"></div>
             <div>
+              <div class="item-label">{{ legendItem.displayLabel }}</div>
               <div
                 *ngIf="animations"
                 class="item-value"
@@ -34,7 +35,6 @@ import { formatLabel } from '../label.helper';
                 [countTo]="legendItem._value"
                 [valueFormatting]="valueFormatting"
               ></div>
-              <div class="item-label">{{ legendItem.displayLabel }}</div>
               <div *ngIf="!animations" class="item-value">
                 {{ valueFormatting ? valueFormatting(legendItem.value) : defaultValueFormatting(legendItem.value) }}
               </div>
