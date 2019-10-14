@@ -53,6 +53,17 @@ import { DataItem } from '../models/chart-data.model';
         />
       </svg:g>
     </ngx-charts-chart>
+    
+    <div class="totalValue" [ngStyle]="setMyStyles()">
+      <div 
+        *ngIf="animations"
+        class="item-value"
+        ngx-charts-count-up
+        [countTo]="totalNumber"
+      ></div>
+      <p>{{legendTitle}}</p>
+    </div>
+
   `,
   styleUrls: ['../common/base-chart.component.scss', './pie-chart.component.scss'],
   encapsulation: ViewEncapsulation.None,
@@ -66,6 +77,7 @@ export class PieChartComponent extends BaseChartComponent {
   @Input() legendPosition: string = 'right';
   @Input() explodeSlices = false;
   @Input() doughnut = false;
+  @Input() totalLabel: any;
   @Input() arcWidth = 0.25;
   @Input() gradient: boolean;
   @Input() activeEntries: any[] = [];
@@ -84,6 +96,8 @@ export class PieChartComponent extends BaseChartComponent {
   @ContentChild('tooltipTemplate', { static: false }) tooltipTemplate: TemplateRef<any>;
 
   translation: string;
+  labelTranslation: string;
+  labelWidth: number;
   outerRadius: number;
   innerRadius: number;
   data: any;
@@ -91,6 +105,10 @@ export class PieChartComponent extends BaseChartComponent {
   domain: any;
   dims: any;
   legendOptions: any;
+  totalNumber: any = 0;
+  xOffset: number;
+  yOffset: number;
+  labelTranslationX: any;
 
   update(): void {
     super.update();
@@ -117,6 +135,7 @@ export class PieChartComponent extends BaseChartComponent {
     });
 
     this.formatDates();
+    this.getTotalLabel();
 
     const xOffset = this.margins[3] + this.dims.width / 2;
     const yOffset = this.margins[0] + this.dims.height / 2;
@@ -139,9 +158,38 @@ export class PieChartComponent extends BaseChartComponent {
     this.data = this.results.sort((a, b) => {
       return this.domain.indexOf(a.name) - this.domain.indexOf(b.name);
     });
-
+    
     this.setColors();
     this.legendOptions = this.getLegendOptions();
+  }
+
+  setMyStyles() {
+    const xOffset = this.margins[3] + this.dims.width / 2;
+    const yOffset = this.margins[0] + this.dims.height / 2;
+    
+    this.labelWidth = this.outerRadius * 0.8;
+    console.log( this.labelWidth)
+
+    let styles = {
+      'position': 'absolute',
+      'width': this.labelWidth + 'px',
+      'display': 'flex',
+      'flex-direction': 'column',
+      'justify-content': 'center',
+      'text-align': 'center',
+      'top': 0,
+      'left': 0,
+      'transform': 'translate(' + (xOffset - this.labelWidth / 2) + 'px, ' + (yOffset - 30) + 'px)'
+    };
+    return styles;
+  }
+
+  getTotalLabel() {
+    this.totalNumber = 0;
+
+    this.results.forEach(d => {
+      this.totalNumber = this.totalNumber + d.value;
+    });
   }
 
   getDomain(): any[] {

@@ -10,6 +10,7 @@ export declare class PieChartComponent extends BaseChartComponent {
     legendPosition: string;
     explodeSlices: boolean;
     doughnut: boolean;
+    totalLabel: any;
     arcWidth: number;
     gradient: boolean;
     activeEntries: any[];
@@ -25,6 +26,8 @@ export declare class PieChartComponent extends BaseChartComponent {
     deactivate: EventEmitter<any>;
     tooltipTemplate: TemplateRef<any>;
     translation: string;
+    labelTranslation: string;
+    labelWidth: number;
     outerRadius: number;
     innerRadius: number;
     data: any;
@@ -32,7 +35,23 @@ export declare class PieChartComponent extends BaseChartComponent {
     domain: any;
     dims: any;
     legendOptions: any;
+    totalNumber: any;
+    xOffset: number;
+    yOffset: number;
+    labelTranslationX: any;
     update(): void;
+    setMyStyles(): {
+        'position': string;
+        'width': string;
+        'display': string;
+        'flex-direction': string;
+        'justify-content': string;
+        'text-align': string;
+        'top': number;
+        'left': number;
+        'transform': string;
+    };
+    getTotalLabel(): void;
     getDomain(): any[];
     onClick(data: DataItem): void;
     setColors(): void;

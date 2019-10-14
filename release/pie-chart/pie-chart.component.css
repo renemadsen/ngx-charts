@@ -1,3 +1,15 @@
+text.total-attribute {
+  fill: white; }
+
+.totalValue {
+  font-weight: bold;
+  font-size: 30px;
+  color: #414141; }
+  .totalValue p {
+    margin: 0;
+    font-size: 14px;
+    color: #999999; }
+
 .pie-label {
   font-size: 11px; }
   .pie-label.animation {
