@@ -19,6 +19,8 @@ import { DataItem } from '../models/chart-data.model';
     <ngx-charts-chart
       [view]="[width, height]"
       [showLegend]="legend"
+      [legendAdvanced]="legendAdvanced"
+      [advancedData]="data"
       [legendOptions]="legendOptions"
       [activeEntries]="activeEntries"
       [animations]="animations"
@@ -59,6 +61,7 @@ import { DataItem } from '../models/chart-data.model';
 export class PieChartComponent extends BaseChartComponent {
   @Input() labels = false;
   @Input() legend = false;
+  @Input() legendAdvanced: boolean = false;
   @Input() legendTitle: string = 'Legend';
   @Input() legendPosition: string = 'right';
   @Input() explodeSlices = false;
@@ -99,11 +102,17 @@ export class PieChartComponent extends BaseChartComponent {
       this.margins = [20, 20, 20, 20];
     }
 
+    let showLegend = this.legend;
+
+    if (this.legendAdvanced) {
+      showLegend = true;
+    }
+
     this.dims = calculateViewDimensions({
       width: this.width,
       height: this.height,
       margins: this.margins,
-      showLegend: this.legend,
+      showLegend: showLegend,
       legendPosition: this.legendPosition
     });
 

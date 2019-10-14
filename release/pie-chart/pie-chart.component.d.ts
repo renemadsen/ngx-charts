@@ -5,6 +5,7 @@ import { DataItem } from '../models/chart-data.model';
 export declare class PieChartComponent extends BaseChartComponent {
     labels: boolean;
     legend: boolean;
+    legendAdvanced: boolean;
     legendTitle: string;
     legendPosition: string;
     explodeSlices: boolean;

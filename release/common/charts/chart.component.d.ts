@@ -6,7 +6,9 @@ export declare class ChartComponent implements OnChanges {
     view: any;
     showLegend: boolean;
     legendOptions: any;
+    legendAdvanced: boolean;
     data: any;
+    advancedData: any;
     legendData: any;
     legendType: any;
     colors: any;

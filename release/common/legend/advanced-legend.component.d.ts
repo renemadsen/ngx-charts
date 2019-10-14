@@ -1,6 +1,7 @@
 import { EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 export declare class AdvancedLegendComponent implements OnChanges {
     width: number;
+    height: number;
     data: any;
     colors: any;
     label: string;

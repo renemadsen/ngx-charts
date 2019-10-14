@@ -21,6 +21,7 @@ import { formatLabel } from '../label.helper';
             <ngx-charts-legend-entry
               [label]="entry.label"
               [formattedLabel]="entry.formattedLabel"
+              
               [color]="entry.color"
               [isActive]="isActive(entry)"
               (select)="labelClick.emit($event)"

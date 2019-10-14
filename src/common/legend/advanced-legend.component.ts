@@ -14,20 +14,7 @@ import { formatLabel } from '../label.helper';
 @Component({
   selector: 'ngx-charts-advanced-legend',
   template: `
-    <div class="advanced-pie-legend" [style.width.px]="width">
-      <div
-        *ngIf="animations"
-        class="total-value"
-        ngx-charts-count-up
-        [countTo]="roundedTotal"
-        [valueFormatting]="valueFormatting"
-      ></div>
-      <div class="total-value" *ngIf="!animations">
-        {{ valueFormatting ? valueFormatting(roundedTotal) : defaultValueFormatting(roundedTotal) }}
-      </div>
-      <div class="total-label">
-        {{ label }}
-      </div>
+    <div class="advanced-pie-legend" [style.width.px]="width" [style.height.px]="height">
       <div class="legend-items-container">
         <div class="legend-items">
           <div
@@ -38,26 +25,20 @@ import { formatLabel } from '../label.helper';
             (mouseleave)="deactivate.emit(legendItem.data)"
             (click)="select.emit(legendItem.data)"
           >
-            <div class="item-color" [style.border-left-color]="legendItem.color"></div>
-            <div
-              *ngIf="animations"
-              class="item-value"
-              ngx-charts-count-up
-              [countTo]="legendItem._value"
-              [valueFormatting]="valueFormatting"
-            ></div>
-            <div *ngIf="!animations" class="item-value">
-              {{ valueFormatting ? valueFormatting(legendItem.value) : defaultValueFormatting(legendItem.value) }}
+            <div class="item-color" [style.background]="legendItem.color"></div>
+            <div>
+              <div
+                *ngIf="animations"
+                class="item-value"
+                ngx-charts-count-up
+                [countTo]="legendItem._value"
+                [valueFormatting]="valueFormatting"
+              ></div>
+              <div *ngIf="!animations" class="item-value">
+                {{ valueFormatting ? valueFormatting(legendItem.value) : defaultValueFormatting(legendItem.value) }}
+              </div>
+              <div class="item-label">{{ legendItem.displayLabel }}</div>
             </div>
-            <div class="item-label">{{ legendItem.displayLabel }}</div>
-            <div
-              *ngIf="animations"
-              class="item-percent"
-              ngx-charts-count-up
-              [countTo]="legendItem.percentage"
-              [countSuffix]="'%'"
-            ></div>
-            <div *ngIf="!animations" class="item-percent">{{ legendItem.percentage.toLocaleString() }}%</div>
           </div>
         </div>
       </div>
@@ -69,6 +50,7 @@ import { formatLabel } from '../label.helper';
 })
 export class AdvancedLegendComponent implements OnChanges {
   @Input() width: number;
+  @Input() height: number;
   @Input() data;
   @Input() colors;
   @Input() label: string = 'Total';

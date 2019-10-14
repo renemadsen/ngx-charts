@@ -1,8 +1,6 @@
 .advanced-pie-legend {
-  float: left;
-  position: relative;
-  top: 50%;
-  transform: translate(0, -50%); }
+  display: inline-block;
+  position: relative; }
   .advanced-pie-legend .total-value {
     font-size: 36px; }
   .advanced-pie-legend .total-label {
@@ -11,12 +9,14 @@
   .advanced-pie-legend .legend-items-container {
     width: 100%; }
     .advanced-pie-legend .legend-items-container .legend-items {
-      white-space: nowrap;
-      overflow: auto; }
+      white-space: nowrap; }
       .advanced-pie-legend .legend-items-container .legend-items .legend-item {
-        margin-right: 20px;
-        display: inline-block;
-        cursor: pointer; }
+        position: relative;
+        margin-right: 0;
+        cursor: pointer;
+        display: block;
+        padding-left: 15px;
+        margin-bottom: 6px; }
         .advanced-pie-legend .legend-items-container .legend-items .legend-item:focus {
           outline: none; }
         .advanced-pie-legend .legend-items-container .legend-items .legend-item:hover {
@@ -25,21 +25,20 @@
           -moz-transition: 0.2s;
           transition: 0.2s; }
         .advanced-pie-legend .legend-items-container .legend-items .legend-item .item-value {
-          font-size: 24px;
+          font-size: 14px;
           margin-top: -6px;
-          margin-left: 11px; }
+          margin-left: 11px;
+          color: #999999; }
         .advanced-pie-legend .legend-items-container .legend-items .legend-item .item-label {
           font-size: 14px;
           opacity: 0.7;
           margin-left: 11px;
-          margin-top: -6px; }
-        .advanced-pie-legend .legend-items-container .legend-items .legend-item .item-percent {
-          font-size: 24px;
-          opacity: 0.7;
-          margin-left: 11px; }
+          margin-top: -14px;
+          color: #414141; }
         .advanced-pie-legend .legend-items-container .legend-items .legend-item .item-color {
-          border-left: 4px solid;
-          width: 4px;
-          height: 42px;
-          float: left;
-          margin-right: 7px; }
+          position: absolute;
+          top: 9px;
+          left: 0px;
+          width: 15px;
+          height: 15px;
+          border-radius: 50%; }

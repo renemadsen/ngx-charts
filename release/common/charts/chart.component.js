@@ -15,6 +15,7 @@ var ChartComponent = /** @class */ (function () {
         this.vcr = vcr;
         this.tooltipService = tooltipService;
         this.showLegend = false;
+        this.legendAdvanced = false;
         this.animations = true;
         this.legendLabelClick = new EventEmitter();
         this.legendLabelActivate = new EventEmitter();
@@ -26,7 +27,7 @@ var ChartComponent = /** @class */ (function () {
     };
     ChartComponent.prototype.update = function () {
         var legendColumns = 0;
-        if (this.showLegend) {
+        if (this.showLegend || this.advancedData) {
             this.legendType = this.getLegendType();
             if (!this.legendOptions || this.legendOptions.position === 'right') {
                 if (this.legendType === 'scaleLegend') {
@@ -39,7 +40,7 @@ var ChartComponent = /** @class */ (function () {
         }
         var chartColumns = 12 - legendColumns;
         this.chartWidth = Math.floor((this.view[0] * chartColumns / 12.0));
-        this.legendWidth = (!this.legendOptions || this.legendOptions.position === 'right')
+        this.legendWidth = (!this.legendOptions || this.legendOptions.position === 'right' || this.advancedData)
             ? Math.floor((this.view[0] * legendColumns / 12.0))
             : this.chartWidth;
     };
@@ -65,8 +66,16 @@ var ChartComponent = /** @class */ (function () {
     ], ChartComponent.prototype, "legendOptions", void 0);
     __decorate([
         Input(),
+        __metadata("design:type", Boolean)
+    ], ChartComponent.prototype, "legendAdvanced", void 0);
+    __decorate([
+        Input(),
         __metadata("design:type", Object)
     ], ChartComponent.prototype, "data", void 0);
+    __decorate([
+        Input(),
+        __metadata("design:type", Object)
+    ], ChartComponent.prototype, "advancedData", void 0);
     __decorate([
         Input(),
         __metadata("design:type", Object)
@@ -103,7 +112,7 @@ var ChartComponent = /** @class */ (function () {
         Component({
             providers: [TooltipService],
             selector: 'ngx-charts-chart',
-            template: "\n    <div\n      class=\"ngx-charts-outer\"\n      [style.width.px]=\"view[0]\"\n      [@animationState]=\"'active'\"\n      [@.disabled]=\"!animations\">\n      <svg\n        class=\"ngx-charts\"\n        [attr.width]=\"chartWidth\"\n        [attr.height]=\"view[1]\">\n        <ng-content></ng-content>\n      </svg>\n      <ngx-charts-scale-legend\n        *ngIf=\"showLegend && legendType === 'scaleLegend'\"\n        class=\"chart-legend\"\n        [horizontal]=\"legendOptions && legendOptions.position === 'below'\"\n        [valueRange]=\"legendOptions.domain\"\n        [colors]=\"legendOptions.colors\"\n        [height]=\"view[1]\"\n        [width]=\"legendWidth\">\n      </ngx-charts-scale-legend>\n      <ngx-charts-legend\n        *ngIf=\"showLegend && legendType === 'legend'\"\n        class=\"chart-legend\"\n        [horizontal]=\"legendOptions && legendOptions.position === 'below'\"\n        [data]=\"legendOptions.domain\"\n        [title]=\"legendOptions.title\"\n        [colors]=\"legendOptions.colors\"\n        [height]=\"view[1]\"\n        [width]=\"legendWidth\"\n        [activeEntries]=\"activeEntries\"\n        (labelClick)=\"legendLabelClick.emit($event)\"\n        (labelActivate)=\"legendLabelActivate.emit($event)\"\n        (labelDeactivate)=\"legendLabelDeactivate.emit($event)\">\n      </ngx-charts-legend>\n    </div>\n  ",
+            template: "\n    <div\n      class=\"ngx-charts-outer\"\n      [style.width.px]=\"view[0]\"\n      [@animationState]=\"'active'\"\n      [@.disabled]=\"!animations\">\n      <svg\n        class=\"ngx-charts\"\n        [attr.width]=\"chartWidth\"\n        [attr.height]=\"view[1]\">\n        <ng-content></ng-content>\n      </svg>\n      <ngx-charts-scale-legend\n        *ngIf=\"showLegend && legendType === 'scaleLegend'\"\n        class=\"chart-legend\"\n        [horizontal]=\"legendOptions && legendOptions.position === 'below'\"\n        [valueRange]=\"legendOptions.domain\"\n        [colors]=\"legendOptions.colors\"\n        [height]=\"view[1]\"\n        [width]=\"legendWidth\">\n      </ngx-charts-scale-legend>\n      <ngx-charts-legend\n        *ngIf=\"showLegend && legendType === 'legend'\"\n        class=\"chart-legend\"\n        [horizontal]=\"legendOptions && legendOptions.position === 'below'\"\n        [data]=\"legendOptions.domain\"\n        [title]=\"legendOptions.title\"\n        [colors]=\"legendOptions.colors\"\n        [height]=\"view[1]\"\n        [width]=\"legendWidth\"\n        [activeEntries]=\"activeEntries\"\n        (labelClick)=\"legendLabelClick.emit($event)\"\n        (labelActivate)=\"legendLabelActivate.emit($event)\"\n        (labelDeactivate)=\"legendLabelDeactivate.emit($event)\">\n      </ngx-charts-legend>\n      <ngx-charts-advanced-legend\n        *ngIf=\"legendAdvanced\"\n        [data]=\"advancedData\"\n        [height]=\"view[1]\"\n        [width]=\"legendWidth\"\n        [colors]=\"legendOptions.colors\"\n        [label]=\"label\"\n        [animations]=\"animations\"\n        [valueFormatting]=\"valueFormatting\"\n        [labelFormatting]=\"nameFormatting\"\n        [percentageFormatting]=\"percentageFormatting\"\n        (select)=\"legendLabelClick.emit($event)\"\n        (activate)=\"legendLabelActivate.emit($event)\"\n        (deactivate)=\"legendLabelDeactivate.emit($event)\"\n      >\n      </ngx-charts-advanced-legend>\n    </div>\n  ",
             changeDetection: ChangeDetectionStrategy.OnPush,
             animations: [
                 trigger('animationState', [

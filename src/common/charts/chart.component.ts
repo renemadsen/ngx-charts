@@ -48,6 +48,22 @@ import { TooltipService } from '../tooltip';
         (labelActivate)="legendLabelActivate.emit($event)"
         (labelDeactivate)="legendLabelDeactivate.emit($event)">
       </ngx-charts-legend>
+      <ngx-charts-advanced-legend
+        *ngIf="legendAdvanced"
+        [data]="advancedData"
+        [height]="view[1]"
+        [width]="legendWidth"
+        [colors]="legendOptions.colors"
+        [label]="label"
+        [animations]="animations"
+        [valueFormatting]="valueFormatting"
+        [labelFormatting]="nameFormatting"
+        [percentageFormatting]="percentageFormatting"
+        (select)="legendLabelClick.emit($event)"
+        (activate)="legendLabelActivate.emit($event)"
+        (deactivate)="legendLabelDeactivate.emit($event)"
+      >
+      </ngx-charts-advanced-legend>
     </div>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -65,9 +81,11 @@ export class ChartComponent implements OnChanges {
   @Input() view;
   @Input() showLegend = false;
   @Input() legendOptions: any;
+  @Input() legendAdvanced: boolean = false;
 
   // remove
   @Input() data;
+  @Input() advancedData;
   @Input() legendData;
   @Input() legendType: any;
   @Input() colors: any;
@@ -94,7 +112,7 @@ export class ChartComponent implements OnChanges {
 
   update(): void {
     let legendColumns = 0;
-    if (this.showLegend) {
+    if (this.showLegend || this.advancedData) {
       this.legendType = this.getLegendType();
 
       if (!this.legendOptions || this.legendOptions.position === 'right') {
@@ -109,7 +127,7 @@ export class ChartComponent implements OnChanges {
     const chartColumns = 12 - legendColumns;
 
     this.chartWidth = Math.floor((this.view[0] * chartColumns / 12.0));
-    this.legendWidth = (!this.legendOptions || this.legendOptions.position === 'right')
+    this.legendWidth = (!this.legendOptions || this.legendOptions.position === 'right' || this.advancedData)
       ? Math.floor((this.view[0] * legendColumns / 12.0))
       : this.chartWidth;
   }
