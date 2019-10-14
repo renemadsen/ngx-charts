@@ -61,7 +61,7 @@ import { DataItem } from '../models/chart-data.model';
         ngx-charts-count-up
         [countTo]="totalNumber"
       ></div>
-      <p>{{legendTitle}}</p>
+      <p>{{totalLabel}}</p>
     </div>
 
   `,
@@ -77,7 +77,7 @@ export class PieChartComponent extends BaseChartComponent {
   @Input() legendPosition: string = 'right';
   @Input() explodeSlices = false;
   @Input() doughnut = false;
-  @Input() totalLabel: any;
+  @Input() totalLabel: string;
   @Input() arcWidth = 0.25;
   @Input() gradient: boolean;
   @Input() activeEntries: any[] = [];
