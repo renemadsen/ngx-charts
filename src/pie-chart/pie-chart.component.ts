@@ -54,7 +54,7 @@ import { DataItem } from '../models/chart-data.model';
       </svg:g>
     </ngx-charts-chart>
     
-    <div class="totalValue" [ngStyle]="setMyStyles()">
+    <div class="totalValue"  *ngIf="doughnut" [ngStyle]="setMyStyles()">
       <div 
         *ngIf="animations"
         class="item-value"
