@@ -72,8 +72,8 @@ export class AreaSeriesComponent implements OnChanges {
     if (this.stacked || this.normalized) {
       currentArea = area<any>()
         .x(xProperty)
-        .y0((d, i) => this.yScale(d.d0))
-        .y1((d, i) => this.yScale(d.d1));
+        .y0((d, i) => {if(d.d0 < 0) {console.info('<0', d); return this.yScale(0)} else {console.info('>0', d); return this.yScale(d.d0)})
+        .y1((d, i) => d.d1 < 0 ? this.yScale(0) : this.yScale(d.d1));
 
       startingArea = area<any>()
         .x(xProperty)
