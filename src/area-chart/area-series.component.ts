@@ -1,31 +1,23 @@
-import {
-  Component,
-  Input,
-  Output,
-  EventEmitter,
-  OnChanges,
-  SimpleChanges,
-  ChangeDetectionStrategy
-} from '@angular/core';
-import { area } from 'd3-shape';
+import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
+import {area} from 'd3-shape';
 
-import { sortLinear, sortByTime, sortByDomain } from '../utils/sort';
+import {sortByDomain, sortByTime, sortLinear} from '../utils/sort';
 
 @Component({
   selector: 'g[ngx-charts-area-series]',
   template: `
     <svg:g ngx-charts-area
-      class="area-series"
-      [data]="data"
-      [path]="path"
-      [fill]="colors.getColor(data.name)"
-      [stops]="gradientStops"
-      [startingPath]="startingPath"
-      [opacity]="opacity"
-      [gradient]="gradient || hasGradient"
-      [animations]="animations"
-      [class.active]="isActive(data)"
-      [class.inactive]="isInactive(data)"
+           class="area-series"
+           [data]="data"
+           [path]="path"
+           [fill]="colors.getColor(data.name)"
+           [stops]="gradientStops"
+           [startingPath]="startingPath"
+           [opacity]="opacity"
+           [gradient]="gradient || hasGradient"
+           [animations]="animations"
+           [class.active]="isActive(data)"
+           [class.inactive]="isInactive(data)"
     />
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -72,7 +64,16 @@ export class AreaSeriesComponent implements OnChanges {
     if (this.stacked || this.normalized) {
       currentArea = area<any>()
         .x(xProperty)
-        .y0((d, i) => {if(d.d0 < 0) {console.info('<0', d); return this.yScale(0)} else {console.info('>0', d); return this.yScale(d.d0)})
+        .y0((d, i) => {
+            if (d.d0 < 0) {
+              console.info('< 0', d);
+              return this.yScale(0);
+            } else {
+              console.info('> 0', d);
+              return this.yScale(d.d0);
+            }
+          }
+        )
         .y1((d, i) => d.d1 < 0 ? this.yScale(0) : this.yScale(d.d1));
 
       startingArea = area<any>()
@@ -112,7 +113,7 @@ export class AreaSeriesComponent implements OnChanges {
   updateGradient() {
     if (this.colors.scaleType === 'linear') {
       this.hasGradient = true;
-      if (this.stacked || this.normalized) {        
+      if (this.stacked || this.normalized) {
         const d0values = this.data.series.map(d => d.d0);
         const d1values = this.data.series.map(d => d.d1);
         const max = Math.max(...d1values);
@@ -130,7 +131,7 @@ export class AreaSeriesComponent implements OnChanges {
   }
 
   isActive(entry): boolean {
-    if(!this.activeEntries) return false;
+    if (!this.activeEntries) return false;
     const item = this.activeEntries.find(d => {
       return entry.name === d.name;
     });
@@ -138,11 +139,11 @@ export class AreaSeriesComponent implements OnChanges {
   }
 
   isInactive(entry): boolean {
-    if(!this.activeEntries || this.activeEntries.length === 0) return false;
+    if (!this.activeEntries || this.activeEntries.length === 0) return false;
     const item = this.activeEntries.find(d => {
       return entry.name === d.name;
     });
     return item === undefined;
   }
-  
+
 }
