@@ -22,6 +22,8 @@ var SeriesVerticalComponent = /** @class */ (function () {
         this.animations = true;
         this.showDataLabel = false;
         this.noBarWhenZero = true;
+        this.stackNumber = -1;
+        this.stackCount = 0;
         this.select = new EventEmitter();
         this.activate = new EventEmitter();
         this.deactivate = new EventEmitter();
@@ -91,7 +93,15 @@ var SeriesVerticalComponent = /** @class */ (function () {
                 d0[d0Type] += value;
                 bar.height = _this.yScale(offset0) - _this.yScale(offset1);
                 if (_this.barWidth) {
-                    bar.x = Math.round(_this.xScale.bandwidth() / 2 - _this.barWidth / 2);
+                    if (_this.stackNumber >= 0) {
+                        // Adjust x position of the bar to be offset from the other
+                        bar.x = Math.round(_this.xScale.bandwidth() / 2 - _this.barWidth / 2) + (_this.barWidth * _this.stackNumber * 2);
+                        // Center the bars
+                        bar.x = bar.x - _this.stackCount * bar.width / 2;
+                    }
+                    else {
+                        bar.x = Math.round(_this.xScale.bandwidth() / 2 - _this.barWidth / 2);
+                    }
                 }
                 else {
                     bar.x = 0;
@@ -279,6 +289,14 @@ var SeriesVerticalComponent = /** @class */ (function () {
         Input(),
         __metadata("design:type", Number)
     ], SeriesVerticalComponent.prototype, "barWidth", void 0);
+    __decorate([
+        Input(),
+        __metadata("design:type", Number)
+    ], SeriesVerticalComponent.prototype, "stackNumber", void 0);
+    __decorate([
+        Input(),
+        __metadata("design:type", Number)
+    ], SeriesVerticalComponent.prototype, "stackCount", void 0);
     __decorate([
         Output(),
         __metadata("design:type", Object)

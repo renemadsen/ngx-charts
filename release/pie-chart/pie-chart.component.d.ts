@@ -41,15 +41,15 @@ export declare class PieChartComponent extends BaseChartComponent {
     labelTranslationX: any;
     update(): void;
     setMyStyles(): {
-        'position': string;
-        'width': string;
-        'display': string;
+        position: string;
+        width: string;
+        display: string;
         'flex-direction': string;
         'justify-content': string;
         'text-align': string;
-        'top': number;
-        'left': number;
-        'transform': string;
+        top: number;
+        left: number;
+        transform: string;
     };
     getTotalLabel(): void;
     getDomain(): any[];

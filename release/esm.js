@@ -8336,7 +8336,7 @@ var BarVertical2DStackedComponent = /** @class */ (function (_super) {
     BarVertical2DStackedComponent.prototype.getValueScale = function () {
         var scale = scaleLinear()
             .range([this.dims.height, 0])
-            .domain(this.valuesDomain);
+            .domain(this.valuesStackedDomain);
         return this.roundDomains ? scale.nice() : scale;
     };
     BarVertical2DStackedComponent.prototype.getXScale = function () {
@@ -8685,7 +8685,7 @@ var BarVertical2DStackedComponent = /** @class */ (function (_super) {
     BarVertical2DStackedComponent = __decorate([
         Component({
             selector: 'ngx-charts-bar-vertical-2d-stacked',
-            template: "\n    <ngx-charts-chart\n      [view]=\"[width, height]\"\n      [showLegend]=\"legend\"\n      [legendOptions]=\"legendOptions\"\n      [activeEntries]=\"activeEntries\"\n      [animations]=\"animations\"\n      (legendLabelActivate)=\"onActivate($event, undefined, true)\"\n      (legendLabelDeactivate)=\"onDeactivate($event, undefined, true)\"\n      (legendLabelClick)=\"onClick($event)\"\n    >\n      <svg:g [attr.transform]=\"transform\" class=\"bar-chart chart\">\n        <svg:g\n          ngx-charts-grid-panel-series\n          [xScale]=\"groupScale\"\n          [yScale]=\"valueScale\"\n          [data]=\"results\"\n          [dims]=\"dims\"\n          orient=\"vertical\"\n        ></svg:g>\n        <svg:g\n          ngx-charts-x-axis\n          *ngIf=\"xAxis\"\n          [xScale]=\"groupScale\"\n          [dims]=\"dims\"\n          [showLabel]=\"showXAxisLabel\"\n          [labelText]=\"xAxisLabel\"\n          [trimTicks]=\"trimXAxisTicks\"\n          [rotateTicks]=\"rotateXAxisTicks\"\n          [maxTickLength]=\"maxXAxisTickLength\"\n          [tickFormatting]=\"xAxisTickFormatting\"\n          [ticks]=\"xAxisTicks\"\n          [xAxisOffset]=\"dataLabelMaxHeight.negative\"\n          (dimensionsChanged)=\"updateXAxisHeight($event)\"\n        ></svg:g>\n        <svg:g\n          ngx-charts-y-axis\n          *ngIf=\"yAxis\"\n          [yScale]=\"valueScale\"\n          [dims]=\"dims\"\n          [showGridLines]=\"showGridLines\"\n          [showLabel]=\"showYAxisLabel\"\n          [labelText]=\"yAxisLabel\"\n          [trimTicks]=\"trimYAxisTicks\"\n          [maxTickLength]=\"maxYAxisTickLength\"\n          [tickFormatting]=\"yAxisTickFormatting\"\n          [ticks]=\"yAxisTicks\"\n          (dimensionsChanged)=\"updateYAxisWidth($event)\"\n        ></svg:g>\n        <svg:g\n          *ngFor=\"let group of results; let index = index; trackBy: trackBy\"\n          [attr.transform]=\"groupTransform(group)\"\n        >\n          <svg:g\n          *ngFor=\"let stack of group.series; let index = index; trackBy: trackBy\"\n          [@animationState]=\"'active'\"\n          [attr.transform]=\"groupTransform(stack)\"\n          >\n            <svg:g\n              ngx-charts-series-vertical\n              \n              type=\"stacked\"\n              [@animationState]=\"'active'\"\n              \n              [activeEntries]=\"activeEntries\"\n              [xScale]=\"xScale\"\n              [yScale]=\"yScale\"\n              [colors]=\"colors\"\n              [series]=\"stack.series\"\n              [dims]=\"dims\"\n              [gradient]=\"gradient\"\n              [tooltipDisabled]=\"tooltipDisabled\"\n              [tooltipTemplate]=\"tooltipTemplate\"\n              [showDataLabel]=\"showDataLabel\"\n              [dataLabelFormatting]=\"dataLabelFormatting\"\n              [seriesName]=\"stack.name\"\n              [roundEdges]=\"roundEdges\"\n              [barWidth]=\"10\"\n              [animations]=\"animations\"\n              [noBarWhenZero]=\"noBarWhenZero\"\n              (select)=\"onClick($event, group)\"\n              (activate)=\"onActivate($event, group)\"\n              (deactivate)=\"onDeactivate($event, group)\"\n              (dataLabelHeightChanged)=\"onDataLabelMaxHeightChanged($event, index)\"\n            />\n          </svg:g>\n        </svg:g>\n      </svg:g>\n    </ngx-charts-chart>\n  ",
+            template: "\n    <ngx-charts-chart\n      [view]=\"[width, height]\"\n      [showLegend]=\"legend\"\n      [legendOptions]=\"legendOptions\"\n      [activeEntries]=\"activeEntries\"\n      [animations]=\"animations\"\n      (legendLabelActivate)=\"onActivate($event, undefined, true)\"\n      (legendLabelDeactivate)=\"onDeactivate($event, undefined, true)\"\n      (legendLabelClick)=\"onClick($event)\"\n    >\n      <svg:g [attr.transform]=\"transform\" class=\"bar-chart chart\">\n        <svg:g\n          ngx-charts-grid-panel-series\n          [xScale]=\"groupScale\"\n          [yScale]=\"valueScale\"\n          [data]=\"results\"\n          [dims]=\"dims\"\n          orient=\"vertical\"\n        ></svg:g>\n        <svg:g\n          ngx-charts-x-axis\n          *ngIf=\"xAxis\"\n          [xScale]=\"groupScale\"\n          [dims]=\"dims\"\n          [showLabel]=\"showXAxisLabel\"\n          [labelText]=\"xAxisLabel\"\n          [trimTicks]=\"trimXAxisTicks\"\n          [rotateTicks]=\"rotateXAxisTicks\"\n          [maxTickLength]=\"maxXAxisTickLength\"\n          [tickFormatting]=\"xAxisTickFormatting\"\n          [ticks]=\"xAxisTicks\"\n          [xAxisOffset]=\"dataLabelMaxHeight.negative\"\n          (dimensionsChanged)=\"updateXAxisHeight($event)\"\n        ></svg:g>\n        <svg:g\n          ngx-charts-y-axis\n          *ngIf=\"yAxis\"\n          [yScale]=\"valueScale\"\n          [dims]=\"dims\"\n          [showGridLines]=\"showGridLines\"\n          [showLabel]=\"showYAxisLabel\"\n          [labelText]=\"yAxisLabel\"\n          [trimTicks]=\"trimYAxisTicks\"\n          [maxTickLength]=\"maxYAxisTickLength\"\n          [tickFormatting]=\"yAxisTickFormatting\"\n          [ticks]=\"yAxisTicks\"\n          (dimensionsChanged)=\"updateYAxisWidth($event)\"\n        ></svg:g>\n        <svg:g\n          *ngFor=\"let group of results; let index = index; trackBy: trackBy\"\n          [attr.transform]=\"groupTransform(group)\"\n        >\n          <svg:g\n          *ngFor=\"let stack of group.series; let index = index; trackBy: trackBy\"\n          [@animationState]=\"'active'\"\n          [attr.transform]=\"groupTransform(stack)\"\n          >\n            <svg:g\n              ngx-charts-series-vertical\n              type=\"stacked\"\n              [@animationState]=\"'active'\"\n              [activeEntries]=\"activeEntries\"\n              [xScale]=\"groupScale\"\n              [yScale]=\"valueScale\"\n              [colors]=\"colors\"\n              [series]=\"stack.series\"\n              [dims]=\"dims\"\n              [gradient]=\"gradient\"\n              [tooltipDisabled]=\"tooltipDisabled\"\n              [tooltipTemplate]=\"tooltipTemplate\"\n              [showDataLabel]=\"showDataLabel\"\n              [dataLabelFormatting]=\"dataLabelFormatting\"\n              [seriesName]=\"stack.name\"\n              [stackNumber]=\"index\"\n              [stackCount]=\"group.series.length\"\n              [roundEdges]=\"roundEdges\"\n              [barWidth]=\"10\"\n              [animations]=\"animations\"\n              [noBarWhenZero]=\"noBarWhenZero\"\n              (select)=\"onClick($event, group)\"\n              (activate)=\"onActivate($event, group)\"\n              (deactivate)=\"onDeactivate($event, group)\"\n              (dataLabelHeightChanged)=\"onDataLabelMaxHeightChanged($event, index)\"\n            />\n          </svg:g>\n        </svg:g>\n      </svg:g>\n    </ngx-charts-chart>\n  ",
             styles: [".ngx-charts{float:left;overflow:visible}.ngx-charts .arc,.ngx-charts .bar,.ngx-charts .circle{cursor:pointer}.ngx-charts .arc.active,.ngx-charts .arc:hover,.ngx-charts .bar.active,.ngx-charts .bar:hover,.ngx-charts .card.active,.ngx-charts .card:hover,.ngx-charts .cell.active,.ngx-charts .cell:hover{opacity:.8;transition:opacity .1s ease-in-out}.ngx-charts .arc:focus,.ngx-charts .bar:focus,.ngx-charts .card:focus,.ngx-charts .cell:focus{outline:0}.ngx-charts .arc.hidden,.ngx-charts .bar.hidden,.ngx-charts .card.hidden,.ngx-charts .cell.hidden{display:none}.ngx-charts g:focus{outline:0}.ngx-charts .area-series.inactive,.ngx-charts .line-series-range.inactive,.ngx-charts .line-series.inactive,.ngx-charts .polar-series-area.inactive,.ngx-charts .polar-series-path.inactive{transition:opacity .1s ease-in-out;opacity:.2}.ngx-charts .line-highlight{display:none}.ngx-charts .line-highlight.active{display:block}.ngx-charts .area{opacity:.6}.ngx-charts .circle:hover{cursor:pointer}.ngx-charts .label{font-size:12px;font-weight:400}.ngx-charts .tooltip-anchor{fill:#000}.ngx-charts .gridline-path{stroke:#ddd;stroke-width:1;fill:none}.ngx-charts .refline-path{stroke:#a8b2c7;stroke-width:1;stroke-dasharray:5;stroke-dashoffset:5}.ngx-charts .refline-label{font-size:9px}.ngx-charts .reference-area{fill-opacity:.05;fill:#000}.ngx-charts .gridline-path-dotted{stroke:#ddd;stroke-width:1;fill:none;stroke-dasharray:1,20;stroke-dashoffset:3}.ngx-charts .grid-panel rect{fill:none}.ngx-charts .grid-panel.odd rect{fill:rgba(0,0,0,.05)}"],
             encapsulation: ViewEncapsulation.None,
             changeDetection: ChangeDetectionStrategy.OnPush,
@@ -9422,6 +9422,8 @@ var SeriesVerticalComponent = /** @class */ (function () {
         this.animations = true;
         this.showDataLabel = false;
         this.noBarWhenZero = true;
+        this.stackNumber = -1;
+        this.stackCount = 0;
         this.select = new EventEmitter();
         this.activate = new EventEmitter();
         this.deactivate = new EventEmitter();
@@ -9491,7 +9493,15 @@ var SeriesVerticalComponent = /** @class */ (function () {
                 d0[d0Type] += value;
                 bar.height = _this.yScale(offset0) - _this.yScale(offset1);
                 if (_this.barWidth) {
-                    bar.x = Math.round(_this.xScale.bandwidth() / 2 - _this.barWidth / 2);
+                    if (_this.stackNumber >= 0) {
+                        // Adjust x position of the bar to be offset from the other
+                        bar.x = Math.round(_this.xScale.bandwidth() / 2 - _this.barWidth / 2) + (_this.barWidth * _this.stackNumber * 2);
+                        // Center the bars
+                        bar.x = bar.x - _this.stackCount * bar.width / 2;
+                    }
+                    else {
+                        bar.x = Math.round(_this.xScale.bandwidth() / 2 - _this.barWidth / 2);
+                    }
                 }
                 else {
                     bar.x = 0;
@@ -9680,6 +9690,14 @@ var SeriesVerticalComponent = /** @class */ (function () {
         Input(),
         __metadata("design:type", Number)
     ], SeriesVerticalComponent.prototype, "barWidth", void 0);
+    __decorate([
+        Input(),
+        __metadata("design:type", Number)
+    ], SeriesVerticalComponent.prototype, "stackNumber", void 0);
+    __decorate([
+        Input(),
+        __metadata("design:type", Number)
+    ], SeriesVerticalComponent.prototype, "stackCount", void 0);
     __decorate([
         Output(),
         __metadata("design:type", Object)
@@ -13430,15 +13448,15 @@ var PieChartComponent = /** @class */ (function (_super) {
         var yOffset = this.margins[0] + this.dims.height / 2;
         this.labelWidth = this.outerRadius * 0.8;
         var styles = {
-            'position': 'absolute',
-            'width': this.labelWidth + 'px',
-            'display': 'flex',
+            position: 'absolute',
+            width: this.labelWidth + 'px',
+            display: 'flex',
             'flex-direction': 'column',
             'justify-content': 'center',
             'text-align': 'center',
-            'top': 0,
-            'left': 0,
-            'transform': 'translate(' + (xOffset - this.labelWidth / 2) + 'px, ' + (yOffset - 30) + 'px)'
+            top: 0,
+            left: 0,
+            transform: 'translate(' + (xOffset - this.labelWidth / 2) + 'px, ' + (yOffset - 30) + 'px)'
         };
         return styles;
     };

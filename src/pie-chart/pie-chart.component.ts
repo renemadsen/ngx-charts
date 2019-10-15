@@ -168,16 +168,16 @@ export class PieChartComponent extends BaseChartComponent {
     const yOffset = this.margins[0] + this.dims.height / 2;
     this.labelWidth = this.outerRadius * 0.8;
 
-    let styles = {
-      'position': 'absolute',
-      'width': this.labelWidth + 'px',
-      'display': 'flex',
+    const styles = {
+      position: 'absolute',
+      width: this.labelWidth + 'px',
+      display: 'flex',
       'flex-direction': 'column',
       'justify-content': 'center',
       'text-align': 'center',
-      'top': 0,
-      'left': 0,
-      'transform': 'translate(' + (xOffset - this.labelWidth / 2) + 'px, ' + (yOffset - 30) + 'px)'
+      top: 0,
+      left: 0,
+      transform: 'translate(' + (xOffset - this.labelWidth / 2) + 'px, ' + (yOffset - 30) + 'px)'
     };
     return styles;
   }

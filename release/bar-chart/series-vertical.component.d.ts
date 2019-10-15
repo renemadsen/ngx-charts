@@ -22,6 +22,8 @@ export declare class SeriesVerticalComponent implements OnChanges {
     dataLabelFormatting: any;
     noBarWhenZero: boolean;
     barWidth: number;
+    stackNumber: number;
+    stackCount: number;
     select: EventEmitter<{}>;
     activate: EventEmitter<{}>;
     deactivate: EventEmitter<{}>;

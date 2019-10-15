@@ -77,13 +77,11 @@ import { BaseChartComponent } from '../common/base-chart.component';
           >
             <svg:g
               ngx-charts-series-vertical
-              
               type="stacked"
               [@animationState]="'active'"
-              
               [activeEntries]="activeEntries"
-              [xScale]="xScale"
-              [yScale]="yScale"
+              [xScale]="groupScale"
+              [yScale]="valueScale"
               [colors]="colors"
               [series]="stack.series"
               [dims]="dims"
@@ -93,6 +91,8 @@ import { BaseChartComponent } from '../common/base-chart.component';
               [showDataLabel]="showDataLabel"
               [dataLabelFormatting]="dataLabelFormatting"
               [seriesName]="stack.name"
+              [stackNumber]="index"
+              [stackCount]="group.series.length"
               [roundEdges]="roundEdges"
               [barWidth]="10"
               [animations]="animations"
@@ -261,7 +261,7 @@ export class BarVertical2DStackedComponent extends BaseChartComponent {
   getValueScale(): any {
     const scale = scaleLinear()
       .range([this.dims.height, 0])
-      .domain(this.valuesDomain);
+      .domain(this.valuesStackedDomain);
     return this.roundDomains ? scale.nice() : scale;
   }
 

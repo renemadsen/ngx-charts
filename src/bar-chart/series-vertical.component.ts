@@ -86,6 +86,8 @@ export class SeriesVerticalComponent implements OnChanges {
   @Input() dataLabelFormatting: any;
   @Input() noBarWhenZero: boolean = true;
   @Input() barWidth: number;
+  @Input() stackNumber: number = -1;
+  @Input() stackCount: number = 0;
 
   @Output() select = new EventEmitter();
   @Output() activate = new EventEmitter();
@@ -107,7 +109,7 @@ export class SeriesVerticalComponent implements OnChanges {
   update(): void {
     this.updateTooltipSettings();
     let width;
-    
+
     if (this.series.length) {
       width = this.barWidth ? this.barWidth : this.xScale.bandwidth();
     }
@@ -173,7 +175,18 @@ export class SeriesVerticalComponent implements OnChanges {
         bar.height = this.yScale(offset0) - this.yScale(offset1);
 
         if (this.barWidth) {
-          bar.x = Math.round(this.xScale.bandwidth() / 2 - this.barWidth / 2);
+          if (this.stackNumber >= 0) {
+            // Adjust x position of the bar to be offset from the other
+            bar.x = Math.round(
+              this.xScale.bandwidth() / 2 - this.barWidth / 2) + (this.barWidth * this.stackNumber * 2
+            );
+
+            // Center the bars
+            bar.x = bar.x - this.stackCount * bar.width / 2;
+          } else {
+            bar.x = Math.round(this.xScale.bandwidth() / 2 - this.barWidth / 2);
+          }
+          
         } else {
           bar.x = 0;
         }
