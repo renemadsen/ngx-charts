@@ -73,7 +73,6 @@ import { BaseChartComponent } from '../common/base-chart.component';
           <svg:g
           *ngFor="let stack of group.series; let index = index; trackBy: trackBy"
           [@animationState]="'active'"
-          [attr.transform]="groupTransform(stack)"
           >
             <svg:g
               ngx-charts-series-vertical

@@ -850,5 +850,49 @@ export const groupedStacked: GroupedStackedBarChartData = [
         ]
       }
     ]
+  },
+  {
+    name: 'Dezember',
+    series: 
+      [
+        {
+          name: '18',
+          series: [
+          {
+            name: 'France',
+            value: 800,
+            extra: {
+              code: 'fr'
+            }
+          },
+          {
+            name: 'Japan',
+            value: 1300,
+            extra: {
+              code: 'jp'
+            }
+          }
+        ]
+        },
+        {
+          name: '19',
+          series: [
+          {
+            name: 'France',
+            value: 110,
+            extra: {
+              code: 'fr'
+            }
+          },
+          {
+            name: 'Japan',
+            value: 490,
+            extra: {
+              code: 'jp'
+            }
+          }
+        ]
+      }
+    ]
   }
 ];

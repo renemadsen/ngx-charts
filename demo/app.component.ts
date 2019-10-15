@@ -230,6 +230,10 @@ export class AppComponent implements OnInit {
   treemapPath: any[] = [];
   sumBy: string = 'Size';
 
+  stackedgroupedColorScheme = {
+    domain: ['#B1DADD', 'rgba(177, 218, 221, 0.5)', '#006192', 'rgba(0,97,146,0.5)']
+  };
+
   // bubble chart interactive demo
   bubbleDemoTempData: any[] = [];
   bubbleDemoChart: BubbleChartInteractiveServerDataModel;
