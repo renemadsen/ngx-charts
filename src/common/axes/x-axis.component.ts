@@ -32,8 +32,21 @@ import { XAxisTicksComponent } from './x-axis-ticks.component';
         [tickValues]="ticks"
         (dimensionsChanged)="emitTicksHeight($event)"
       />
+      <svg:g *ngIf="showXAxisLineTop" [attr.transform]="gridLineTransform()">
+        <svg:line 
+          class="gridline-path gridline-path-vertical"
+          [attr.x1]="0"
+          [attr.x2]="dims.width"
+          [attr.y1]="-dims.height"
+          [attr.y2]="-dims.height"
+        />
+      </svg:g>
+      <svg:g *ngIf="showXAxisLineBottom" [attr.transform]="gridLineTransform()">
+        <svg:line class="gridline-path gridline-path-vertical"  [attr.x1]="0" [attr.x2]="dims.width" />
+      </svg:g>
       <svg:g
         ngx-charts-axis-label
+        [attr.class]="'axis-label'"
         *ngIf="showLabel"
         [label]="labelText"
         [offset]="labelOffset"
@@ -60,6 +73,8 @@ export class XAxisComponent implements OnChanges {
   @Input() xAxisTickCount: any;
   @Input() xOrient: string = 'bottom';
   @Input() xAxisOffset: number = 0;
+  @Input() showXAxisLineTop: boolean = false;
+  @Input() showXAxisLineBottom: boolean = false;
 
   @Output() dimensionsChanged = new EventEmitter();
 
@@ -86,6 +101,10 @@ export class XAxisComponent implements OnChanges {
     if (typeof this.xAxisTickCount !== 'undefined') {
       this.tickArguments = [this.xAxisTickCount];
     }
+  }
+
+  gridLineTransform(): string {
+    return `translate(0, ${this.padding*-1})`;
   }
 
   emitTicksHeight({ height }): void {

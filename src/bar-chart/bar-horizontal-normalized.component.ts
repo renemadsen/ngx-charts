@@ -39,6 +39,8 @@ import { BaseChartComponent } from '../common/base-chart.component';
           [showLabel]="showXAxisLabel"
           [labelText]="xAxisLabel"
           [trimTicks]="trimXAxisTicks"
+          [showXAxisLineTop]="showXAxisLineTop"
+          [showXAxisLineBottom]="showXAxisLineBottom"
           [rotateTicks]="rotateXAxisTicks"
           [maxTickLength]="maxXAxisTickLength"
           [tickFormatting]="xAxisTickFormatting"
@@ -110,6 +112,8 @@ export class BarHorizontalNormalizedComponent extends BaseChartComponent {
   @Input() yAxis;
   @Input() showXAxisLabel;
   @Input() showYAxisLabel;
+  @Input() showXAxisLineTop;
+  @Input() showXAxisLineBottom;
   @Input() xAxisLabel;
   @Input() yAxisLabel;
   @Input() tooltipDisabled: boolean = false;

@@ -46,6 +46,8 @@ import { BaseChartComponent } from '../common/base-chart.component';
           [showGridLines]="showGridLines"
           [showLabel]="showXAxisLabel"
           [labelText]="xAxisLabel"
+          [showXAxisLineTop]="showXAxisLineTop"
+          [showXAxisLineBottom]="showXAxisLineBottom"
           [trimTicks]="trimXAxisTicks"
           [rotateTicks]="rotateXAxisTicks"
           [maxTickLength]="maxXAxisTickLength"
@@ -60,6 +62,7 @@ import { BaseChartComponent } from '../common/base-chart.component';
           [dims]="dims"
           [showLabel]="showYAxisLabel"
           [labelText]="yAxisLabel"
+          [showYAxisLineRight]="showYAxisLineRight"
           [trimTicks]="trimYAxisTicks"
           [maxTickLength]="maxYAxisTickLength"
           [tickFormatting]="yAxisTickFormatting"
@@ -122,6 +125,9 @@ export class BarHorizontal2DComponent extends BaseChartComponent {
   @Input() yAxis;
   @Input() showXAxisLabel;
   @Input() showYAxisLabel;
+  @Input() showXAxisLineTop;
+  @Input() showXAxisLineBottom;
+  @Input() showYAxisLineRight;
   @Input() xAxisLabel;
   @Input() yAxisLabel;
   @Input() tooltipDisabled: boolean = false;

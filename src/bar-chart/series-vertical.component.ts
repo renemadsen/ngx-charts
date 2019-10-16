@@ -230,7 +230,6 @@ export class SeriesVerticalComponent implements OnChanges {
           }
         }
 
-
       } else {
         if (this.type === 'standard') {
           bar.color = this.colors.getColor(value);

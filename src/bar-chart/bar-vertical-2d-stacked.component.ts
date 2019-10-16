@@ -43,6 +43,7 @@ import { BaseChartComponent } from '../common/base-chart.component';
           [xScale]="groupScale"
           [dims]="dims"
           [showLabel]="showXAxisLabel"
+          [showXAxisLineTop]="showXAxisLineTop"
           [labelText]="xAxisLabel"
           [trimTicks]="trimXAxisTicks"
           [rotateTicks]="rotateXAxisTicks"
@@ -57,6 +58,8 @@ import { BaseChartComponent } from '../common/base-chart.component';
           *ngIf="yAxis"
           [yScale]="valueScale"
           [dims]="dims"
+          [showYAxisLineLeft]="showYAxisLineLeft"
+          [showYAxisLineRight]="showYAxisLineRight"
           [showGridLines]="showGridLines"
           [showLabel]="showYAxisLabel"
           [labelText]="yAxisLabel"
@@ -127,6 +130,9 @@ export class BarVertical2DStackedComponent extends BaseChartComponent {
   @Input() legendPosition: string = 'right';
   @Input() xAxis;
   @Input() yAxis;
+  @Input() showXAxisLineTop;
+  @Input() showYAxisLineLeft;
+  @Input() showYAxisLineRight;
   @Input() showXAxisLabel;
   @Input() showYAxisLabel;
   @Input() xAxisLabel;

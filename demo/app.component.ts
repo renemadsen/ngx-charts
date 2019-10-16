@@ -47,7 +47,7 @@ function multiFormat(value) {
 export class AppComponent implements OnInit {
   version = APP_VERSION;
 
-  theme = 'dark';
+  theme = 'light';
   chartType: string;
   chartGroups: any[];
   chart: any;

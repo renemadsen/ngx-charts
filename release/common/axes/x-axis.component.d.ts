@@ -15,6 +15,8 @@ export declare class XAxisComponent implements OnChanges {
     xAxisTickCount: any;
     xOrient: string;
     xAxisOffset: number;
+    showXAxisLineTop: boolean;
+    showXAxisLineBottom: boolean;
     dimensionsChanged: EventEmitter<{}>;
     xAxisClassName: string;
     tickArguments: any;
@@ -28,6 +30,7 @@ export declare class XAxisComponent implements OnChanges {
     ticksComponent: XAxisTicksComponent;
     ngOnChanges(changes: SimpleChanges): void;
     update(): void;
+    gridLineTransform(): string;
     emitTicksHeight({ height }: {
         height: any;
     }): void;

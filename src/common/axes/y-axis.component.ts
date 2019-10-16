@@ -34,8 +34,24 @@ import { YAxisTicksComponent } from './y-axis-ticks.component';
         (dimensionsChanged)="emitTicksWidth($event)"
       />
 
+      <svg:g *ngIf="showYAxisLineLeft" [attr.transform]="gridLineTransform()">
+        <svg:line class="gridline-path gridline-path-vertical" [attr.y1]="dims.height" y2="0" />
+      </svg:g>
+
+      <svg:g *ngIf="showYAxisLineRight" [attr.transform]="gridLineTransform()">
+        <svg:line 
+          class="gridline-path
+          gridline-path-vertical"
+          [attr.x1]="dims.width"
+          [attr.x2]="dims.width"
+          [attr.y1]="dims.height"
+          y2="0"
+        />
+      </svg:g>
+
       <svg:g
         ngx-charts-axis-label
+        [attr.class]="'axis-label'"
         *ngIf="showLabel"
         [label]="labelText"
         [offset]="labelOffset"
@@ -55,6 +71,8 @@ export class YAxisComponent implements OnChanges {
   @Input() tickFormatting;
   @Input() ticks: any[];
   @Input() showGridLines = false;
+  @Input() showYAxisLineLeft: boolean = false;
+  @Input() showYAxisLineRight: boolean = false;
   @Input() showLabel;
   @Input() labelText;
   @Input() yAxisTickInterval;
@@ -96,6 +114,10 @@ export class YAxisComponent implements OnChanges {
     if (this.yAxisTickCount !== undefined) {
       this.tickArguments = [this.yAxisTickCount];
     }
+  }
+
+  gridLineTransform(): string {
+    return `translate(${this.padding}, 0)`;
   }
 
   emitTicksWidth({ width }): void {

@@ -56,6 +56,8 @@
         [legendPosition]="legendPosition"
         [showXAxisLabel]="showXAxisLabel"
         [showYAxisLabel]="showYAxisLabel"
+        [showXAxisLineTop]=true
+        [showXAxisLineBottom]=true
         [tooltipDisabled]="tooltipDisabled"
         [xAxisLabel]="xAxisLabel"
         [yAxisLabel]="yAxisLabel"
@@ -130,6 +132,9 @@
         [xAxis]="showXAxis"
         [yAxis]="showYAxis"
         [legend]="showLegend"
+        [showXAxisLineTop]=true
+        [showXAxisLineBottom]=true
+        [showYAxisLineRight]=true
         [legendTitle]="legendTitle"
         [legendPosition]="legendPosition"
         (legendLabelClick)="onLegendLabelClick($event)"
@@ -206,6 +211,9 @@
         [tooltipDisabled]="tooltipDisabled"
         [xAxis]="showXAxis"
         [yAxis]="showYAxis"
+        [showXAxisLineTop]=false
+        [showYAxisLineLeft]=true
+        [showYAxisLineRight]=false
         [legend]="showLegend"
         [legendTitle]="legendTitle"
         [legendPosition]="legendPosition"
@@ -245,6 +253,9 @@
         [legendTitle]="legendTitle"
         [legendPosition]="legendPosition"
         [showXAxisLabel]="showXAxisLabel"
+        [showXAxisLineTop]=true
+        [showXAxisLineBottom]=true
+        [showYAxisLineRight]=true
         (legendLabelClick)="onLegendLabelClick($event)"
         [showYAxisLabel]="showYAxisLabel"
         [xAxisLabel]="xAxisLabel"
@@ -318,6 +329,8 @@
         [legendPosition]="legendPosition"
         [showXAxisLabel]="showXAxisLabel"
         [showYAxisLabel]="showYAxisLabel"
+        [showXAxisLineTop]=true
+        [showXAxisLineBottom]=true
         [xAxisLabel]="xAxisLabel"
         [yAxisLabel]="yAxisLabel"
         (legendLabelClick)="onLegendLabelClick($event)"
@@ -1142,6 +1155,10 @@
       [tooltipDisabled]="tooltipDisabled"
       [xAxis]="showXAxis"
       [yAxis]="showYAxis"
+      [showYAxisLineRight]=true
+      [showYAxisLineLeft]=true
+      [showXAxisLineTop]=true
+      [showXAxisLineBottom]=true
       [legend]="showLegend"
       [legendTitle]="legendTitle"
       [legendPosition]="legendPosition"
@@ -1184,8 +1201,8 @@
       <h3>Theme</h3>
       <select [ngModel]="theme" (ngModelChange)="theme = $event"
         >>
-        <option [value]="'dark'">Dark</option>
         <option [value]="'light'">Light</option>
+        <option [value]="'dark'">Dark</option>
       </select>
 
       <h3 (click)="dataVisable = !dataVisable" style="cursor: pointer">

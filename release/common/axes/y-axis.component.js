@@ -12,6 +12,8 @@ import { YAxisTicksComponent } from './y-axis-ticks.component';
 var YAxisComponent = /** @class */ (function () {
     function YAxisComponent() {
         this.showGridLines = false;
+        this.showYAxisLineLeft = false;
+        this.showYAxisLineRight = false;
         this.yOrient = 'left';
         this.yAxisOffset = 0;
         this.dimensionsChanged = new EventEmitter();
@@ -39,6 +41,9 @@ var YAxisComponent = /** @class */ (function () {
         if (this.yAxisTickCount !== undefined) {
             this.tickArguments = [this.yAxisTickCount];
         }
+    };
+    YAxisComponent.prototype.gridLineTransform = function () {
+        return "translate(" + this.padding + ", 0)";
     };
     YAxisComponent.prototype.emitTicksWidth = function (_a) {
         var _this = this;
@@ -86,6 +91,14 @@ var YAxisComponent = /** @class */ (function () {
     ], YAxisComponent.prototype, "showGridLines", void 0);
     __decorate([
         Input(),
+        __metadata("design:type", Boolean)
+    ], YAxisComponent.prototype, "showYAxisLineLeft", void 0);
+    __decorate([
+        Input(),
+        __metadata("design:type", Boolean)
+    ], YAxisComponent.prototype, "showYAxisLineRight", void 0);
+    __decorate([
+        Input(),
         __metadata("design:type", Object)
     ], YAxisComponent.prototype, "showLabel", void 0);
     __decorate([
@@ -131,7 +144,7 @@ var YAxisComponent = /** @class */ (function () {
     YAxisComponent = __decorate([
         Component({
             selector: 'g[ngx-charts-y-axis]',
-            template: "\n    <svg:g [attr.class]=\"yAxisClassName\" [attr.transform]=\"transform\">\n      <svg:g\n        ngx-charts-y-axis-ticks\n        *ngIf=\"yScale\"\n        [trimTicks]=\"trimTicks\"\n        [maxTickLength]=\"maxTickLength\"\n        [tickFormatting]=\"tickFormatting\"\n        [tickArguments]=\"tickArguments\"\n        [tickValues]=\"ticks\"\n        [tickStroke]=\"tickStroke\"\n        [scale]=\"yScale\"\n        [orient]=\"yOrient\"\n        [showGridLines]=\"showGridLines\"\n        [gridLineWidth]=\"dims.width\"\n        [referenceLines]=\"referenceLines\"\n        [showRefLines]=\"showRefLines\"\n        [showRefLabels]=\"showRefLabels\"\n        [height]=\"dims.height\"\n        (dimensionsChanged)=\"emitTicksWidth($event)\"\n      />\n\n      <svg:g\n        ngx-charts-axis-label\n        *ngIf=\"showLabel\"\n        [label]=\"labelText\"\n        [offset]=\"labelOffset\"\n        [orient]=\"yOrient\"\n        [height]=\"dims.height\"\n        [width]=\"dims.width\"\n      ></svg:g>\n    </svg:g>\n  ",
+            template: "\n    <svg:g [attr.class]=\"yAxisClassName\" [attr.transform]=\"transform\">\n      <svg:g\n        ngx-charts-y-axis-ticks\n        *ngIf=\"yScale\"\n        [trimTicks]=\"trimTicks\"\n        [maxTickLength]=\"maxTickLength\"\n        [tickFormatting]=\"tickFormatting\"\n        [tickArguments]=\"tickArguments\"\n        [tickValues]=\"ticks\"\n        [tickStroke]=\"tickStroke\"\n        [scale]=\"yScale\"\n        [orient]=\"yOrient\"\n        [showGridLines]=\"showGridLines\"\n        [gridLineWidth]=\"dims.width\"\n        [referenceLines]=\"referenceLines\"\n        [showRefLines]=\"showRefLines\"\n        [showRefLabels]=\"showRefLabels\"\n        [height]=\"dims.height\"\n        (dimensionsChanged)=\"emitTicksWidth($event)\"\n      />\n\n      <svg:g *ngIf=\"showYAxisLineLeft\" [attr.transform]=\"gridLineTransform()\">\n        <svg:line class=\"gridline-path gridline-path-vertical\" [attr.y1]=\"dims.height\" y2=\"0\" />\n      </svg:g>\n\n      <svg:g *ngIf=\"showYAxisLineRight\" [attr.transform]=\"gridLineTransform()\">\n        <svg:line \n          class=\"gridline-path\n          gridline-path-vertical\"\n          [attr.x1]=\"dims.width\"\n          [attr.x2]=\"dims.width\"\n          [attr.y1]=\"dims.height\"\n          y2=\"0\"\n        />\n      </svg:g>\n\n      <svg:g\n        ngx-charts-axis-label\n        [attr.class]=\"'axis-label'\"\n        *ngIf=\"showLabel\"\n        [label]=\"labelText\"\n        [offset]=\"labelOffset\"\n        [orient]=\"yOrient\"\n        [height]=\"dims.height\"\n        [width]=\"dims.width\"\n      ></svg:g>\n    </svg:g>\n  ",
             changeDetection: ChangeDetectionStrategy.OnPush
         })
     ], YAxisComponent);

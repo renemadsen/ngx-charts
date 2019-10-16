@@ -8,6 +8,8 @@ export declare class YAxisComponent implements OnChanges {
     tickFormatting: any;
     ticks: any[];
     showGridLines: boolean;
+    showYAxisLineLeft: boolean;
+    showYAxisLineRight: boolean;
     showLabel: any;
     labelText: any;
     yAxisTickInterval: any;
@@ -31,6 +33,7 @@ export declare class YAxisComponent implements OnChanges {
     ticksComponent: YAxisTicksComponent;
     ngOnChanges(changes: SimpleChanges): void;
     update(): void;
+    gridLineTransform(): string;
     emitTicksWidth({ width }: {
         width: any;
     }): void;

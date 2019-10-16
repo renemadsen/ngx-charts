@@ -5,6 +5,8 @@
   .ngx-charts .bar,
   .ngx-charts .arc {
     cursor: pointer; }
+  .ngx-charts .axis-label {
+    font-size: 14px; }
   .ngx-charts .bar.active, .ngx-charts .bar:hover,
   .ngx-charts .cell.active,
   .ngx-charts .cell:hover,

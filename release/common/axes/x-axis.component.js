@@ -15,6 +15,8 @@ var XAxisComponent = /** @class */ (function () {
         this.showGridLines = false;
         this.xOrient = 'bottom';
         this.xAxisOffset = 0;
+        this.showXAxisLineTop = false;
+        this.showXAxisLineBottom = false;
         this.dimensionsChanged = new EventEmitter();
         this.xAxisClassName = 'x axis';
         this.labelOffset = 0;
@@ -32,6 +34,9 @@ var XAxisComponent = /** @class */ (function () {
         if (typeof this.xAxisTickCount !== 'undefined') {
             this.tickArguments = [this.xAxisTickCount];
         }
+    };
+    XAxisComponent.prototype.gridLineTransform = function () {
+        return "translate(0, " + this.padding * -1 + ")";
     };
     XAxisComponent.prototype.emitTicksHeight = function (_a) {
         var _this = this;
@@ -101,6 +106,14 @@ var XAxisComponent = /** @class */ (function () {
         __metadata("design:type", Number)
     ], XAxisComponent.prototype, "xAxisOffset", void 0);
     __decorate([
+        Input(),
+        __metadata("design:type", Boolean)
+    ], XAxisComponent.prototype, "showXAxisLineTop", void 0);
+    __decorate([
+        Input(),
+        __metadata("design:type", Boolean)
+    ], XAxisComponent.prototype, "showXAxisLineBottom", void 0);
+    __decorate([
         Output(),
         __metadata("design:type", Object)
     ], XAxisComponent.prototype, "dimensionsChanged", void 0);
@@ -111,7 +124,7 @@ var XAxisComponent = /** @class */ (function () {
     XAxisComponent = __decorate([
         Component({
             selector: 'g[ngx-charts-x-axis]',
-            template: "\n    <svg:g [attr.class]=\"xAxisClassName\" [attr.transform]=\"transform\">\n      <svg:g\n        ngx-charts-x-axis-ticks\n        *ngIf=\"xScale\"\n        [trimTicks]=\"trimTicks\"\n        [rotateTicks]=\"rotateTicks\"\n        [maxTickLength]=\"maxTickLength\"\n        [tickFormatting]=\"tickFormatting\"\n        [tickArguments]=\"tickArguments\"\n        [tickStroke]=\"tickStroke\"\n        [scale]=\"xScale\"\n        [orient]=\"xOrient\"\n        [showGridLines]=\"showGridLines\"\n        [gridLineHeight]=\"dims.height\"\n        [width]=\"dims.width\"\n        [tickValues]=\"ticks\"\n        (dimensionsChanged)=\"emitTicksHeight($event)\"\n      />\n      <svg:g\n        ngx-charts-axis-label\n        *ngIf=\"showLabel\"\n        [label]=\"labelText\"\n        [offset]=\"labelOffset\"\n        [orient]=\"'bottom'\"\n        [height]=\"dims.height\"\n        [width]=\"dims.width\"\n      ></svg:g>\n    </svg:g>\n  ",
+            template: "\n    <svg:g [attr.class]=\"xAxisClassName\" [attr.transform]=\"transform\">\n      <svg:g\n        ngx-charts-x-axis-ticks\n        *ngIf=\"xScale\"\n        [trimTicks]=\"trimTicks\"\n        [rotateTicks]=\"rotateTicks\"\n        [maxTickLength]=\"maxTickLength\"\n        [tickFormatting]=\"tickFormatting\"\n        [tickArguments]=\"tickArguments\"\n        [tickStroke]=\"tickStroke\"\n        [scale]=\"xScale\"\n        [orient]=\"xOrient\"\n        [showGridLines]=\"showGridLines\"\n        [gridLineHeight]=\"dims.height\"\n        [width]=\"dims.width\"\n        [tickValues]=\"ticks\"\n        (dimensionsChanged)=\"emitTicksHeight($event)\"\n      />\n      <svg:g *ngIf=\"showXAxisLineTop\" [attr.transform]=\"gridLineTransform()\">\n        <svg:line \n          class=\"gridline-path gridline-path-vertical\"\n          [attr.x1]=\"0\"\n          [attr.x2]=\"dims.width\"\n          [attr.y1]=\"-dims.height\"\n          [attr.y2]=\"-dims.height\"\n        />\n      </svg:g>\n      <svg:g *ngIf=\"showXAxisLineBottom\" [attr.transform]=\"gridLineTransform()\">\n        <svg:line class=\"gridline-path gridline-path-vertical\"  [attr.x1]=\"0\" [attr.x2]=\"dims.width\" />\n      </svg:g>\n      <svg:g\n        ngx-charts-axis-label\n        [attr.class]=\"'axis-label'\"\n        *ngIf=\"showLabel\"\n        [label]=\"labelText\"\n        [offset]=\"labelOffset\"\n        [orient]=\"'bottom'\"\n        [height]=\"dims.height\"\n        [width]=\"dims.width\"\n      ></svg:g>\n    </svg:g>\n  ",
             changeDetection: ChangeDetectionStrategy.OnPush
         })
     ], XAxisComponent);

@@ -8,6 +8,9 @@ export declare class BarVertical2DStackedComponent extends BaseChartComponent {
     legendPosition: string;
     xAxis: any;
     yAxis: any;
+    showXAxisLineTop: any;
+    showYAxisLineLeft: any;
+    showYAxisLineRight: any;
     showXAxisLabel: any;
     showYAxisLabel: any;
     xAxisLabel: any;

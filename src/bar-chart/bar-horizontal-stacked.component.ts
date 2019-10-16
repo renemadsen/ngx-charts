@@ -38,6 +38,8 @@ import { BaseChartComponent } from '../common/base-chart.component';
           [showGridLines]="showGridLines"
           [showLabel]="showXAxisLabel"
           [labelText]="xAxisLabel"
+          [showXAxisLineTop]="showXAxisLineTop"
+          [showXAxisLineBottom]="showXAxisLineBottom"
           [trimTicks]="trimXAxisTicks"
           [rotateTicks]="rotateXAxisTicks"
           [maxTickLength]="maxXAxisTickLength"
@@ -51,6 +53,8 @@ import { BaseChartComponent } from '../common/base-chart.component';
           [yScale]="yScale"
           [dims]="dims"
           [showLabel]="showYAxisLabel"
+          [showYAxisLineRight]="showYAxisLineRight"
+          [showYAxisLineLeft]="showYAxisLineLeft"
           [labelText]="yAxisLabel"
           [trimTicks]="trimYAxisTicks"
           [maxTickLength]="maxYAxisTickLength"
@@ -114,6 +118,10 @@ export class BarHorizontalStackedComponent extends BaseChartComponent {
   @Input() yAxis;
   @Input() showXAxisLabel;
   @Input() showYAxisLabel;
+  @Input() showXAxisLineTop;
+  @Input() showXAxisLineBottom;
+  @Input() showYAxisLineRight;
+  @Input() showYAxisLineLeft;
   @Input() xAxisLabel;
   @Input() yAxisLabel;
   @Input() tooltipDisabled: boolean = false;

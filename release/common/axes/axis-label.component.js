@@ -27,13 +27,15 @@ var AxisLabelComponent = /** @class */ (function () {
                 this.x = this.width / 2;
                 break;
             case 'bottom':
-                this.y = this.offset;
-                this.x = this.width / 2;
+                this.y = (this.offset + 10);
+                this.x = this.width;
+                this.textAnchor = 'end';
                 break;
             case 'left':
-                this.y = -(this.offset + this.textHeight + this.margin);
-                this.x = -this.height / 2;
-                this.transform = 'rotate(270)';
+                this.y = -(20);
+                this.x = 0;
+                this.textAnchor = 'end';
+                this.transform = 'rotate(0)';
                 break;
             case 'right':
                 this.y = this.offset + this.margin;

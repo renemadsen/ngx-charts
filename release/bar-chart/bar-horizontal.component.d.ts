@@ -10,6 +10,8 @@ export declare class BarHorizontalComponent extends BaseChartComponent {
     yAxis: any;
     showXAxisLabel: any;
     showYAxisLabel: any;
+    showXAxisLineTop: any;
+    showXAxisLineBottom: any;
     xAxisLabel: any;
     yAxisLabel: any;
     tooltipDisabled: boolean;
