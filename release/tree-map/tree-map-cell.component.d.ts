@@ -31,7 +31,7 @@ export declare class TreeMapCellComponent implements OnChanges {
     ngOnChanges(): void;
     update(): void;
     loadAnimation(): void;
-    getPointerEvents(): "auto" | "none";
+    getPointerEvents(): "none" | "auto";
     getTextColor(): string;
     animateToCurrentForm(): void;
     onClick(): void;
