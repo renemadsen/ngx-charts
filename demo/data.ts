@@ -1,5 +1,12 @@
 import { data as countries } from 'emoji-flags';
-import { SingleSeries, MultiSeries, BubbleChartMultiSeries, Series, TreeMapData, GroupedStackedBarChartData } from '../src/models/chart-data.model';
+import { 
+  SingleSeries, 
+  MultiSeries, 
+  BubbleChartMultiSeries, 
+  Series, 
+  TreeMapData, 
+  GroupedStackedBarChartData 
+} from '../src/models/chart-data.model';
 
 export const single: SingleSeries = [
   {

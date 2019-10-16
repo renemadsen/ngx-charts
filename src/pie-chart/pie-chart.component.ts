@@ -131,7 +131,7 @@ export class PieChartComponent extends BaseChartComponent {
       width: this.width,
       height: this.height,
       margins: this.margins,
-      showLegend: showLegend,
+      showLegend,
       legendPosition: this.legendPosition
     });
 

@@ -121,7 +121,7 @@ export class TreeMapComponent extends BaseChartComponent {
     this.data = this.treemap(root);
 
     this.setColors();
-    this.getCells()
+    this.getCells();
     this.legendOptions = this.getLegendOptions();
 
     this.transform = `translate(${this.dims.xOffset} , ${this.margin[0]})`;

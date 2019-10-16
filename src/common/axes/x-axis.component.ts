@@ -104,7 +104,7 @@ export class XAxisComponent implements OnChanges {
   }
 
   gridLineTransform(): string {
-    return `translate(0, ${this.padding*-1})`;
+    return `translate(0, ${this.padding * -1})`;
   }
 
   emitTicksHeight({ height }): void {
