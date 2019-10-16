@@ -77,6 +77,7 @@ export class PieChartComponent extends BaseChartComponent {
   @Input() legendPosition: string = 'right';
   @Input() explodeSlices = false;
   @Input() doughnut = false;
+  @Input() totalValue: string;
   @Input() totalLabel: string;
   @Input() arcWidth = 0.25;
   @Input() gradient: boolean;
@@ -183,11 +184,15 @@ export class PieChartComponent extends BaseChartComponent {
   }
 
   getTotalLabel() {
-    this.totalNumber = 0;
+    if (this.totalValue) {
+      this.totalNumber = this.totalValue;
+    } else {
+      this.totalNumber = 0;
 
-    this.results.forEach(d => {
-      this.totalNumber = this.totalNumber + d.value;
-    });
+      this.results.forEach(d => {
+        this.totalNumber = this.totalNumber + d.value;
+      });
+    }
   }
 
   getDomain(): any[] {

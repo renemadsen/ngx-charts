@@ -17382,10 +17382,15 @@ var PieChartComponent = /** @class */ (function (_super) {
     };
     PieChartComponent.prototype.getTotalLabel = function () {
         var _this = this;
-        this.totalNumber = 0;
-        this.results.forEach(function (d) {
-            _this.totalNumber = _this.totalNumber + d.value;
-        });
+        if (this.totalValue) {
+            this.totalNumber = this.totalValue;
+        }
+        else {
+            this.totalNumber = 0;
+            this.results.forEach(function (d) {
+                _this.totalNumber = _this.totalNumber + d.value;
+            });
+        }
     };
     PieChartComponent.prototype.getDomain = function () {
         return this.results.map(function (d) { return d.label; });
@@ -17472,6 +17477,10 @@ var PieChartComponent = /** @class */ (function (_super) {
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Input"])(),
         __metadata("design:type", Object)
     ], PieChartComponent.prototype, "doughnut", void 0);
+    __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Input"])(),
+        __metadata("design:type", String)
+    ], PieChartComponent.prototype, "totalValue", void 0);
     __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Input"])(),
         __metadata("design:type", String)
