@@ -22,10 +22,12 @@ export declare class TreeMapComponent extends BaseChartComponent {
     colors: ColorHelper;
     treemap: any;
     data: any;
+    valuedata: any[];
     legendData: any;
     margin: number[];
     legendOptions: any;
     update(): void;
+    getCells(): any[];
     getLegendOptions(): {
         scaleType: string;
         domain: any;

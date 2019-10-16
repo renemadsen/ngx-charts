@@ -22,6 +22,7 @@ import {
       </span>
       <span class="legend-label-text">
         {{trimmedLabel}}
+        <span *ngIf="value" class="legend-label-value">{{value}}</span>
       </span>
     </span>
   `,
@@ -31,6 +32,7 @@ export class LegendEntryComponent {
 
   @Input() color: string;
   @Input() label: any;
+  @Input() value: any;
   @Input() formattedLabel: string;
   @Input() isActive: boolean = false;
 

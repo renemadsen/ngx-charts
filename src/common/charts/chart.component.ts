@@ -39,6 +39,7 @@ import { TooltipService } from '../tooltip';
         class="chart-legend"
         [horizontal]="legendOptions && legendOptions.position === 'below'"
         [data]="legendOptions.domain"
+        [valuedata]="valuedata"
         [title]="legendOptions.title"
         [colors]="legendOptions.colors"
         [height]="view[1]"
@@ -85,6 +86,7 @@ export class ChartComponent implements OnChanges {
 
   // remove
   @Input() data;
+  @Input() valuedata;
   @Input() advancedData;
   @Input() legendData;
   @Input() legendType: any;

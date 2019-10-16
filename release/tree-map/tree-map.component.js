@@ -40,6 +40,7 @@ var TreeMapComponent = /** @class */ (function (_super) {
         _this.select = new EventEmitter();
         _this.activate = new EventEmitter();
         _this.deactivate = new EventEmitter();
+        _this.valuedata = [];
         _this.margin = [0, 0, 0, 0];
         return _this;
     }
@@ -74,8 +75,19 @@ var TreeMapComponent = /** @class */ (function (_super) {
             .sum(function (d) { return d.value; });
         this.data = this.treemap(root);
         this.setColors();
+        this.getCells();
         this.legendOptions = this.getLegendOptions();
         this.transform = "translate(" + this.dims.xOffset + " , " + this.margin[0] + ")";
+    };
+    TreeMapComponent.prototype.getCells = function () {
+        var _this = this;
+        return this.data.children
+            .filter(function (d) {
+            return d.depth === 1;
+        })
+            .map(function (d, index) {
+            _this.valuedata.push(d.value);
+        });
     };
     TreeMapComponent.prototype.getLegendOptions = function () {
         return {
@@ -186,7 +198,7 @@ var TreeMapComponent = /** @class */ (function (_super) {
     TreeMapComponent = __decorate([
         Component({
             selector: 'ngx-charts-tree-map',
-            template: "\n    <ngx-charts-chart \n    [view]=\"[width, height]\"\n    [showLegend]=\"legend\"\n    [legendOptions]=\"legendOptions\"\n    [activeEntries]=\"activeEntries\"\n    [animations]=\"animations\"\n    (legendLabelActivate)=\"onActivate($event)\"\n    (legendLabelDeactivate)=\"onDeactivate($event)\"\n    (legendLabelClick)=\"onClick($event)\"\n    >\n      <svg:g [attr.transform]=\"transform\" class=\"tree-map chart\">\n        <svg:g\n          ngx-charts-tree-map-cell-series\n          [colors]=\"colors\"\n          [data]=\"data\"\n          [dims]=\"dims\"\n          [activeEntries]=\"activeEntries\"\n          [tooltipDisabled]=\"tooltipDisabled\"\n          [tooltipTemplate]=\"tooltipTemplate\"\n          [valueFormatting]=\"valueFormatting\"\n          [labelFormatting]=\"labelFormatting\"\n          [gradient]=\"gradient\"\n          [showLabel]=\"showLabel\"\n          [animations]=\"animations\"\n          (activate)=\"onActivate($event)\"\n          (deactivate)=\"onDeactivate($event)\"\n          (select)=\"onClick($event)\"\n        />\n      </svg:g>\n    </ngx-charts-chart>\n  ",
+            template: "\n    <ngx-charts-chart \n    [view]=\"[width, height]\"\n    [showLegend]=\"legend\"\n    [legendOptions]=\"legendOptions\"\n    [valuedata]=\"valuedata\"\n    [activeEntries]=\"activeEntries\"\n    [animations]=\"animations\"\n    (legendLabelActivate)=\"onActivate($event)\"\n    (legendLabelDeactivate)=\"onDeactivate($event)\"\n    (legendLabelClick)=\"onClick($event)\"\n    >\n      <svg:g [attr.transform]=\"transform\" class=\"tree-map chart\">\n        <svg:g\n          ngx-charts-tree-map-cell-series\n          [colors]=\"colors\"\n          [data]=\"data\"\n          [dims]=\"dims\"\n          [activeEntries]=\"activeEntries\"\n          [tooltipDisabled]=\"tooltipDisabled\"\n          [tooltipTemplate]=\"tooltipTemplate\"\n          [valueFormatting]=\"valueFormatting\"\n          [labelFormatting]=\"labelFormatting\"\n          [gradient]=\"gradient\"\n          [showLabel]=\"showLabel\"\n          [animations]=\"animations\"\n          (activate)=\"onActivate($event)\"\n          (deactivate)=\"onDeactivate($event)\"\n          (select)=\"onClick($event)\"\n        />\n      </svg:g>\n    </ngx-charts-chart>\n  ",
             styleUrls: ['./tree-map.component.css'],
             encapsulation: ViewEncapsulation.None,
             changeDetection: ChangeDetectionStrategy.OnPush

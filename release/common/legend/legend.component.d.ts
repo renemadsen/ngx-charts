@@ -2,6 +2,7 @@ import { EventEmitter, SimpleChanges, OnChanges, ChangeDetectorRef } from '@angu
 export declare class LegendComponent implements OnChanges {
     private cd;
     data: any;
+    valuedata: any;
     title: any;
     colors: any;
     height: any;

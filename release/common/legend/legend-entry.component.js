@@ -39,6 +39,10 @@ var LegendEntryComponent = /** @class */ (function () {
     ], LegendEntryComponent.prototype, "label", void 0);
     __decorate([
         Input(),
+        __metadata("design:type", Object)
+    ], LegendEntryComponent.prototype, "value", void 0);
+    __decorate([
+        Input(),
         __metadata("design:type", String)
     ], LegendEntryComponent.prototype, "formattedLabel", void 0);
     __decorate([
@@ -76,7 +80,7 @@ var LegendEntryComponent = /** @class */ (function () {
     LegendEntryComponent = __decorate([
         Component({
             selector: 'ngx-charts-legend-entry',
-            template: "\n    <span \n      [title]=\"formattedLabel\"\n      tabindex=\"-1\"\n      [class.active]=\"isActive\"\n      (click)=\"select.emit(formattedLabel)\">\n      <span\n        class=\"legend-label-color\"\n        [style.background-color]=\"color\"\n        (click)=\"toggle.emit(formattedLabel)\">\n      </span>\n      <span class=\"legend-label-text\">\n        {{trimmedLabel}}\n      </span>\n    </span>\n  ",
+            template: "\n    <span \n      [title]=\"formattedLabel\"\n      tabindex=\"-1\"\n      [class.active]=\"isActive\"\n      (click)=\"select.emit(formattedLabel)\">\n      <span\n        class=\"legend-label-color\"\n        [style.background-color]=\"color\"\n        (click)=\"toggle.emit(formattedLabel)\">\n      </span>\n      <span class=\"legend-label-text\">\n        {{trimmedLabel}}\n        <span *ngIf=\"value\" class=\"legend-label-value\">{{value}}</span>\n      </span>\n    </span>\n  ",
             changeDetection: ChangeDetectionStrategy.OnPush
         })
     ], LegendEntryComponent);

@@ -22,6 +22,7 @@ import { DataItem } from '../models/chart-data.model';
     [view]="[width, height]"
     [showLegend]="legend"
     [legendOptions]="legendOptions"
+    [valuedata]="valuedata"
     [activeEntries]="activeEntries"
     [animations]="animations"
     (legendLabelActivate)="onActivate($event)"
@@ -77,6 +78,7 @@ export class TreeMapComponent extends BaseChartComponent {
   colors: ColorHelper;
   treemap: any;
   data: any;
+  valuedata = [];
   legendData: any;
   margin = [0, 0, 0, 0];
   legendOptions: any;
@@ -119,9 +121,20 @@ export class TreeMapComponent extends BaseChartComponent {
     this.data = this.treemap(root);
 
     this.setColors();
+    this.getCells()
     this.legendOptions = this.getLegendOptions();
 
     this.transform = `translate(${this.dims.xOffset} , ${this.margin[0]})`;
+  }
+
+  getCells(): any[] {
+    return this.data.children
+      .filter(d => {
+        return d.depth === 1;
+      })
+      .map((d, index) => {
+        this.valuedata.push(d.value);
+      });
   }
 
   getLegendOptions() {

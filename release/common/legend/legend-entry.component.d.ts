@@ -2,6 +2,7 @@ import { EventEmitter } from '@angular/core';
 export declare class LegendEntryComponent {
     color: string;
     label: any;
+    value: any;
     formattedLabel: string;
     isActive: boolean;
     select: EventEmitter<any>;

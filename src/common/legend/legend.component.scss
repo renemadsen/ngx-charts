@@ -79,6 +79,10 @@
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
+
+    .legend-label-value {
+      display: block;
+    }
   }
 
   .legend-title-text {

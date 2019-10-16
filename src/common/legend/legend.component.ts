@@ -13,7 +13,7 @@ import { formatLabel } from '../label.helper';
       </header>
       <div class="legend-wrap">
         <ul class="legend-labels"
-            [class.horizontal-legend]="horizontal"
+          [class.horizontal-legend]="horizontal"
           [style.max-height.px]="height - 45">
           <li
             *ngFor="let entry of legendEntries; trackBy: trackBy"
@@ -21,7 +21,7 @@ import { formatLabel } from '../label.helper';
             <ngx-charts-legend-entry
               [label]="entry.label"
               [formattedLabel]="entry.formattedLabel"
-              
+              [value]="entry.val"
               [color]="entry.color"
               [isActive]="isActive(entry)"
               (select)="labelClick.emit($event)"
@@ -40,6 +40,7 @@ import { formatLabel } from '../label.helper';
 export class LegendComponent implements OnChanges {
 
   @Input() data;
+  @Input() valuedata;
   @Input() title;
   @Input() colors;
   @Input() height;
@@ -66,9 +67,11 @@ export class LegendComponent implements OnChanges {
 
   getLegendEntries(): any[] {
     const items = [];
+    let counter = 0;
 
     for(const label of this.data) {
       const formattedLabel = formatLabel(label);
+      const val = this.valuedata[counter];
 
       const idx = items.findIndex((i) => {
         return i.label === formattedLabel;
@@ -78,9 +81,12 @@ export class LegendComponent implements OnChanges {
         items.push({
           label,
           formattedLabel,
-          color: this.colors.getColor(label)
+          color: this.colors.getColor(label),
+          val
         });
       }
+
+      counter += 1;
     }
 
     return items;
