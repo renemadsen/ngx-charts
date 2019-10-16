@@ -51,6 +51,7 @@ import { BaseChartComponent } from '../common/base-chart.component';
           [yScale]="yScale"
           [dims]="dims"
           [showLabel]="showYAxisLabel"
+          [showYAxisLineRight]="showYAxisLineRight"
           [labelText]="yAxisLabel"
           [trimTicks]="trimYAxisTicks"
           [maxTickLength]="maxYAxisTickLength"
@@ -98,6 +99,7 @@ export class BarHorizontalComponent extends BaseChartComponent {
   @Input() showYAxisLabel;
   @Input() showXAxisLineTop;
   @Input() showXAxisLineBottom;
+  @Input() showYAxisLineRight;
   @Input() xAxisLabel;
   @Input() yAxisLabel;
   @Input() tooltipDisabled: boolean = false;
