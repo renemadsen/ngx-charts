@@ -36,6 +36,7 @@ import { DataItem } from '../models/chart-data.model';
           [dims]="dims"
           [showLabel]="showXAxisLabel"
           [labelText]="xAxisLabel"
+          [showXAxisLineTop]="showXAxisLineTop"
           [trimTicks]="trimXAxisTicks"
           [rotateTicks]="rotateXAxisTicks"
           [maxTickLength]="maxXAxisTickLength"
@@ -51,6 +52,8 @@ import { DataItem } from '../models/chart-data.model';
           [dims]="dims"
           [showGridLines]="showGridLines"
           [showLabel]="showYAxisLabel"
+          [showYAxisLineLeft]="showYAxisLineLeft"
+          [showYAxisLineRight]="showYAxisLineRight"
           [labelText]="yAxisLabel"
           [trimTicks]="trimYAxisTicks"
           [maxTickLength]="maxYAxisTickLength"
@@ -95,6 +98,9 @@ export class BarVerticalComponent extends BaseChartComponent {
   @Input() yAxis;
   @Input() showXAxisLabel;
   @Input() showYAxisLabel;
+  @Input() showXAxisLineTop;
+  @Input() showYAxisLineRight;
+  @Input() showYAxisLineLeft;
   @Input() xAxisLabel;
   @Input() yAxisLabel;
   @Input() tooltipDisabled: boolean = false;

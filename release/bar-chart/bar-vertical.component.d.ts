@@ -11,6 +11,9 @@ export declare class BarVerticalComponent extends BaseChartComponent {
     yAxis: any;
     showXAxisLabel: any;
     showYAxisLabel: any;
+    showXAxisLineTop: any;
+    showYAxisLineRight: any;
+    showYAxisLineLeft: any;
     xAxisLabel: any;
     yAxisLabel: any;
     tooltipDisabled: boolean;
