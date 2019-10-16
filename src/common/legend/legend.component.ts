@@ -71,7 +71,12 @@ export class LegendComponent implements OnChanges {
 
     for(const label of this.data) {
       const formattedLabel = formatLabel(label);
-      const val = this.valuedata[counter];
+
+      let val = null;
+
+      if (this.valuedata) {
+        val = this.valuedata[counter];
+      }
 
       const idx = items.findIndex((i) => {
         return i.label === formattedLabel;

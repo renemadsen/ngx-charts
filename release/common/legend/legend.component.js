@@ -30,7 +30,10 @@ var LegendComponent = /** @class */ (function () {
         var counter = 0;
         var _loop_1 = function (label) {
             var formattedLabel = formatLabel(label);
-            var val = this_1.valuedata[counter];
+            var val = null;
+            if (this_1.valuedata) {
+                val = this_1.valuedata[counter];
+            }
             var idx = items.findIndex(function (i) {
                 return i.label === formattedLabel;
             });
