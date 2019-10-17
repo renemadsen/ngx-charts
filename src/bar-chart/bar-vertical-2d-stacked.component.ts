@@ -96,7 +96,7 @@ import { BaseChartComponent } from '../common/base-chart.component';
               [stackNumber]="index"
               [stackCount]="group.series.length"
               [roundEdges]="roundEdges"
-              [barWidth]="10"
+              [barWidth]="barWidth"
               [animations]="animations"
               [noBarWhenZero]="noBarWhenZero"
               (select)="onClick($event, group)"

@@ -101,7 +101,7 @@ export class AppComponent implements OnInit {
   yScaleMax: number;
   showDataLabel = false;
   noBarWhenZero = true;
-  barWidth = 10;
+  barWidth = 7;
   trimXAxisTicks = true;
   trimYAxisTicks = true;
   rotateXAxisTicks = true;
