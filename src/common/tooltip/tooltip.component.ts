@@ -19,7 +19,7 @@ import { AlignmentTypes } from './alignment.type';
 @Component({
   selector: 'ngx-tooltip-content',
   template: `
-    <div class="tooltip-wrapper">
+    <div>
       <span #caretElm [hidden]="!showCaret" class="tooltip-caret position-{{ this.placement }}"> </span>
       <div class="tooltip-content">
         <span *ngIf="!title">
