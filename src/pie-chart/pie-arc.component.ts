@@ -33,9 +33,9 @@ import { MouseEvent } from '../events';
         class="arc"
         [class.active]="isActive"
         [attr.fill]="getGradient()"
-        (click)="onClick()"
+        (click)="onClick($event)"
         (dblclick)="onDblClick($event)"
-        (mouseenter)="activate.emit(data)"
+        (mousemove)="onHover($event)"
         (mouseleave)="deactivate.emit(data)"
         [style.pointer-events]="getPointerEvents()"
       />
@@ -58,7 +58,9 @@ export class PieArcComponent implements OnChanges {
   @Input() animate: boolean = true;
   @Input() pointerEvents: boolean = true;
   @Input() isActive: boolean = false;
+  @Input() tooltipprecisePosition: any;
 
+  @Output() hover = new EventEmitter();
   @Output() select = new EventEmitter();
   @Output() activate = new EventEmitter();
   @Output() deactivate = new EventEmitter();
@@ -170,7 +172,12 @@ export class PieArcComponent implements OnChanges {
       });
   }
 
-  onClick(): void {
+  onHover(event): void {
+    this.activate.emit(this.data);
+    this.hover.emit(event); 
+  }
+
+  onClick(event): void {
     clearTimeout(this._timeout);
     this._timeout = setTimeout(() => this.select.emit(this.data), 200);
   }

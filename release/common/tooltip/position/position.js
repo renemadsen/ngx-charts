@@ -191,6 +191,10 @@ var PositionHelper = /** @class */ (function () {
             top = elmDim.height;
             left = PositionHelper.calculateHorizontalCaret(hostDim, elmDim, caretDimensions, alignment);
         }
+        else if (placement === PlacementTypes.center) {
+            top = elmDim.height / 2;
+            left = PositionHelper.calculateHorizontalCaret(hostDim, elmDim, caretDimensions, alignment);
+        }
         else if (placement === PlacementTypes.bottom) {
             top = -7;
             left = PositionHelper.calculateHorizontalCaret(hostDim, elmDim, caretDimensions, alignment);

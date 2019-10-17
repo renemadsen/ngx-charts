@@ -30,6 +30,7 @@ export class TooltipDirective implements OnDestroy {
   @Input() tooltipTemplate: any;
   @Input() tooltipShowEvent: ShowTypes = ShowTypes.all;
   @Input() tooltipContext: any;
+  @Input() tooltipprecisePosition: any;
   @Input() tooltipImmediateExit: boolean = false;
 
   @Output() show = new EventEmitter();
@@ -185,7 +186,8 @@ export class TooltipDirective implements OnDestroy {
       showCaret: this.tooltipShowCaret,
       cssClass: this.tooltipCssClass,
       spacing: this.tooltipSpacing,
-      context: this.tooltipContext
+      context: this.tooltipContext,
+      precisePosition: this.tooltipprecisePosition
     };
   }
 

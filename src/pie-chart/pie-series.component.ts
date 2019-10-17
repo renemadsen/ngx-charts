@@ -46,6 +46,7 @@ import { formatLabel, escapeLabel } from '../common/label.helper';
         [isActive]="isActive(arc.data)"
         [animate]="animations"
         (select)="onClick($event)"
+        (hover)="onHover($event)"
         (activate)="activate.emit($event)"
         (deactivate)="deactivate.emit($event)"
         (dblclick)="dblclick.emit($event)"
@@ -56,6 +57,7 @@ import { formatLabel, escapeLabel } from '../common/label.helper';
         [tooltipTitle]="getTooltipTitle(arc)"
         [tooltipTemplate]="tooltipTemplate"
         [tooltipContext]="arc.data"
+        [tooltipprecisePosition]="precisePosition"
       ></svg:g>
     </svg:g>
   `,
@@ -86,6 +88,7 @@ export class PieSeriesComponent implements OnChanges {
 
   max: number;
   data: any;
+  precisePosition: any = -1;
 
   ngOnChanges(changes: SimpleChanges): void {
     this.update();
@@ -193,6 +196,10 @@ export class PieSeriesComponent implements OnChanges {
 
   onClick(data): void {
     this.select.emit(data);
+  }
+
+  onHover(event): void {
+    this.precisePosition = {x: event.x , y: event.y};
   }
 
   isActive(entry): boolean {

@@ -22,6 +22,7 @@ var PieArcComponent = /** @class */ (function () {
         this.animate = true;
         this.pointerEvents = true;
         this.isActive = false;
+        this.hover = new EventEmitter();
         this.select = new EventEmitter();
         this.activate = new EventEmitter();
         this.deactivate = new EventEmitter();
@@ -111,7 +112,11 @@ var PieArcComponent = /** @class */ (function () {
             };
         });
     };
-    PieArcComponent.prototype.onClick = function () {
+    PieArcComponent.prototype.onHover = function (event) {
+        this.activate.emit(this.data);
+        this.hover.emit(event);
+    };
+    PieArcComponent.prototype.onClick = function (event) {
         var _this = this;
         clearTimeout(this._timeout);
         this._timeout = setTimeout(function () { return _this.select.emit(_this.data); }, 200);
@@ -182,6 +187,14 @@ var PieArcComponent = /** @class */ (function () {
         __metadata("design:type", Boolean)
     ], PieArcComponent.prototype, "isActive", void 0);
     __decorate([
+        Input(),
+        __metadata("design:type", Object)
+    ], PieArcComponent.prototype, "tooltipprecisePosition", void 0);
+    __decorate([
+        Output(),
+        __metadata("design:type", Object)
+    ], PieArcComponent.prototype, "hover", void 0);
+    __decorate([
         Output(),
         __metadata("design:type", Object)
     ], PieArcComponent.prototype, "select", void 0);
@@ -200,7 +213,7 @@ var PieArcComponent = /** @class */ (function () {
     PieArcComponent = __decorate([
         Component({
             selector: 'g[ngx-charts-pie-arc]',
-            template: "\n    <svg:g class=\"arc-group\">\n      <svg:defs *ngIf=\"gradient\">\n        <svg:g ngx-charts-svg-radial-gradient\n          [color]=\"fill\"\n          orientation=\"vertical\"\n          [name]=\"radialGradientId\"\n          [startOpacity]=\"startOpacity\"\n        />\n      </svg:defs>\n      <svg:path\n        [attr.d]=\"path\"\n        class=\"arc\"\n        [class.active]=\"isActive\"\n        [attr.fill]=\"getGradient()\"\n        (click)=\"onClick()\"\n        (dblclick)=\"onDblClick($event)\"\n        (mouseenter)=\"activate.emit(data)\"\n        (mouseleave)=\"deactivate.emit(data)\"\n        [style.pointer-events]=\"getPointerEvents()\"\n      />\n    </svg:g>\n  ",
+            template: "\n    <svg:g class=\"arc-group\">\n      <svg:defs *ngIf=\"gradient\">\n        <svg:g ngx-charts-svg-radial-gradient\n          [color]=\"fill\"\n          orientation=\"vertical\"\n          [name]=\"radialGradientId\"\n          [startOpacity]=\"startOpacity\"\n        />\n      </svg:defs>\n      <svg:path\n        [attr.d]=\"path\"\n        class=\"arc\"\n        [class.active]=\"isActive\"\n        [attr.fill]=\"getGradient()\"\n        (click)=\"onClick($event)\"\n        (dblclick)=\"onDblClick($event)\"\n        (mousemove)=\"onHover($event)\"\n        (mouseleave)=\"deactivate.emit(data)\"\n        [style.pointer-events]=\"getPointerEvents()\"\n      />\n    </svg:g>\n  ",
             changeDetection: ChangeDetectionStrategy.OnPush
         }),
         __metadata("design:paramtypes", [ElementRef])

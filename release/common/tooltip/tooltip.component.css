@@ -87,6 +87,9 @@
     transform: translate3d(0, 0, 0);
     pointer-events: auto; }
 
+.tooltip-wrapper {
+  position: relative; }
+
 .area-tooltip-container {
   padding: 10px 0;
   pointer-events: none; }

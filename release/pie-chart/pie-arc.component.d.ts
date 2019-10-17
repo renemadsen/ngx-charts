@@ -14,6 +14,8 @@ export declare class PieArcComponent implements OnChanges {
     animate: boolean;
     pointerEvents: boolean;
     isActive: boolean;
+    tooltipprecisePosition: any;
+    hover: EventEmitter<{}>;
     select: EventEmitter<{}>;
     activate: EventEmitter<{}>;
     deactivate: EventEmitter<{}>;
@@ -34,6 +36,7 @@ export declare class PieArcComponent implements OnChanges {
     calculateArc(): any;
     loadAnimation(): void;
     updateAnimation(): void;
-    onClick(): void;
+    onHover(event: any): void;
+    onClick(event: any): void;
     onDblClick(event: MouseEvent): void;
 }

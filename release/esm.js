@@ -82,6 +82,7 @@ var PlacementTypes;
     PlacementTypes[PlacementTypes["top"] = 'top'] = "top";
     PlacementTypes[PlacementTypes["bottom"] = 'bottom'] = "bottom";
     PlacementTypes[PlacementTypes["left"] = 'left'] = "left";
+    PlacementTypes[PlacementTypes["center"] = 'center'] = "center";
     PlacementTypes[PlacementTypes["right"] = 'right'] = "right";
 })(PlacementTypes || (PlacementTypes = {}));
 
@@ -275,6 +276,10 @@ var PositionHelper = /** @class */ (function () {
         }
         else if (placement === PlacementTypes.top) {
             top = elmDim.height;
+            left = PositionHelper.calculateHorizontalCaret(hostDim, elmDim, caretDimensions, alignment);
+        }
+        else if (placement === PlacementTypes.center) {
+            top = elmDim.height / 2;
             left = PositionHelper.calculateHorizontalCaret(hostDim, elmDim, caretDimensions, alignment);
         }
         else if (placement === PlacementTypes.bottom) {
@@ -688,9 +693,17 @@ var TooltipContentComponent = /** @class */ (function () {
         setTimeout(function () { return _this.renderer.addClass(nativeElm, 'animate'); }, 1);
     };
     TooltipContentComponent.prototype.positionContent = function (nativeElm, hostDim, elmDim) {
-        var _a = PositionHelper.positionContent(this.placement, elmDim, hostDim, this.spacing, this.alignment), top = _a.top, left = _a.left;
-        this.renderer.setStyle(nativeElm, 'top', top + "px");
-        this.renderer.setStyle(nativeElm, 'left', left + "px");
+        if (this.precisePosition && this.precisePosition != -1) {
+            var topOffset = this.precisePosition.y - elmDim.height - 20;
+            var leftOffset = this.precisePosition.x - elmDim.width / 2;
+            this.renderer.setStyle(nativeElm, 'top', topOffset + "px");
+            this.renderer.setStyle(nativeElm, 'left', leftOffset + "px");
+        }
+        else {
+            var _a = PositionHelper.positionContent(this.placement, elmDim, hostDim, this.spacing, this.alignment), top = _a.top, left = _a.left;
+            this.renderer.setStyle(nativeElm, 'top', top + "px");
+            this.renderer.setStyle(nativeElm, 'left', left + "px");
+        }
     };
     TooltipContentComponent.prototype.positionCaret = function (hostDim, elmDim) {
         var caretElm = this.caretElm.nativeElement;
@@ -747,6 +760,10 @@ var TooltipContentComponent = /** @class */ (function () {
         __metadata("design:type", Object)
     ], TooltipContentComponent.prototype, "context", void 0);
     __decorate([
+        Input(),
+        __metadata("design:type", Object)
+    ], TooltipContentComponent.prototype, "precisePosition", void 0);
+    __decorate([
         ViewChild('caretElm', { static: false }),
         __metadata("design:type", Object)
     ], TooltipContentComponent.prototype, "caretElm", void 0);
@@ -765,9 +782,9 @@ var TooltipContentComponent = /** @class */ (function () {
     TooltipContentComponent = __decorate([
         Component({
             selector: 'ngx-tooltip-content',
-            template: "\n    <div>\n      <span #caretElm [hidden]=\"!showCaret\" class=\"tooltip-caret position-{{ this.placement }}\"> </span>\n      <div class=\"tooltip-content\">\n        <span *ngIf=\"!title\">\n          <ng-template [ngTemplateOutlet]=\"template\" [ngTemplateOutletContext]=\"{ model: context }\"> </ng-template>\n        </span>\n        <span *ngIf=\"title\" [innerHTML]=\"title\"> </span>\n      </div>\n    </div>\n  ",
+            template: "\n    <div class=\"tooltip-wrapper\">\n      <span #caretElm [hidden]=\"!showCaret\" class=\"tooltip-caret position-{{ this.placement }}\"> </span>\n      <div class=\"tooltip-content\">\n        <span *ngIf=\"!title\">\n          <ng-template [ngTemplateOutlet]=\"template\" [ngTemplateOutletContext]=\"{ model: context }\"> </ng-template>\n        </span>\n        <span *ngIf=\"title\" [innerHTML]=\"title\"> </span>\n      </div>\n    </div>\n  ",
             encapsulation: ViewEncapsulation.None,
-            styles: [".ngx-charts-tooltip-content{position:fixed;border-radius:3px;z-index:5000;display:block;font-weight:400;opacity:0;pointer-events:none!important}.ngx-charts-tooltip-content.type-popover{background:#fff;color:#060709;border:1px solid #72809b;box-shadow:0 1px 3px 0 rgba(0,0,0,.2),0 1px 1px 0 rgba(0,0,0,.14),0 2px 1px -1px rgba(0,0,0,.12);font-size:13px;padding:4px}.ngx-charts-tooltip-content.type-popover .tooltip-caret{position:absolute;z-index:5001;width:0;height:0}.ngx-charts-tooltip-content.type-popover .tooltip-caret.position-left{border-top:7px solid transparent;border-bottom:7px solid transparent;border-left:7px solid #fff}.ngx-charts-tooltip-content.type-popover .tooltip-caret.position-top{border-left:7px solid transparent;border-right:7px solid transparent;border-top:7px solid #fff}.ngx-charts-tooltip-content.type-popover .tooltip-caret.position-right{border-top:7px solid transparent;border-bottom:7px solid transparent;border-right:7px solid #fff}.ngx-charts-tooltip-content.type-popover .tooltip-caret.position-bottom{border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:7px solid #fff}.ngx-charts-tooltip-content.type-tooltip{color:#414141;background:#fff;font-size:12px;padding:0 10px;text-align:center;pointer-events:auto;box-shadow:0 2px 4px 0 rgba(65,65,65,.5)}.ngx-charts-tooltip-content.type-tooltip .tooltip-caret.position-left{border-top:7px solid transparent;border-bottom:7px solid transparent;border-left:7px solid #fff}.ngx-charts-tooltip-content.type-tooltip .tooltip-caret.position-top{border-left:7px solid transparent;border-right:7px solid transparent;border-top:7px solid #fff}.ngx-charts-tooltip-content.type-tooltip .tooltip-caret.position-right{border-top:7px solid transparent;border-bottom:7px solid transparent;border-right:7px solid #fff}.ngx-charts-tooltip-content.type-tooltip .tooltip-caret.position-bottom{border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:7px solid #fff}.ngx-charts-tooltip-content .tooltip-label{display:block;line-height:1em;padding:8px 5px 5px 5px;font-size:1em}.ngx-charts-tooltip-content .tooltip-val{display:block;font-size:1.3em;line-height:1em;padding:0 5px 8px 5px}.ngx-charts-tooltip-content .tooltip-caret{position:absolute;z-index:5001;width:0;height:0}.ngx-charts-tooltip-content.position-right{transform:translate3d(10px,0,0)}.ngx-charts-tooltip-content.position-left{transform:translate3d(-10px,0,0)}.ngx-charts-tooltip-content.position-top{transform:translate3d(0,-10px,0)}.ngx-charts-tooltip-content.position-bottom{transform:translate3d(0,10px,0)}.ngx-charts-tooltip-content.animate{opacity:1;transition:opacity .3s,transform .3s;transform:translate3d(0,0,0);pointer-events:auto}.area-tooltip-container{padding:10px 0;pointer-events:none}.tooltip-item{text-align:left;line-height:1.2em;padding:5px 0}.tooltip-item .tooltip-item-color{display:inline-block;height:12px;width:12px;margin-right:5px;color:#5b646b;border-radius:3px}"]
+            styles: [".ngx-charts-tooltip-content{position:fixed;border-radius:3px;z-index:5000;display:block;font-weight:400;opacity:0;pointer-events:none!important}.ngx-charts-tooltip-content.type-popover{background:#fff;color:#060709;border:1px solid #72809b;box-shadow:0 1px 3px 0 rgba(0,0,0,.2),0 1px 1px 0 rgba(0,0,0,.14),0 2px 1px -1px rgba(0,0,0,.12);font-size:13px;padding:4px}.ngx-charts-tooltip-content.type-popover .tooltip-caret{position:absolute;z-index:5001;width:0;height:0}.ngx-charts-tooltip-content.type-popover .tooltip-caret.position-left{border-top:7px solid transparent;border-bottom:7px solid transparent;border-left:7px solid #fff}.ngx-charts-tooltip-content.type-popover .tooltip-caret.position-top{border-left:7px solid transparent;border-right:7px solid transparent;border-top:7px solid #fff}.ngx-charts-tooltip-content.type-popover .tooltip-caret.position-right{border-top:7px solid transparent;border-bottom:7px solid transparent;border-right:7px solid #fff}.ngx-charts-tooltip-content.type-popover .tooltip-caret.position-bottom{border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:7px solid #fff}.ngx-charts-tooltip-content.type-tooltip{color:#414141;background:#fff;font-size:12px;padding:0 10px;text-align:center;pointer-events:auto;box-shadow:0 2px 4px 0 rgba(65,65,65,.5)}.ngx-charts-tooltip-content.type-tooltip .tooltip-caret.position-left{border-top:7px solid transparent;border-bottom:7px solid transparent;border-left:7px solid #fff}.ngx-charts-tooltip-content.type-tooltip .tooltip-caret.position-top{border-left:7px solid transparent;border-right:7px solid transparent;border-top:7px solid #fff}.ngx-charts-tooltip-content.type-tooltip .tooltip-caret.position-right{border-top:7px solid transparent;border-bottom:7px solid transparent;border-right:7px solid #fff}.ngx-charts-tooltip-content.type-tooltip .tooltip-caret.position-bottom{border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:7px solid #fff}.ngx-charts-tooltip-content .tooltip-label{display:block;line-height:1em;padding:8px 5px 5px 5px;font-size:1em}.ngx-charts-tooltip-content .tooltip-val{display:block;font-size:1.3em;line-height:1em;padding:0 5px 8px 5px}.ngx-charts-tooltip-content .tooltip-caret{position:absolute;z-index:5001;width:0;height:0}.ngx-charts-tooltip-content.position-right{transform:translate3d(10px,0,0)}.ngx-charts-tooltip-content.position-left{transform:translate3d(-10px,0,0)}.ngx-charts-tooltip-content.position-top{transform:translate3d(0,-10px,0)}.ngx-charts-tooltip-content.position-bottom{transform:translate3d(0,10px,0)}.ngx-charts-tooltip-content.animate{opacity:1;transition:opacity .3s,transform .3s;transform:translate3d(0,0,0);pointer-events:auto}.tooltip-wrapper{position:relative}.area-tooltip-container{padding:10px 0;pointer-events:none}.tooltip-item{text-align:left;line-height:1.2em;padding:5px 0}.tooltip-item .tooltip-item-color{display:inline-block;height:12px;width:12px;margin-right:5px;color:#5b646b;border-radius:3px}"]
         }),
         __metadata("design:paramtypes", [typeof (_d = typeof ElementRef !== "undefined" && ElementRef) === "function" ? _d : Object, typeof (_e = typeof Renderer2 !== "undefined" && Renderer2) === "function" ? _e : Object])
     ], TooltipContentComponent);
@@ -942,7 +959,8 @@ var TooltipDirective = /** @class */ (function () {
             showCaret: this.tooltipShowCaret,
             cssClass: this.tooltipCssClass,
             spacing: this.tooltipSpacing,
-            context: this.tooltipContext
+            context: this.tooltipContext,
+            precisePosition: this.tooltipprecisePosition
         };
     };
     var _a, _b, _c, _d, _e, _f, _g;
@@ -1010,6 +1028,10 @@ var TooltipDirective = /** @class */ (function () {
         Input(),
         __metadata("design:type", Object)
     ], TooltipDirective.prototype, "tooltipContext", void 0);
+    __decorate([
+        Input(),
+        __metadata("design:type", Object)
+    ], TooltipDirective.prototype, "tooltipprecisePosition", void 0);
     __decorate([
         Input(),
         __metadata("design:type", Boolean)
@@ -13319,6 +13341,7 @@ var PieArcComponent = /** @class */ (function () {
         this.animate = true;
         this.pointerEvents = true;
         this.isActive = false;
+        this.hover = new EventEmitter();
         this.select = new EventEmitter();
         this.activate = new EventEmitter();
         this.deactivate = new EventEmitter();
@@ -13408,7 +13431,11 @@ var PieArcComponent = /** @class */ (function () {
             };
         });
     };
-    PieArcComponent.prototype.onClick = function () {
+    PieArcComponent.prototype.onHover = function (event$$1) {
+        this.activate.emit(this.data);
+        this.hover.emit(event$$1);
+    };
+    PieArcComponent.prototype.onClick = function (event$$1) {
         var _this = this;
         clearTimeout(this._timeout);
         this._timeout = setTimeout(function () { return _this.select.emit(_this.data); }, 200);
@@ -13480,6 +13507,14 @@ var PieArcComponent = /** @class */ (function () {
         __metadata("design:type", Boolean)
     ], PieArcComponent.prototype, "isActive", void 0);
     __decorate([
+        Input(),
+        __metadata("design:type", Object)
+    ], PieArcComponent.prototype, "tooltipprecisePosition", void 0);
+    __decorate([
+        Output(),
+        __metadata("design:type", Object)
+    ], PieArcComponent.prototype, "hover", void 0);
+    __decorate([
         Output(),
         __metadata("design:type", Object)
     ], PieArcComponent.prototype, "select", void 0);
@@ -13498,7 +13533,7 @@ var PieArcComponent = /** @class */ (function () {
     PieArcComponent = __decorate([
         Component({
             selector: 'g[ngx-charts-pie-arc]',
-            template: "\n    <svg:g class=\"arc-group\">\n      <svg:defs *ngIf=\"gradient\">\n        <svg:g ngx-charts-svg-radial-gradient\n          [color]=\"fill\"\n          orientation=\"vertical\"\n          [name]=\"radialGradientId\"\n          [startOpacity]=\"startOpacity\"\n        />\n      </svg:defs>\n      <svg:path\n        [attr.d]=\"path\"\n        class=\"arc\"\n        [class.active]=\"isActive\"\n        [attr.fill]=\"getGradient()\"\n        (click)=\"onClick()\"\n        (dblclick)=\"onDblClick($event)\"\n        (mouseenter)=\"activate.emit(data)\"\n        (mouseleave)=\"deactivate.emit(data)\"\n        [style.pointer-events]=\"getPointerEvents()\"\n      />\n    </svg:g>\n  ",
+            template: "\n    <svg:g class=\"arc-group\">\n      <svg:defs *ngIf=\"gradient\">\n        <svg:g ngx-charts-svg-radial-gradient\n          [color]=\"fill\"\n          orientation=\"vertical\"\n          [name]=\"radialGradientId\"\n          [startOpacity]=\"startOpacity\"\n        />\n      </svg:defs>\n      <svg:path\n        [attr.d]=\"path\"\n        class=\"arc\"\n        [class.active]=\"isActive\"\n        [attr.fill]=\"getGradient()\"\n        (click)=\"onClick($event)\"\n        (dblclick)=\"onDblClick($event)\"\n        (mousemove)=\"onHover($event)\"\n        (mouseleave)=\"deactivate.emit(data)\"\n        [style.pointer-events]=\"getPointerEvents()\"\n      />\n    </svg:g>\n  ",
             changeDetection: ChangeDetectionStrategy.OnPush
         }),
         __metadata("design:paramtypes", [typeof (_a = typeof ElementRef !== "undefined" && ElementRef) === "function" ? _a : Object])
@@ -14103,6 +14138,7 @@ var PieSeriesComponent = /** @class */ (function () {
         this.activate = new EventEmitter();
         this.deactivate = new EventEmitter();
         this.dblclick = new EventEmitter();
+        this.precisePosition = -1;
     }
     PieSeriesComponent.prototype.ngOnChanges = function (changes) {
         this.update();
@@ -14187,6 +14223,9 @@ var PieSeriesComponent = /** @class */ (function () {
     };
     PieSeriesComponent.prototype.onClick = function (data) {
         this.select.emit(data);
+    };
+    PieSeriesComponent.prototype.onHover = function (event$$1) {
+        this.precisePosition = { x: event$$1.x, y: event$$1.y };
     };
     PieSeriesComponent.prototype.isActive = function (entry) {
         if (!this.activeEntries)
@@ -14280,7 +14319,7 @@ var PieSeriesComponent = /** @class */ (function () {
     PieSeriesComponent = __decorate([
         Component({
             selector: 'g[ngx-charts-pie-series]',
-            template: "\n    <svg:g *ngFor=\"let arc of data; trackBy: trackBy\">\n      <svg:g\n        ngx-charts-pie-label\n        *ngIf=\"labelVisible(arc)\"\n        [data]=\"arc\"\n        [radius]=\"outerRadius\"\n        [color]=\"color(arc)\"\n        [label]=\"labelText(arc)\"\n        [labelTrim]=\"trimLabels\"\n        [labelTrimSize]=\"maxLabelLength\"\n        [max]=\"max\"\n        [value]=\"arc.value\"\n        [explodeSlices]=\"explodeSlices\"\n        [animations]=\"animations\"\n      ></svg:g>\n      <svg:g\n        ngx-charts-pie-arc\n        [startAngle]=\"arc.startAngle\"\n        [endAngle]=\"arc.endAngle\"\n        [innerRadius]=\"innerRadius\"\n        [outerRadius]=\"outerRadius\"\n        [fill]=\"color(arc)\"\n        [value]=\"arc.data.value\"\n        [gradient]=\"gradient\"\n        [data]=\"arc.data\"\n        [max]=\"max\"\n        [explodeSlices]=\"explodeSlices\"\n        [isActive]=\"isActive(arc.data)\"\n        [animate]=\"animations\"\n        (select)=\"onClick($event)\"\n        (activate)=\"activate.emit($event)\"\n        (deactivate)=\"deactivate.emit($event)\"\n        (dblclick)=\"dblclick.emit($event)\"\n        ngx-tooltip\n        [tooltipDisabled]=\"tooltipDisabled\"\n        [tooltipPlacement]=\"'top'\"\n        [tooltipType]=\"'tooltip'\"\n        [tooltipTitle]=\"getTooltipTitle(arc)\"\n        [tooltipTemplate]=\"tooltipTemplate\"\n        [tooltipContext]=\"arc.data\"\n      ></svg:g>\n    </svg:g>\n  ",
+            template: "\n    <svg:g *ngFor=\"let arc of data; trackBy: trackBy\">\n      <svg:g\n        ngx-charts-pie-label\n        *ngIf=\"labelVisible(arc)\"\n        [data]=\"arc\"\n        [radius]=\"outerRadius\"\n        [color]=\"color(arc)\"\n        [label]=\"labelText(arc)\"\n        [labelTrim]=\"trimLabels\"\n        [labelTrimSize]=\"maxLabelLength\"\n        [max]=\"max\"\n        [value]=\"arc.value\"\n        [explodeSlices]=\"explodeSlices\"\n        [animations]=\"animations\"\n      ></svg:g>\n      <svg:g\n        ngx-charts-pie-arc\n        [startAngle]=\"arc.startAngle\"\n        [endAngle]=\"arc.endAngle\"\n        [innerRadius]=\"innerRadius\"\n        [outerRadius]=\"outerRadius\"\n        [fill]=\"color(arc)\"\n        [value]=\"arc.data.value\"\n        [gradient]=\"gradient\"\n        [data]=\"arc.data\"\n        [max]=\"max\"\n        [explodeSlices]=\"explodeSlices\"\n        [isActive]=\"isActive(arc.data)\"\n        [animate]=\"animations\"\n        (select)=\"onClick($event)\"\n        (hover)=\"onHover($event)\"\n        (activate)=\"activate.emit($event)\"\n        (deactivate)=\"deactivate.emit($event)\"\n        (dblclick)=\"dblclick.emit($event)\"\n        ngx-tooltip\n        [tooltipDisabled]=\"tooltipDisabled\"\n        [tooltipPlacement]=\"'top'\"\n        [tooltipType]=\"'tooltip'\"\n        [tooltipTitle]=\"getTooltipTitle(arc)\"\n        [tooltipTemplate]=\"tooltipTemplate\"\n        [tooltipContext]=\"arc.data\"\n        [tooltipprecisePosition]=\"precisePosition\"\n      ></svg:g>\n    </svg:g>\n  ",
             changeDetection: ChangeDetectionStrategy.OnPush
         })
     ], PieSeriesComponent);

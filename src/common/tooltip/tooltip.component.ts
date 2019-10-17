@@ -19,7 +19,7 @@ import { AlignmentTypes } from './alignment.type';
 @Component({
   selector: 'ngx-tooltip-content',
   template: `
-    <div>
+    <div class="tooltip-wrapper">
       <span #caretElm [hidden]="!showCaret" class="tooltip-caret position-{{ this.placement }}"> </span>
       <div class="tooltip-content">
         <span *ngIf="!title">
@@ -43,6 +43,7 @@ export class TooltipContentComponent implements AfterViewInit {
   @Input() title: string;
   @Input() template: any;
   @Input() context: any;
+  @Input() precisePosition: any;
 
   @ViewChild('caretElm', { static: false }) caretElm;
 
@@ -81,10 +82,18 @@ export class TooltipContentComponent implements AfterViewInit {
   }
 
   positionContent(nativeElm, hostDim, elmDim): void {
-    const { top, left } = PositionHelper.positionContent(this.placement, elmDim, hostDim, this.spacing, this.alignment);
+    if (this.precisePosition && this.precisePosition != -1) {
+      const topOffset = this.precisePosition.y - elmDim.height - 20;
+      const leftOffset = this.precisePosition.x - elmDim.width / 2;
 
-    this.renderer.setStyle(nativeElm, 'top', `${top}px`);
-    this.renderer.setStyle(nativeElm, 'left', `${left}px`);
+      this.renderer.setStyle(nativeElm, 'top', `${topOffset}px`);
+      this.renderer.setStyle(nativeElm, 'left', `${leftOffset}px`);
+    } else {
+      const { top, left } = PositionHelper.positionContent(this.placement, elmDim, hostDim, this.spacing, this.alignment);
+
+      this.renderer.setStyle(nativeElm, 'top', `${top}px`);
+      this.renderer.setStyle(nativeElm, 'left', `${left}px`);
+    }
   }
 
   positionCaret(hostDim, elmDim): void {

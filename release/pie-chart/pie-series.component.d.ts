@@ -22,6 +22,7 @@ export declare class PieSeriesComponent implements OnChanges {
     dblclick: EventEmitter<{}>;
     max: number;
     data: any;
+    precisePosition: any;
     ngOnChanges(changes: SimpleChanges): void;
     update(): void;
     midAngle(d: any): number;
@@ -35,5 +36,6 @@ export declare class PieSeriesComponent implements OnChanges {
     color(myArc: any): any;
     trackBy(index: any, item: any): string;
     onClick(data: any): void;
+    onHover(event: any): void;
     isActive(entry: any): boolean;
 }

@@ -48,9 +48,17 @@ var TooltipContentComponent = /** @class */ (function () {
         setTimeout(function () { return _this.renderer.addClass(nativeElm, 'animate'); }, 1);
     };
     TooltipContentComponent.prototype.positionContent = function (nativeElm, hostDim, elmDim) {
-        var _a = PositionHelper.positionContent(this.placement, elmDim, hostDim, this.spacing, this.alignment), top = _a.top, left = _a.left;
-        this.renderer.setStyle(nativeElm, 'top', top + "px");
-        this.renderer.setStyle(nativeElm, 'left', left + "px");
+        if (this.precisePosition && this.precisePosition != -1) {
+            var topOffset = this.precisePosition.y - elmDim.height - 20;
+            var leftOffset = this.precisePosition.x - elmDim.width / 2;
+            this.renderer.setStyle(nativeElm, 'top', topOffset + "px");
+            this.renderer.setStyle(nativeElm, 'left', leftOffset + "px");
+        }
+        else {
+            var _a = PositionHelper.positionContent(this.placement, elmDim, hostDim, this.spacing, this.alignment), top_1 = _a.top, left = _a.left;
+            this.renderer.setStyle(nativeElm, 'top', top_1 + "px");
+            this.renderer.setStyle(nativeElm, 'left', left + "px");
+        }
     };
     TooltipContentComponent.prototype.positionCaret = function (hostDim, elmDim) {
         var caretElm = this.caretElm.nativeElement;
@@ -106,6 +114,10 @@ var TooltipContentComponent = /** @class */ (function () {
         __metadata("design:type", Object)
     ], TooltipContentComponent.prototype, "context", void 0);
     __decorate([
+        Input(),
+        __metadata("design:type", Object)
+    ], TooltipContentComponent.prototype, "precisePosition", void 0);
+    __decorate([
         ViewChild('caretElm', { static: false }),
         __metadata("design:type", Object)
     ], TooltipContentComponent.prototype, "caretElm", void 0);
@@ -124,7 +136,7 @@ var TooltipContentComponent = /** @class */ (function () {
     TooltipContentComponent = __decorate([
         Component({
             selector: 'ngx-tooltip-content',
-            template: "\n    <div>\n      <span #caretElm [hidden]=\"!showCaret\" class=\"tooltip-caret position-{{ this.placement }}\"> </span>\n      <div class=\"tooltip-content\">\n        <span *ngIf=\"!title\">\n          <ng-template [ngTemplateOutlet]=\"template\" [ngTemplateOutletContext]=\"{ model: context }\"> </ng-template>\n        </span>\n        <span *ngIf=\"title\" [innerHTML]=\"title\"> </span>\n      </div>\n    </div>\n  ",
+            template: "\n    <div class=\"tooltip-wrapper\">\n      <span #caretElm [hidden]=\"!showCaret\" class=\"tooltip-caret position-{{ this.placement }}\"> </span>\n      <div class=\"tooltip-content\">\n        <span *ngIf=\"!title\">\n          <ng-template [ngTemplateOutlet]=\"template\" [ngTemplateOutletContext]=\"{ model: context }\"> </ng-template>\n        </span>\n        <span *ngIf=\"title\" [innerHTML]=\"title\"> </span>\n      </div>\n    </div>\n  ",
             encapsulation: ViewEncapsulation.None,
             styleUrls: ['./tooltip.component.css']
         }),
