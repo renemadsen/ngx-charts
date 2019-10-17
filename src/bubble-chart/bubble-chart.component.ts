@@ -33,11 +33,11 @@ import { id } from '../utils/id';
       (legendLabelDeactivate)="onDeactivate($event)"
     >
       <svg:defs>
-        <svg:clipPath [attr.id]="clipPathId">
+        <svg:clipPath *ngIf="clip" [attr.id]="clipPathId">
           <svg:rect
             [attr.width]="dims.width + 10"
             [attr.height]="dims.height + 10"
-            [attr.transform]="'translate(-5, -5)'"
+            [attr.transform]="'translate(0, -5)'"
           />
         </svg:clipPath>
       </svg:defs>
@@ -127,6 +127,7 @@ import { id } from '../utils/id';
 export class BubbleChartComponent extends BaseChartComponent {
   @Input() showGridLines: boolean = true;
   @Input() legend = false;
+  @Input() clip = false;
   @Input() legendTitle: string = 'Legend';
   @Input() legendPosition: string = 'right';
   @Input() xAxis: boolean = true;
@@ -261,7 +262,9 @@ export class BubbleChartComponent extends BaseChartComponent {
         const r = this.rScale(d.r);
         const cx = this.xScaleType === 'linear' ? this.xScale(Number(d.x)) : this.xScale(d.x);
         const cy = this.yScaleType === 'linear' ? this.yScale(Number(d.y)) : this.yScale(d.y);
-        xMin = Math.max(r - cx, xMin);
+        // TODO convert value to option for padding
+        // xMin = Math.max(r - cx, xMin);
+        xMin = 0;
         yMin = Math.max(r - cy, yMin);
         yMax = Math.max(cy + r, yMax);
         xMax = Math.max(cx + r, xMax);

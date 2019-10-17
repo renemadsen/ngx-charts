@@ -5,6 +5,7 @@ import { ColorHelper } from '../common/color.helper';
 export declare class BubbleChartComponent extends BaseChartComponent {
     showGridLines: boolean;
     legend: boolean;
+    clip: boolean;
     legendTitle: string;
     legendPosition: string;
     xAxis: boolean;
