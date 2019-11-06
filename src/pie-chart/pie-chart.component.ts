@@ -46,6 +46,7 @@ import { DataItem } from '../models/chart-data.model';
           [tooltipDisabled]="tooltipDisabled"
           [tooltipTemplate]="tooltipTemplate"
           [tooltipText]="tooltipText"
+          [showSum]="doughnut && showDoughnutSum"
           (dblclick)="dblclick.emit($event)"
           (select)="onClick($event)"
           (activate)="onActivate($event)"
@@ -79,6 +80,7 @@ export class PieChartComponent extends BaseChartComponent {
   @Input() doughnut = false;
   @Input() totalValue: string;
   @Input() totalLabel: string;
+  @Input() showDoughnutSum = false;
   @Input() arcWidth = 0.25;
   @Input() gradient: boolean;
   @Input() activeEntries: any[] = [];
