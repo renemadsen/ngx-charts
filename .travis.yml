@@ -8,6 +8,8 @@ services:
   - xvfb
 addons:
   chrome: stable
+  code_climate:
+    repo_token: 36b60856e66353ed58867904d6b044847f60e2a03f3c9ece04a0a28827bc1c8e
 
 before_install:
   - export CHROME_BIN=chromium-browser
@@ -19,7 +21,3 @@ install:
 
 after_script:
   - codeclimate-test-reporter < coverage/lcov.info
-
-addons:
-  code_climate:
-    repo_token: 36b60856e66353ed58867904d6b044847f60e2a03f3c9ece04a0a28827bc1c8e
