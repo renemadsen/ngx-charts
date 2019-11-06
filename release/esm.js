@@ -5763,8 +5763,17 @@ var AreaSeriesComponent = /** @class */ (function () {
         if (this.stacked || this.normalized) {
             currentArea = area()
                 .x(xProperty)
-                .y0(function (d, i) { return _this.yScale(d.d0); })
-                .y1(function (d, i) { return _this.yScale(d.d1); });
+                .y0(function (d, i) {
+                if (d.d0 < 0) {
+                    console.info('< 0', d);
+                    return _this.yScale(0);
+                }
+                else {
+                    console.info('> 0', d);
+                    return _this.yScale(d.d0);
+                }
+            })
+                .y1(function (d, i) { return d.d1 < 0 ? _this.yScale(0) : _this.yScale(d.d1); });
             startingArea = area()
                 .x(xProperty)
                 .y0(function (d) { return _this.yScale.range()[0]; })
@@ -5888,7 +5897,7 @@ var AreaSeriesComponent = /** @class */ (function () {
     AreaSeriesComponent = __decorate([
         Component({
             selector: 'g[ngx-charts-area-series]',
-            template: "\n    <svg:g ngx-charts-area\n      class=\"area-series\"\n      [data]=\"data\"\n      [path]=\"path\"\n      [fill]=\"colors.getColor(data.name)\"\n      [stops]=\"gradientStops\"\n      [startingPath]=\"startingPath\"\n      [opacity]=\"opacity\"\n      [gradient]=\"gradient || hasGradient\"\n      [animations]=\"animations\"\n      [class.active]=\"isActive(data)\"\n      [class.inactive]=\"isInactive(data)\"\n    />\n  ",
+            template: "\n    <svg:g ngx-charts-area\n           class=\"area-series\"\n           [data]=\"data\"\n           [path]=\"path\"\n           [fill]=\"colors.getColor(data.name)\"\n           [stops]=\"gradientStops\"\n           [startingPath]=\"startingPath\"\n           [opacity]=\"opacity\"\n           [gradient]=\"gradient || hasGradient\"\n           [animations]=\"animations\"\n           [class.active]=\"isActive(data)\"\n           [class.inactive]=\"isInactive(data)\"\n    />\n  ",
             changeDetection: ChangeDetectionStrategy.OnPush
         })
     ], AreaSeriesComponent);
@@ -9312,7 +9321,7 @@ var BarVerticalStackedComponent = /** @class */ (function (_super) {
         }
     };
     BarVerticalStackedComponent.prototype.groupTransform = function (group) {
-        return "translate(" + this.xScale(group.name) + ", 0)";
+        return "translate(" + (this.xScale(group.name) || 0) + ", 0)";
     };
     BarVerticalStackedComponent.prototype.onClick = function (data, group) {
         if (group) {
@@ -11142,7 +11151,11 @@ var ForceDirectedGraphComponent = /** @class */ (function (_super) {
         Component({
             selector: 'ngx-charts-force-directed-graph',
             template: "\n    <ngx-charts-chart\n      [view]=\"[width, height]\"\n      [showLegend]=\"legend\"\n      [legendOptions]=\"legendOptions\"\n      [animations]=\"animations\"\n      (legendLabelClick)=\"onClick($event)\"\n      (legendLabelActivate)=\"onActivate($event)\"\n      (legendLabelDeactivate)=\"onDeactivate($event)\"\n    >\n      <svg:g [attr.transform]=\"transform\" class=\"force-directed-graph chart\">\n        <svg:g class=\"links\">\n          <svg:g *ngFor=\"let link of links; trackBy: trackLinkBy\">\n            <ng-template\n              *ngIf=\"linkTemplate\"\n              [ngTemplateOutlet]=\"linkTemplate\"\n              [ngTemplateOutletContext]=\"{ $implicit: link }\"\n            ></ng-template>\n            <svg:line\n              *ngIf=\"!linkTemplate\"\n              strokeWidth=\"1\"\n              class=\"edge\"\n              [attr.x1]=\"link.source.x\"\n              [attr.y1]=\"link.source.y\"\n              [attr.x2]=\"link.target.x\"\n              [attr.y2]=\"link.target.y\"\n            />\n          </svg:g>\n        </svg:g>\n        <svg:g class=\"nodes\">\n          <svg:g\n            *ngFor=\"let node of nodes; trackBy: trackNodeBy\"\n            [attr.transform]=\"'translate(' + node.x + ',' + node.y + ')'\"\n            [attr.fill]=\"colors.getColor(groupResultsBy(node))\"\n            [attr.stroke]=\"colors.getColor(groupResultsBy(node))\"\n            (mousedown)=\"onDragStart(node, $event)\"\n            (click)=\"onClick({ name: node.value })\"\n            ngx-tooltip\n            [tooltipDisabled]=\"tooltipDisabled\"\n            [tooltipPlacement]=\"'top'\"\n            [tooltipType]=\"'tooltip'\"\n            [tooltipTitle]=\"tooltipTemplate ? undefined : escape(node.value)\"\n            [tooltipTemplate]=\"tooltipTemplate\"\n            [tooltipContext]=\"node\"\n          >\n            <ng-template\n              *ngIf=\"nodeTemplate\"\n              [ngTemplateOutlet]=\"nodeTemplate\"\n              [ngTemplateOutletContext]=\"{ $implicit: node }\"\n            ></ng-template>\n            <svg:circle *ngIf=\"!nodeTemplate\" r=\"5\" />\n          </svg:g>\n        </svg:g>\n      </svg:g>\n    </ngx-charts-chart>\n  ",
+<<<<<<< HEAD
             styles: [".ngx-charts{float:left;overflow:visible}.ngx-charts .arc,.ngx-charts .bar,.ngx-charts .circle{cursor:pointer}.ngx-charts .axis-label{font-size:14px}.ngx-charts .arc.active,.ngx-charts .arc:hover,.ngx-charts .bar.active,.ngx-charts .bar:hover,.ngx-charts .card.active,.ngx-charts .card:hover,.ngx-charts .cell.active,.ngx-charts .cell:hover{opacity:.8;transition:opacity .1s ease-in-out}.ngx-charts .arc:focus,.ngx-charts .bar:focus,.ngx-charts .card:focus,.ngx-charts .cell:focus{outline:0}.ngx-charts .arc.hidden,.ngx-charts .bar.hidden,.ngx-charts .card.hidden,.ngx-charts .cell.hidden{display:none}.ngx-charts g:focus{outline:0}.ngx-charts .area-series.inactive,.ngx-charts .line-series-range.inactive,.ngx-charts .line-series.inactive,.ngx-charts .polar-series-area.inactive,.ngx-charts .polar-series-path.inactive{transition:opacity .1s ease-in-out;opacity:.2}.ngx-charts .line-highlight{display:none}.ngx-charts .line-highlight.active{display:block}.ngx-charts .area{opacity:.6}.ngx-charts .circle:hover{cursor:pointer}.ngx-charts .label{font-size:12px;font-weight:400}.ngx-charts .tooltip-anchor{fill:#000}.ngx-charts .gridline-path{stroke:#ddd;stroke-width:1;fill:none}.ngx-charts .refline-path{stroke:#a8b2c7;stroke-width:1;stroke-dasharray:5;stroke-dashoffset:5}.ngx-charts .refline-label{font-size:9px}.ngx-charts .reference-area{fill-opacity:.05;fill:#000}.ngx-charts .gridline-path-dotted{stroke:#ddd;stroke-width:1;fill:none;stroke-dasharray:1,20;stroke-dashoffset:3}.ngx-charts .grid-panel rect{fill:none}.ngx-charts .grid-panel.odd rect{fill:rgba(0,0,0,.05)}", ".force-directed-graph .edge{stroke:#333}"],
+=======
+            styles: [".ngx-charts{float:left;overflow:visible}.ngx-charts .arc,.ngx-charts .bar,.ngx-charts .circle{cursor:pointer}.ngx-charts .arc.active,.ngx-charts .arc:hover,.ngx-charts .bar.active,.ngx-charts .bar:hover,.ngx-charts .card.active,.ngx-charts .card:hover,.ngx-charts .cell.active,.ngx-charts .cell:hover{opacity:.8;transition:opacity .1s ease-in-out}.ngx-charts .arc:focus,.ngx-charts .bar:focus,.ngx-charts .card:focus,.ngx-charts .cell:focus{outline:0}.ngx-charts .arc.hidden,.ngx-charts .bar.hidden,.ngx-charts .card.hidden,.ngx-charts .cell.hidden{display:none}.ngx-charts g:focus{outline:0}.ngx-charts .area-series.inactive,.ngx-charts .line-series-range.inactive,.ngx-charts .line-series.inactive,.ngx-charts .polar-series-area.inactive,.ngx-charts .polar-series-path.inactive{transition:opacity .1s ease-in-out;opacity:.2}.ngx-charts .line-highlight{display:none}.ngx-charts .line-highlight.active{display:block}.ngx-charts .area{opacity:.6}.ngx-charts .circle:hover{cursor:pointer}.ngx-charts .label{font-size:12px;font-weight:400}.ngx-charts .tooltip-anchor{fill:#000}.ngx-charts .gridline-path{stroke:#ddd;stroke-width:1;fill:none}.ngx-charts .refline-path{stroke:#a8b2c7;stroke-width:1;stroke-dasharray:5;stroke-dashoffset:5}.ngx-charts .refline-label{font-size:9px}.ngx-charts .reference-area{fill-opacity:.05;fill:#000}.ngx-charts .gridline-path-dotted{stroke:#ddd;stroke-width:1;fill:none;stroke-dasharray:1,20;stroke-dashoffset:3}.ngx-charts .grid-panel rect{fill:none}.ngx-charts .grid-panel.odd rect{fill:rgba(0,0,0,.05)}", ".force-directed-graph .edge{stroke:#333}"],
+>>>>>>> db0aea47d1499142de488614059c7b256bcc718f
             encapsulation: ViewEncapsulation.None,
             changeDetection: ChangeDetectionStrategy.OnPush
         })
