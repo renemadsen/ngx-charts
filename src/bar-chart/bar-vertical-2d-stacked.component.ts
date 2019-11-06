@@ -14,6 +14,8 @@ import { scaleBand, scaleLinear } from 'd3-scale';
 import { calculateViewDimensions, ViewDimensions } from '../common/view-dimensions.helper';
 import { ColorHelper } from '../common/color.helper';
 import { BaseChartComponent } from '../common/base-chart.component';
+import {ScaleType} from '../utils/scale-type.enum';
+import {LegendPosition} from '../common/legend/legend-position.enum';
 
 @Component({
   selector: 'ngx-charts-bar-vertical-2d-stacked',
@@ -127,7 +129,7 @@ import { BaseChartComponent } from '../common/base-chart.component';
 export class BarVertical2DStackedComponent extends BaseChartComponent {
   @Input() legend = false;
   @Input() legendTitle: string = 'Legend';
-  @Input() legendPosition: string = 'right';
+  @Input() legendPosition = LegendPosition.right;
   @Input() xAxis;
   @Input() yAxis;
   @Input() showXAxisLineTop;
@@ -142,7 +144,7 @@ export class BarVertical2DStackedComponent extends BaseChartComponent {
   @Input() gradient: boolean;
   @Input() showGridLines: boolean = true;
   @Input() activeEntries: any[] = [];
-  @Input() schemeType: string;
+  @Input() schemeType: ScaleType;
   @Input() trimXAxisTicks: boolean = true;
   @Input() trimYAxisTicks: boolean = true;
   @Input() rotateXAxisTicks: boolean = true;

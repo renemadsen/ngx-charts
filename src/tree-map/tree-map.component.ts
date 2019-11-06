@@ -15,6 +15,7 @@ import { calculateViewDimensions } from '../common/view-dimensions.helper';
 import { ColorHelper } from '../common/color.helper';
 import { DataItem } from '../models/chart-data.model';
 import { ScaleType } from '../utils/scale-type.enum';
+import {LegendPosition} from '../common/legend/legend-position.enum';
 
 @Component({
   selector: 'ngx-charts-tree-map',
@@ -60,7 +61,7 @@ export class TreeMapComponent extends BaseChartComponent {
   @Input() activeEntries: any[] = [];
   @Input() legend = true;
   @Input() legendTitle: string = 'Legend';
-  @Input() legendPosition: string = 'bottom';
+  @Input() legendPosition = LegendPosition.below;
   @Input() tooltipDisabled: boolean = false;
   @Input() valueFormatting: any;
   @Input() labelFormatting: any;

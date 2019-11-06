@@ -225,7 +225,7 @@ export class PieSeriesComponent implements OnChanges {
   sum(): string {
     let total = 0;
     if (this.series != null && this.series.length > 0) {
-      total = this.series.reduce((sum, val) => sum += val.value, 0)
+      total = this.series.reduce((sum, val) => sum += val.value, 0);
     }
 
     return formatLabel(total);
