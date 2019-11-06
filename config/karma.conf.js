@@ -22,7 +22,7 @@ module.exports =  function(config) {
     browsers: ['Chrome'],
     customLaunchers: {
       ChromeTravisCi: {
-        base: 'Chrome',
+        base: 'ChromeHeadless',
         flags: [
         '--no-sandbox',
         '--headless'
