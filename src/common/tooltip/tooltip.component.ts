@@ -89,7 +89,7 @@ export class TooltipContentComponent implements AfterViewInit {
       this.renderer.setStyle(nativeElm, 'top', `${topOffset}px`);
       this.renderer.setStyle(nativeElm, 'left', `${leftOffset}px`);
     } else {
-      const { top, left } = PositionHelper.positionContent(this.placement, 
+      const { top, left } = PositionHelper.positionContent(this.placement,
         elmDim, hostDim, this.spacing, this.alignment);
 
       this.renderer.setStyle(nativeElm, 'top', `${top}px`);
