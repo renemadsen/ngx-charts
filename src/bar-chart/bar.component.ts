@@ -184,7 +184,7 @@ export class BarComponent implements OnChanges {
     }
 
     if (this.roundEdges && this.height > 5 && this.width < 10) {
-      radius = Math.floor(Math.min(8, this.height / 2, this.width/1.5 ));
+      radius = Math.floor(Math.min(8, this.height / 2, this.width / 1.5));
     }
 
     return radius;
