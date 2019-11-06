@@ -23,7 +23,10 @@ module.exports =  function(config) {
     customLaunchers: {
       ChromeTravisCi: {
         base: 'Chrome',
-        flags: ['--no-sandbox']
+        flags: [
+        '--no-sandbox',
+        '--headless'
+        ]
       }
     },
     coverageReporter: {
