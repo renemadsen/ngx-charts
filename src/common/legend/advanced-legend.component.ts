@@ -10,6 +10,7 @@ import {
 } from '@angular/core';
 import { trimLabel } from '../trim-label.helper';
 import { formatLabel } from '../label.helper';
+import { ColorHelper } from '../color.helper';
 
 @Component({
   selector: 'ngx-charts-advanced-legend',
@@ -52,7 +53,7 @@ export class AdvancedLegendComponent implements OnChanges {
   @Input() width: number;
   @Input() height: number;
   @Input() data;
-  @Input() colors;
+  @Input() colors: ColorHelper;
   @Input() label: string = 'Total';
   @Input() animations: boolean = true;
 

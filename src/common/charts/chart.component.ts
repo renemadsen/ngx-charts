@@ -9,6 +9,8 @@ import {
   transition
 } from '@angular/animations';
 import { TooltipService } from '../tooltip';
+import { LegendType } from '../../common/legend/legend-type.enum';
+import { LegendOptions } from '../legend/legend-options';
 
 @Component({
   providers: [TooltipService],
@@ -79,7 +81,7 @@ import { TooltipService } from '../tooltip';
 })
 export class ChartComponent implements OnChanges {
 
-  @Input() view;
+  @Input() view: [number, number];
   @Input() showLegend = false;
   @Input() legendOptions: any;
   @Input() legendAdvanced: boolean = false;
@@ -89,7 +91,7 @@ export class ChartComponent implements OnChanges {
   @Input() valuedata;
   @Input() advancedData;
   @Input() legendData;
-  @Input() legendType: any;
+  @Input() legendType: LegendType;
   @Input() colors: any;
   @Input() activeEntries: any[];
   @Input() animations: boolean = true;
@@ -134,11 +136,11 @@ export class ChartComponent implements OnChanges {
       : this.chartWidth;
   }
 
-  getLegendType(): string {
+  getLegendType(): LegendType {
     if (this.legendOptions.scaleType === 'linear') {
-      return 'scaleLegend';
+      return LegendType.scaleLegend;
     } else {
-      return 'legend';
+      return LegendType.legend;
     }
   }
 

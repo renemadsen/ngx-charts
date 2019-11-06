@@ -1,7 +1,17 @@
-import {ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, Output, SimpleChanges} from '@angular/core';
-import {area} from 'd3-shape';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  OnChanges,
+  SimpleChanges,
+  ChangeDetectionStrategy
+} from '@angular/core';
+import { area } from 'd3-shape';
 
-import {sortByDomain, sortByTime, sortLinear} from '../utils/sort';
+import { sortLinear, sortByTime, sortByDomain } from '../utils/sort';
+import { ColorHelper } from '../common';
+import { ScaleType } from '../utils/scale-type.enum';
 
 @Component({
   selector: 'g[ngx-charts-area-series]',
@@ -28,8 +38,8 @@ export class AreaSeriesComponent implements OnChanges {
   @Input() xScale;
   @Input() yScale;
   @Input() baseValue: any = 'auto';
-  @Input() colors;
-  @Input() scaleType;
+  @Input() colors: ColorHelper;
+  @Input() scaleType: ScaleType;
   @Input() stacked: boolean = false;
   @Input() normalized: boolean = false;
   @Input() gradient;

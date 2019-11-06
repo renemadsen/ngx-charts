@@ -1,8 +1,9 @@
 import {
   Component, Input, ChangeDetectionStrategy, Output, EventEmitter,
   SimpleChanges, OnChanges, ChangeDetectorRef, ViewEncapsulation
- } from '@angular/core';
+} from '@angular/core';
 import { formatLabel } from '../label.helper';
+import { ColorHelper } from '../color.helper';
 
 @Component({
   selector: 'ngx-charts-legend',
@@ -42,7 +43,7 @@ export class LegendComponent implements OnChanges {
   @Input() data;
   @Input() valuedata;
   @Input() title;
-  @Input() colors;
+  @Input() colors: ColorHelper;
   @Input() height;
   @Input() width;
   @Input() activeEntries;
@@ -69,7 +70,7 @@ export class LegendComponent implements OnChanges {
     const items = [];
     let counter = 0;
 
-    for(const label of this.data) {
+    for (const label of this.data) {
       const formattedLabel = formatLabel(label);
 
       let val = null;
@@ -98,7 +99,7 @@ export class LegendComponent implements OnChanges {
   }
 
   isActive(entry): boolean {
-    if(!this.activeEntries) return false;
+    if (!this.activeEntries) return false;
     const item = this.activeEntries.find(d => {
       return entry.label === d.name;
     });
