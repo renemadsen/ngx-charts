@@ -78,6 +78,7 @@ export class PieSeriesComponent implements OnChanges {
   @Input() gradient: boolean;
   @Input() activeEntries: any[];
   @Input() labelFormatting: any;
+  @Input() labelVisibility: (arc: any) => boolean;
   @Input() trimLabels: boolean = true;
   @Input() maxLabelLength: number = 10;
   @Input() tooltipText: (o: any) => any;
@@ -163,7 +164,13 @@ export class PieSeriesComponent implements OnChanges {
   }
 
   labelVisible(myArc): boolean {
-    return this.showLabels && myArc.endAngle - myArc.startAngle > Math.PI / 30;
+    if (!this.showLabels) {
+      return false;
+    }
+    if (this.labelVisibility) {
+      return this.labelVisibility(myArc);
+    }
+    return myArc.endAngle - myArc.startAngle > Math.PI / 30;
   }
 
   getTooltipTitle(a) {
