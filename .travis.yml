@@ -12,7 +12,7 @@ before_install:
   - export DISPLAY=:99.0
 
 install:
-  - travis_wait 30 npm install
+  - npm install
   - npm install codeclimate-test-reporter
 
 after_script:
@@ -20,4 +20,4 @@ after_script:
 
 addons:
   code_climate:
-    repo_token: f45df226a75d3a1995f101fe89920334b4114ce4f2aa1256dcbb3a36884b6040
+    repo_token: 36b60856e66353ed58867904d6b044847f60e2a03f3c9ece04a0a28827bc1c8e
