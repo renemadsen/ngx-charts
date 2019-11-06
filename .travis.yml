@@ -4,16 +4,10 @@ node_js:
   - 'node'
 dist: xenial
 sudo: required
-services:
-  - xvfb
 addons:
   chrome: stable
   code_climate:
     repo_token: 36b60856e66353ed58867904d6b044847f60e2a03f3c9ece04a0a28827bc1c8e
-
-before_install:
-  - export CHROME_BIN=chromium-browser
-  - export DISPLAY=:99.0
 
 install:
   - travis_wait 30 npm install
