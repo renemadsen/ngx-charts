@@ -1,6 +1,6 @@
 {
-  "name": "@swimlane/ngx-charts",
-  "version": "12.0.1",
+  "name": "@microting/ngx-charts",
+  "version": "12.0.2",
   "description": "Declarative Charting Framework for Angular",
   "main": "release/index.js",
   "module": "release/esm.js",
@@ -43,7 +43,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/swimlane/ngx-charts.git"
+    "url": "git+https://github.com/microting/ngx-charts.git"
   },
   "keywords": [
     "angular",
@@ -73,9 +73,9 @@
     "release"
   ],
   "bugs": {
-    "url": "https://github.com/swimlane/ngx-charts/issues"
+    "url": "https://github.com/microting/ngx-charts/issues"
   },
-  "homepage": "https://github.com/swimlane/ngx-charts#readme",
+  "homepage": "https://github.com/microting/ngx-charts#readme",
   "peerDependencies": {
     "@angular/animations": "7.x || 8.x",
     "@angular/cdk": "7.x || 8.x",
