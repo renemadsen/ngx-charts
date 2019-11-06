@@ -1,20 +1,20 @@
 import { ApplicationRef, ComponentFactoryResolver, Injectable, Injector, Input, Component, ElementRef, ViewEncapsulation, HostListener, ViewChild, HostBinding, Renderer2, Directive, Output, EventEmitter, ViewContainerRef, NgModule, ChangeDetectionStrategy, ChangeDetectorRef, NgZone, TemplateRef, ContentChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { trigger, style, animate, transition } from '@angular/animations';
+import { range, min, max } from 'd3-array';
+import { scaleBand, scaleLinear, scaleOrdinal, scaleQuantile, scaleTime, scalePoint } from 'd3-scale';
 import { DomSanitizer } from '@angular/platform-browser';
 import { rgb } from 'd3-color';
 import { fromEvent } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
-import { range, min, max } from 'd3-array';
-import { scaleBand, scaleLinear, scaleOrdinal, scaleQuantile, scaleTime, scalePoint } from 'd3-scale';
 import { brushX } from 'd3-brush';
 import { select, event } from 'd3-selection';
 import { curveLinear, area, line, curveCardinalClosed, lineRadial, arc, pie } from 'd3-shape';
+import { timeFormat } from 'd3-time-format';
 import { forceCollide, forceLink, forceManyBody, forceSimulation, forceX, forceY } from 'd3-force';
 import { interpolate } from 'd3-interpolate';
 import { format } from 'd3-format';
 import { treemap, stratify } from 'd3-hierarchy';
-import { timeFormat } from 'd3-time-format';
 
 /*! *****************************************************************************
 Copyright (c) Microsoft Corporation. All rights reserved.
@@ -693,7 +693,7 @@ var TooltipContentComponent = /** @class */ (function () {
         setTimeout(function () { return _this.renderer.addClass(nativeElm, 'animate'); }, 1);
     };
     TooltipContentComponent.prototype.positionContent = function (nativeElm, hostDim, elmDim) {
-        if (this.precisePosition && this.precisePosition != -1) {
+        if (this.precisePosition && this.precisePosition !== -1) {
             var topOffset = this.precisePosition.y - elmDim.height - 20;
             var leftOffset = this.precisePosition.x - elmDim.width / 2;
             this.renderer.setStyle(nativeElm, 'top', topOffset + "px");
@@ -1096,6 +1096,12 @@ var TooltipModule = /** @class */ (function () {
     return TooltipModule;
 }());
 
+var LegendType;
+(function (LegendType) {
+    LegendType["legend"] = "legend";
+    LegendType["scaleLegend"] = "scaleLegend";
+})(LegendType || (LegendType = {}));
+
 var ChartComponent = /** @class */ (function () {
     function ChartComponent(vcr, tooltipService) {
         this.vcr = vcr;
@@ -1125,23 +1131,23 @@ var ChartComponent = /** @class */ (function () {
             }
         }
         var chartColumns = 12 - legendColumns;
-        this.chartWidth = Math.floor((this.view[0] * chartColumns / 12.0));
+        this.chartWidth = Math.max(0, Math.floor((this.view[0] * chartColumns / 12.0)));
         this.legendWidth = (!this.legendOptions || this.legendOptions.position === 'right' || this.advancedData)
             ? Math.floor((this.view[0] * legendColumns / 12.0))
             : this.chartWidth;
     };
     ChartComponent.prototype.getLegendType = function () {
         if (this.legendOptions.scaleType === 'linear') {
-            return 'scaleLegend';
+            return LegendType.scaleLegend;
         }
         else {
-            return 'legend';
+            return LegendType.legend;
         }
     };
-    var _a, _b, _c, _d, _e;
+    var _a, _b, _c, _d, _e, _f;
     __decorate([
         Input(),
-        __metadata("design:type", Object)
+        __metadata("design:type", Array)
     ], ChartComponent.prototype, "view", void 0);
     __decorate([
         Input(),
@@ -1173,7 +1179,7 @@ var ChartComponent = /** @class */ (function () {
     ], ChartComponent.prototype, "legendData", void 0);
     __decorate([
         Input(),
-        __metadata("design:type", Object)
+        __metadata("design:type", typeof (_a = typeof LegendType !== "undefined" && LegendType) === "function" ? _a : Object)
     ], ChartComponent.prototype, "legendType", void 0);
     __decorate([
         Input(),
@@ -1189,15 +1195,15 @@ var ChartComponent = /** @class */ (function () {
     ], ChartComponent.prototype, "animations", void 0);
     __decorate([
         Output(),
-        __metadata("design:type", typeof (_a = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _a : Object)
+        __metadata("design:type", typeof (_b = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _b : Object)
     ], ChartComponent.prototype, "legendLabelClick", void 0);
     __decorate([
         Output(),
-        __metadata("design:type", typeof (_b = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _b : Object)
+        __metadata("design:type", typeof (_c = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _c : Object)
     ], ChartComponent.prototype, "legendLabelActivate", void 0);
     __decorate([
         Output(),
-        __metadata("design:type", typeof (_c = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _c : Object)
+        __metadata("design:type", typeof (_d = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _d : Object)
     ], ChartComponent.prototype, "legendLabelDeactivate", void 0);
     ChartComponent = __decorate([
         Component({
@@ -1214,7 +1220,7 @@ var ChartComponent = /** @class */ (function () {
                 ])
             ]
         }),
-        __metadata("design:paramtypes", [typeof (_d = typeof ViewContainerRef !== "undefined" && ViewContainerRef) === "function" ? _d : Object, typeof (_e = typeof TooltipService !== "undefined" && TooltipService) === "function" ? _e : Object])
+        __metadata("design:paramtypes", [typeof (_e = typeof ViewContainerRef !== "undefined" && ViewContainerRef) === "function" ? _e : Object, typeof (_f = typeof TooltipService !== "undefined" && TooltipService) === "function" ? _f : Object])
     ], ChartComponent);
     return ChartComponent;
 }());
@@ -1254,6 +1260,277 @@ function escapeLabel(label) {
         }[match];
     });
 }
+
+var ColorSetGroup;
+(function (ColorSetGroup) {
+    ColorSetGroup["Continuous"] = "Continuous";
+    ColorSetGroup["Ordinal"] = "Ordinal";
+})(ColorSetGroup || (ColorSetGroup = {}));
+
+var colorSets = [
+    {
+        name: 'vivid',
+        selectable: true,
+        group: ColorSetGroup.Ordinal,
+        domain: [
+            '#647c8a', '#3f51b5', '#2196f3', '#00b862', '#afdf0a', '#a7b61a', '#f3e562', '#ff9800', '#ff5722', '#ff4514'
+        ]
+    },
+    {
+        name: 'natural',
+        selectable: true,
+        group: ColorSetGroup.Ordinal,
+        domain: [
+            '#bf9d76', '#e99450', '#d89f59', '#f2dfa7', '#a5d7c6', '#7794b1', '#afafaf', '#707160', '#ba9383', '#d9d5c3'
+        ]
+    },
+    {
+        name: 'cool',
+        selectable: true,
+        group: ColorSetGroup.Ordinal,
+        domain: [
+            '#a8385d', '#7aa3e5', '#a27ea8', '#aae3f5', '#adcded', '#a95963', '#8796c0', '#7ed3ed', '#50abcc', '#ad6886'
+        ]
+    },
+    {
+        name: 'fire',
+        selectable: true,
+        group: ColorSetGroup.Ordinal,
+        domain: [
+            '#ff3d00', '#bf360c', '#ff8f00', '#ff6f00', '#ff5722', '#e65100', '#ffca28', '#ffab00'
+        ]
+    },
+    {
+        name: 'solar',
+        selectable: true,
+        group: ColorSetGroup.Continuous,
+        domain: [
+            '#fff8e1', '#ffecb3', '#ffe082', '#ffd54f', '#ffca28', '#ffc107', '#ffb300', '#ffa000', '#ff8f00', '#ff6f00'
+        ]
+    },
+    {
+        name: 'air',
+        selectable: true,
+        group: ColorSetGroup.Continuous,
+        domain: [
+            '#e1f5fe', '#b3e5fc', '#81d4fa', '#4fc3f7', '#29b6f6', '#03a9f4', '#039be5', '#0288d1', '#0277bd', '#01579b'
+        ]
+    },
+    {
+        name: 'aqua',
+        selectable: true,
+        group: ColorSetGroup.Continuous,
+        domain: [
+            '#e0f7fa', '#b2ebf2', '#80deea', '#4dd0e1', '#26c6da', '#00bcd4', '#00acc1', '#0097a7', '#00838f', '#006064'
+        ]
+    },
+    {
+        name: 'flame',
+        selectable: false,
+        group: ColorSetGroup.Ordinal,
+        domain: [
+            '#A10A28', '#D3342D', '#EF6D49', '#FAAD67', '#FDDE90', '#DBED91', '#A9D770', '#6CBA67', '#2C9653', '#146738'
+        ]
+    },
+    {
+        name: 'ocean',
+        selectable: false,
+        group: ColorSetGroup.Ordinal,
+        domain: [
+            '#1D68FB', '#33C0FC', '#4AFFFE', '#AFFFFF', '#FFFC63', '#FDBD2D', '#FC8A25', '#FA4F1E', '#FA141B', '#BA38D1'
+        ]
+    },
+    {
+        name: 'forest',
+        selectable: false,
+        group: ColorSetGroup.Ordinal,
+        domain: [
+            '#55C22D', '#C1F33D', '#3CC099', '#AFFFFF', '#8CFC9D', '#76CFFA', '#BA60FB', '#EE6490', '#C42A1C', '#FC9F32'
+        ]
+    },
+    {
+        name: 'horizon',
+        selectable: false,
+        group: ColorSetGroup.Ordinal,
+        domain: [
+            '#2597FB', '#65EBFD', '#99FDD0', '#FCEE4B', '#FEFCFA', '#FDD6E3', '#FCB1A8', '#EF6F7B', '#CB96E8', '#EFDEE0'
+        ]
+    },
+    {
+        name: 'neons',
+        selectable: false,
+        group: ColorSetGroup.Ordinal,
+        domain: [
+            '#FF3333', '#FF33FF', '#CC33FF', '#0000FF', '#33CCFF', '#33FFFF', '#33FF66', '#CCFF33', '#FFCC00', '#FF6600'
+        ]
+    },
+    {
+        name: 'picnic',
+        selectable: false,
+        group: ColorSetGroup.Ordinal,
+        domain: [
+            '#FAC51D', '#66BD6D', '#FAA026', '#29BB9C', '#E96B56', '#55ACD2', '#B7332F', '#2C83C9', '#9166B8', '#92E7E8'
+        ]
+    },
+    {
+        name: 'night',
+        selectable: false,
+        group: ColorSetGroup.Ordinal,
+        domain: [
+            '#2B1B5A', '#501356', '#183356', '#28203F', '#391B3C', '#1E2B3C', '#120634',
+            '#2D0432', '#051932', '#453080', '#75267D', '#2C507D', '#4B3880', '#752F7D', '#35547D'
+        ]
+    },
+    {
+        name: 'nightLights',
+        selectable: false,
+        group: ColorSetGroup.Ordinal,
+        domain: [
+            '#4e31a5', '#9c25a7', '#3065ab', '#57468b', '#904497', '#46648b',
+            '#32118d', '#a00fb3', '#1052a2', '#6e51bd', '#b63cc3', '#6c97cb', '#8671c1', '#b455be', '#7496c3'
+        ]
+    }
+];
+
+var ColorHelper = /** @class */ (function () {
+    function ColorHelper(scheme, type, domain, customColors) {
+        if (typeof scheme === 'string') {
+            scheme = colorSets.find(function (cs) {
+                return cs.name === scheme;
+            });
+        }
+        this.colorDomain = scheme.domain;
+        this.scaleType = type;
+        this.domain = domain;
+        this.customColors = customColors;
+        this.scale = this.generateColorScheme(scheme, type, this.domain);
+    }
+    ColorHelper.prototype.generateColorScheme = function (scheme, type, domain) {
+        if (typeof scheme === 'string') {
+            scheme = colorSets.find(function (cs) {
+                return cs.name === scheme;
+            });
+        }
+        var colorScale;
+        if (type === 'quantile') {
+            colorScale = scaleQuantile()
+                .range(scheme.domain)
+                .domain(domain);
+        }
+        else if (type === 'ordinal') {
+            colorScale = scaleOrdinal()
+                .range(scheme.domain)
+                .domain(domain);
+        }
+        else if (type === 'linear') {
+            // linear schemes must have at least 2 colors
+            var colorDomain = scheme.domain.slice();
+            if (colorDomain.length === 1) {
+                colorDomain.push(colorDomain[0]);
+                this.colorDomain = colorDomain;
+            }
+            var points = range(0, 1, 1.0 / colorDomain.length);
+            colorScale = scaleLinear()
+                .domain(points)
+                .range(colorDomain);
+        }
+        return colorScale;
+    };
+    ColorHelper.prototype.getColor = function (value) {
+        if (value === undefined || value === null) {
+            throw new Error('Value can not be null');
+        }
+        if (this.scaleType === 'linear') {
+            var valueScale = scaleLinear()
+                .domain(this.domain)
+                .range([0, 1]);
+            return this.scale(valueScale(value));
+        }
+        else {
+            if (typeof this.customColors === 'function') {
+                return this.customColors(value);
+            }
+            var formattedValue_1 = value.toString();
+            var found = void 0; // todo type customColors
+            if (this.customColors && this.customColors.length > 0) {
+                found = this.customColors.find(function (mapping) {
+                    return mapping.name.toLowerCase() === formattedValue_1.toLowerCase();
+                });
+            }
+            if (found) {
+                return found.value;
+            }
+            else {
+                return this.scale(value);
+            }
+        }
+    };
+    ColorHelper.prototype.getLinearGradientStops = function (value, start) {
+        if (start === undefined) {
+            start = this.domain[0];
+        }
+        var valueScale = scaleLinear()
+            .domain(this.domain)
+            .range([0, 1]);
+        var colorValueScale = scaleBand()
+            .domain(this.colorDomain)
+            .range([0, 1]);
+        var endColor = this.getColor(value);
+        // generate the stops
+        var startVal = valueScale(start);
+        var startColor = this.getColor(start);
+        var endVal = valueScale(value);
+        var i = 1;
+        var currentVal = startVal;
+        var stops = [];
+        stops.push({
+            color: startColor,
+            offset: startVal,
+            originalOffset: startVal,
+            opacity: 1
+        });
+        while (currentVal < endVal && i < this.colorDomain.length) {
+            var color = this.colorDomain[i];
+            var offset = colorValueScale(color);
+            if (offset <= startVal) {
+                i++;
+                continue;
+            }
+            if (offset.toFixed(4) >= (endVal - colorValueScale.bandwidth()).toFixed(4)) {
+                break;
+            }
+            stops.push({
+                color: color,
+                offset: offset,
+                opacity: 1
+            });
+            currentVal = offset;
+            i++;
+        }
+        if (stops[stops.length - 1].offset < 100) {
+            stops.push({
+                color: endColor,
+                offset: endVal,
+                opacity: 1
+            });
+        }
+        if (endVal === startVal) {
+            stops[0].offset = 0;
+            stops[1].offset = 100;
+        }
+        else {
+            // normalize the offsets into percentages
+            if (stops[stops.length - 1].offset !== 100) {
+                for (var _i = 0, stops_1 = stops; _i < stops_1.length; _i++) {
+                    var s = stops_1[_i];
+                    s.offset = ((s.offset - startVal) / (endVal - startVal)) * 100;
+                }
+            }
+        }
+        return stops;
+    };
+    return ColorHelper;
+}());
 
 var LegendComponent = /** @class */ (function () {
     function LegendComponent(cd) {
@@ -1317,7 +1594,7 @@ var LegendComponent = /** @class */ (function () {
     LegendComponent.prototype.trackBy = function (index, item) {
         return item.label;
     };
-    var _a, _b, _c, _d;
+    var _a, _b, _c, _d, _e;
     __decorate([
         Input(),
         __metadata("design:type", Object)
@@ -1332,7 +1609,7 @@ var LegendComponent = /** @class */ (function () {
     ], LegendComponent.prototype, "title", void 0);
     __decorate([
         Input(),
-        __metadata("design:type", Object)
+        __metadata("design:type", typeof (_a = typeof ColorHelper !== "undefined" && ColorHelper) === "function" ? _a : Object)
     ], LegendComponent.prototype, "colors", void 0);
     __decorate([
         Input(),
@@ -1352,15 +1629,15 @@ var LegendComponent = /** @class */ (function () {
     ], LegendComponent.prototype, "horizontal", void 0);
     __decorate([
         Output(),
-        __metadata("design:type", typeof (_a = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _a : Object)
+        __metadata("design:type", typeof (_b = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _b : Object)
     ], LegendComponent.prototype, "labelClick", void 0);
     __decorate([
         Output(),
-        __metadata("design:type", typeof (_b = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _b : Object)
+        __metadata("design:type", typeof (_c = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _c : Object)
     ], LegendComponent.prototype, "labelActivate", void 0);
     __decorate([
         Output(),
-        __metadata("design:type", typeof (_c = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _c : Object)
+        __metadata("design:type", typeof (_d = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _d : Object)
     ], LegendComponent.prototype, "labelDeactivate", void 0);
     LegendComponent = __decorate([
         Component({
@@ -1370,7 +1647,7 @@ var LegendComponent = /** @class */ (function () {
             encapsulation: ViewEncapsulation.None,
             changeDetection: ChangeDetectionStrategy.OnPush
         }),
-        __metadata("design:paramtypes", [typeof (_d = typeof ChangeDetectorRef !== "undefined" && ChangeDetectorRef) === "function" ? _d : Object])
+        __metadata("design:paramtypes", [typeof (_e = typeof ChangeDetectorRef !== "undefined" && ChangeDetectorRef) === "function" ? _e : Object])
     ], LegendComponent);
     return LegendComponent;
 }());
@@ -1572,7 +1849,7 @@ var AdvancedLegendComponent = /** @class */ (function () {
     AdvancedLegendComponent.prototype.trackBy = function (item) {
         return item.formattedLabel;
     };
-    var _a, _b, _c;
+    var _a, _b, _c, _d;
     __decorate([
         Input(),
         __metadata("design:type", Number)
@@ -1587,7 +1864,7 @@ var AdvancedLegendComponent = /** @class */ (function () {
     ], AdvancedLegendComponent.prototype, "data", void 0);
     __decorate([
         Input(),
-        __metadata("design:type", Object)
+        __metadata("design:type", typeof (_a = typeof ColorHelper !== "undefined" && ColorHelper) === "function" ? _a : Object)
     ], AdvancedLegendComponent.prototype, "colors", void 0);
     __decorate([
         Input(),
@@ -1599,15 +1876,15 @@ var AdvancedLegendComponent = /** @class */ (function () {
     ], AdvancedLegendComponent.prototype, "animations", void 0);
     __decorate([
         Output(),
-        __metadata("design:type", typeof (_a = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _a : Object)
+        __metadata("design:type", typeof (_b = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _b : Object)
     ], AdvancedLegendComponent.prototype, "select", void 0);
     __decorate([
         Output(),
-        __metadata("design:type", typeof (_b = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _b : Object)
+        __metadata("design:type", typeof (_c = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _c : Object)
     ], AdvancedLegendComponent.prototype, "activate", void 0);
     __decorate([
         Output(),
-        __metadata("design:type", typeof (_c = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _c : Object)
+        __metadata("design:type", typeof (_d = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _d : Object)
     ], AdvancedLegendComponent.prototype, "deactivate", void 0);
     __decorate([
         Input(),
@@ -1655,131 +1932,6 @@ function id() {
     }
     return id();
 }
-
-var colorSets = [
-    {
-        name: 'vivid',
-        selectable: true,
-        group: 'Ordinal',
-        domain: [
-            '#647c8a', '#3f51b5', '#2196f3', '#00b862', '#afdf0a', '#a7b61a', '#f3e562', '#ff9800', '#ff5722', '#ff4514'
-        ]
-    },
-    {
-        name: 'natural',
-        selectable: true,
-        group: 'Ordinal',
-        domain: [
-            '#bf9d76', '#e99450', '#d89f59', '#f2dfa7', '#a5d7c6', '#7794b1', '#afafaf', '#707160', '#ba9383', '#d9d5c3'
-        ]
-    },
-    {
-        name: 'cool',
-        selectable: true,
-        group: 'Ordinal',
-        domain: [
-            '#a8385d', '#7aa3e5', '#a27ea8', '#aae3f5', '#adcded', '#a95963', '#8796c0', '#7ed3ed', '#50abcc', '#ad6886'
-        ]
-    },
-    {
-        name: 'fire',
-        selectable: true,
-        group: 'Ordinal',
-        domain: [
-            '#ff3d00', '#bf360c', '#ff8f00', '#ff6f00', '#ff5722', '#e65100', '#ffca28', '#ffab00'
-        ]
-    },
-    {
-        name: 'solar',
-        selectable: true,
-        group: 'Continuous',
-        domain: [
-            '#fff8e1', '#ffecb3', '#ffe082', '#ffd54f', '#ffca28', '#ffc107', '#ffb300', '#ffa000', '#ff8f00', '#ff6f00'
-        ]
-    },
-    {
-        name: 'air',
-        selectable: true,
-        group: 'Continuous',
-        domain: [
-            '#e1f5fe', '#b3e5fc', '#81d4fa', '#4fc3f7', '#29b6f6', '#03a9f4', '#039be5', '#0288d1', '#0277bd', '#01579b'
-        ]
-    },
-    {
-        name: 'aqua',
-        selectable: true,
-        group: 'Continuous',
-        domain: [
-            '#e0f7fa', '#b2ebf2', '#80deea', '#4dd0e1', '#26c6da', '#00bcd4', '#00acc1', '#0097a7', '#00838f', '#006064'
-        ]
-    },
-    {
-        name: 'flame',
-        selectable: false,
-        group: 'Ordinal',
-        domain: [
-            '#A10A28', '#D3342D', '#EF6D49', '#FAAD67', '#FDDE90', '#DBED91', '#A9D770', '#6CBA67', '#2C9653', '#146738'
-        ]
-    },
-    {
-        name: 'ocean',
-        selectable: false,
-        group: 'Ordinal',
-        domain: [
-            '#1D68FB', '#33C0FC', '#4AFFFE', '#AFFFFF', '#FFFC63', '#FDBD2D', '#FC8A25', '#FA4F1E', '#FA141B', '#BA38D1'
-        ]
-    },
-    {
-        name: 'forest',
-        selectable: false,
-        group: 'Ordinal',
-        domain: [
-            '#55C22D', '#C1F33D', '#3CC099', '#AFFFFF', '#8CFC9D', '#76CFFA', '#BA60FB', '#EE6490', '#C42A1C', '#FC9F32'
-        ]
-    },
-    {
-        name: 'horizon',
-        selectable: false,
-        group: 'Ordinal',
-        domain: [
-            '#2597FB', '#65EBFD', '#99FDD0', '#FCEE4B', '#FEFCFA', '#FDD6E3', '#FCB1A8', '#EF6F7B', '#CB96E8', '#EFDEE0'
-        ]
-    },
-    {
-        name: 'neons',
-        selectable: false,
-        group: 'Ordinal',
-        domain: [
-            '#FF3333', '#FF33FF', '#CC33FF', '#0000FF', '#33CCFF', '#33FFFF', '#33FF66', '#CCFF33', '#FFCC00', '#FF6600'
-        ]
-    },
-    {
-        name: 'picnic',
-        selectable: false,
-        group: 'Ordinal',
-        domain: [
-            '#FAC51D', '#66BD6D', '#FAA026', '#29BB9C', '#E96B56', '#55ACD2', '#B7332F', '#2C83C9', '#9166B8', '#92E7E8'
-        ]
-    },
-    {
-        name: 'night',
-        selectable: false,
-        group: 'Ordinal',
-        domain: [
-            '#2B1B5A', '#501356', '#183356', '#28203F', '#391B3C', '#1E2B3C', '#120634',
-            '#2D0432', '#051932', '#453080', '#75267D', '#2C507D', '#4B3880', '#752F7D', '#35547D'
-        ]
-    },
-    {
-        name: 'nightLights',
-        selectable: false,
-        group: 'Ordinal',
-        domain: [
-            '#4e31a5', '#9c25a7', '#3065ab', '#57468b', '#904497', '#46648b',
-            '#32118d', '#a00fb3', '#1052a2', '#6e51bd', '#b63cc3', '#6c97cb', '#8671c1', '#b455be', '#7496c3'
-        ]
-    }
-];
 
 function sortLinear(data, property, direction) {
     if (direction === void 0) { direction = 'asc'; }
@@ -2924,145 +3076,13 @@ var AxesModule = /** @class */ (function () {
     return AxesModule;
 }());
 
-var ColorHelper = /** @class */ (function () {
-    function ColorHelper(scheme, type, domain, customColors) {
-        if (typeof scheme === 'string') {
-            scheme = colorSets.find(function (cs) {
-                return cs.name === scheme;
-            });
-        }
-        this.colorDomain = scheme.domain;
-        this.scaleType = type;
-        this.domain = domain;
-        this.customColors = customColors;
-        this.scale = this.generateColorScheme(scheme, type, this.domain);
-    }
-    ColorHelper.prototype.generateColorScheme = function (scheme, type, domain) {
-        if (typeof scheme === 'string') {
-            scheme = colorSets.find(function (cs) {
-                return cs.name === scheme;
-            });
-        }
-        var colorScale;
-        if (type === 'quantile') {
-            colorScale = scaleQuantile()
-                .range(scheme.domain)
-                .domain(domain);
-        }
-        else if (type === 'ordinal') {
-            colorScale = scaleOrdinal()
-                .range(scheme.domain)
-                .domain(domain);
-        }
-        else if (type === 'linear') {
-            // linear schemes must have at least 2 colors
-            var colorDomain = scheme.domain.slice();
-            if (colorDomain.length === 1) {
-                colorDomain.push(colorDomain[0]);
-                this.colorDomain = colorDomain;
-            }
-            var points = range(0, 1, 1.0 / colorDomain.length);
-            colorScale = scaleLinear()
-                .domain(points)
-                .range(colorDomain);
-        }
-        return colorScale;
-    };
-    ColorHelper.prototype.getColor = function (value) {
-        if (value === undefined || value === null) {
-            throw new Error('Value can not be null');
-        }
-        if (this.scaleType === 'linear') {
-            var valueScale = scaleLinear()
-                .domain(this.domain)
-                .range([0, 1]);
-            return this.scale(valueScale(value));
-        }
-        else {
-            if (typeof this.customColors === 'function') {
-                return this.customColors(value);
-            }
-            var formattedValue_1 = value.toString();
-            var found = void 0; // todo type customColors
-            if (this.customColors && this.customColors.length > 0) {
-                found = this.customColors.find(function (mapping) {
-                    return mapping.name.toLowerCase() === formattedValue_1.toLowerCase();
-                });
-            }
-            if (found) {
-                return found.value;
-            }
-            else {
-                return this.scale(value);
-            }
-        }
-    };
-    ColorHelper.prototype.getLinearGradientStops = function (value, start) {
-        if (start === undefined) {
-            start = this.domain[0];
-        }
-        var valueScale = scaleLinear()
-            .domain(this.domain)
-            .range([0, 1]);
-        var colorValueScale = scaleBand()
-            .domain(this.colorDomain)
-            .range([0, 1]);
-        var endColor = this.getColor(value);
-        // generate the stops
-        var startVal = valueScale(start);
-        var startColor = this.getColor(start);
-        var endVal = valueScale(value);
-        var i = 1;
-        var currentVal = startVal;
-        var stops = [];
-        stops.push({
-            color: startColor,
-            offset: startVal,
-            originalOffset: startVal,
-            opacity: 1
-        });
-        while (currentVal < endVal && i < this.colorDomain.length) {
-            var color = this.colorDomain[i];
-            var offset = colorValueScale(color);
-            if (offset <= startVal) {
-                i++;
-                continue;
-            }
-            if (offset.toFixed(4) >= (endVal - colorValueScale.bandwidth()).toFixed(4)) {
-                break;
-            }
-            stops.push({
-                color: color,
-                offset: offset,
-                opacity: 1
-            });
-            currentVal = offset;
-            i++;
-        }
-        if (stops[stops.length - 1].offset < 100) {
-            stops.push({
-                color: endColor,
-                offset: endVal,
-                opacity: 1
-            });
-        }
-        if (endVal === startVal) {
-            stops[0].offset = 0;
-            stops[1].offset = 100;
-        }
-        else {
-            // normalize the offsets into percentages
-            if (stops[stops.length - 1].offset !== 100) {
-                for (var _i = 0, stops_1 = stops; _i < stops_1.length; _i++) {
-                    var s = stops_1[_i];
-                    s.offset = ((s.offset - startVal) / (endVal - startVal)) * 100;
-                }
-            }
-        }
-        return stops;
-    };
-    return ColorHelper;
-}());
+var ScaleType;
+(function (ScaleType) {
+    ScaleType["quantile"] = "quantile";
+    ScaleType["ordinal"] = "ordinal";
+    ScaleType["linear"] = "linear";
+    ScaleType["time"] = "time";
+})(ScaleType || (ScaleType = {}));
 
 var CircleSeriesComponent = /** @class */ (function () {
     function CircleSeriesComponent() {
@@ -3212,7 +3232,7 @@ var CircleSeriesComponent = /** @class */ (function () {
         this.circle.opacity = 0;
         this.deactivate.emit({ name: this.data.name });
     };
-    var _a, _b;
+    var _a, _b, _c;
     __decorate([
         Input(),
         __metadata("design:type", Object)
@@ -3235,7 +3255,7 @@ var CircleSeriesComponent = /** @class */ (function () {
     ], CircleSeriesComponent.prototype, "colors", void 0);
     __decorate([
         Input(),
-        __metadata("design:type", Object)
+        __metadata("design:type", typeof (_b = typeof ScaleType !== "undefined" && ScaleType) === "function" ? _b : Object)
     ], CircleSeriesComponent.prototype, "scaleType", void 0);
     __decorate([
         Input(),
@@ -3251,7 +3271,7 @@ var CircleSeriesComponent = /** @class */ (function () {
     ], CircleSeriesComponent.prototype, "tooltipDisabled", void 0);
     __decorate([
         Input(),
-        __metadata("design:type", typeof (_b = typeof TemplateRef !== "undefined" && TemplateRef) === "function" ? _b : Object)
+        __metadata("design:type", typeof (_c = typeof TemplateRef !== "undefined" && TemplateRef) === "function" ? _c : Object)
     ], CircleSeriesComponent.prototype, "tooltipTemplate", void 0);
     __decorate([
         Output(),
@@ -3725,7 +3745,7 @@ var Timeline = /** @class */ (function () {
         };
         return dims;
     };
-    var _a, _b;
+    var _a, _b, _c;
     __decorate([
         Input(),
         __metadata("design:type", Object)
@@ -3760,7 +3780,7 @@ var Timeline = /** @class */ (function () {
     ], Timeline.prototype, "autoScale", void 0);
     __decorate([
         Input(),
-        __metadata("design:type", Object)
+        __metadata("design:type", typeof (_a = typeof ScaleType !== "undefined" && ScaleType) === "function" ? _a : Object)
     ], Timeline.prototype, "scaleType", void 0);
     __decorate([
         Input(),
@@ -3782,7 +3802,7 @@ var Timeline = /** @class */ (function () {
             encapsulation: ViewEncapsulation.None,
             changeDetection: ChangeDetectionStrategy.OnPush
         }),
-        __metadata("design:paramtypes", [typeof (_a = typeof ElementRef !== "undefined" && ElementRef) === "function" ? _a : Object, typeof (_b = typeof ChangeDetectorRef !== "undefined" && ChangeDetectorRef) === "function" ? _b : Object])
+        __metadata("design:paramtypes", [typeof (_b = typeof ElementRef !== "undefined" && ElementRef) === "function" ? _b : Object, typeof (_c = typeof ChangeDetectorRef !== "undefined" && ChangeDetectorRef) === "function" ? _c : Object])
     ], Timeline);
     return Timeline;
 }());
@@ -4076,7 +4096,7 @@ var TooltipArea = /** @class */ (function () {
         }
         return result;
     };
-    var _a;
+    var _a, _b;
     __decorate([
         Input(),
         __metadata("design:type", Object)
@@ -4099,7 +4119,7 @@ var TooltipArea = /** @class */ (function () {
     ], TooltipArea.prototype, "results", void 0);
     __decorate([
         Input(),
-        __metadata("design:type", Object)
+        __metadata("design:type", typeof (_a = typeof ColorHelper !== "undefined" && ColorHelper) === "function" ? _a : Object)
     ], TooltipArea.prototype, "colors", void 0);
     __decorate([
         Input(),
@@ -4111,7 +4131,7 @@ var TooltipArea = /** @class */ (function () {
     ], TooltipArea.prototype, "tooltipDisabled", void 0);
     __decorate([
         Input(),
-        __metadata("design:type", typeof (_a = typeof TemplateRef !== "undefined" && TemplateRef) === "function" ? _a : Object)
+        __metadata("design:type", typeof (_b = typeof TemplateRef !== "undefined" && TemplateRef) === "function" ? _b : Object)
     ], TooltipArea.prototype, "tooltipTemplate", void 0);
     __decorate([
         Output(),
@@ -4382,13 +4402,19 @@ var ChartCommonModule = /** @class */ (function () {
     return ChartCommonModule;
 }());
 
+var LegendPosition;
+(function (LegendPosition) {
+    LegendPosition["right"] = "right";
+    LegendPosition["below"] = "below";
+})(LegendPosition || (LegendPosition = {}));
+
 function calculateViewDimensions(_a) {
-    var width = _a.width, height = _a.height, margins = _a.margins, _b = _a.showXAxis, showXAxis = _b === void 0 ? false : _b, _c = _a.showYAxis, showYAxis = _c === void 0 ? false : _c, _d = _a.xAxisHeight, xAxisHeight = _d === void 0 ? 0 : _d, _e = _a.yAxisWidth, yAxisWidth = _e === void 0 ? 0 : _e, _f = _a.showXLabel, showXLabel = _f === void 0 ? false : _f, _g = _a.showYLabel, showYLabel = _g === void 0 ? false : _g, _h = _a.showLegend, showLegend = _h === void 0 ? false : _h, _j = _a.legendType, legendType = _j === void 0 ? 'ordinal' : _j, _k = _a.legendPosition, legendPosition = _k === void 0 ? 'right' : _k, _l = _a.columns, columns = _l === void 0 ? 12 : _l;
+    var width = _a.width, height = _a.height, margins = _a.margins, _b = _a.showXAxis, showXAxis = _b === void 0 ? false : _b, _c = _a.showYAxis, showYAxis = _c === void 0 ? false : _c, _d = _a.xAxisHeight, xAxisHeight = _d === void 0 ? 0 : _d, _e = _a.yAxisWidth, yAxisWidth = _e === void 0 ? 0 : _e, _f = _a.showXLabel, showXLabel = _f === void 0 ? false : _f, _g = _a.showYLabel, showYLabel = _g === void 0 ? false : _g, _h = _a.showLegend, showLegend = _h === void 0 ? false : _h, _j = _a.legendType, legendType = _j === void 0 ? ScaleType.ordinal : _j, _k = _a.legendPosition, legendPosition = _k === void 0 ? LegendPosition.right : _k, _l = _a.columns, columns = _l === void 0 ? 12 : _l;
     var xOffset = margins[3];
     var chartWidth = width;
     var chartHeight = height - margins[0] - margins[2];
-    if (showLegend && legendPosition === 'right') {
-        if (legendType === 'ordinal') {
+    if (showLegend && legendPosition === LegendPosition.right) {
+        if (legendType === ScaleType.ordinal) {
             columns -= 2;
         }
         else {
@@ -4455,14 +4481,14 @@ function getScaleType(values, checkDateType) {
     if (checkDateType) {
         var allDates = values.every(function (value) { return value instanceof Date; });
         if (allDates) {
-            return 'time';
+            return ScaleType.time;
         }
     }
     var allNumbers = values.every(function (value) { return typeof value === 'number'; });
     if (allNumbers) {
-        return 'linear';
+        return ScaleType.linear;
     }
-    return 'ordinal';
+    return ScaleType.ordinal;
 }
 
 var AreaChartComponent = /** @class */ (function (_super) {
@@ -4470,7 +4496,7 @@ var AreaChartComponent = /** @class */ (function (_super) {
     function AreaChartComponent() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.legendTitle = 'Legend';
-        _this.legendPosition = 'right';
+        _this.legendPosition = LegendPosition.right;
         _this.baseValue = 'auto';
         _this.showGridLines = true;
         _this.curve = curveLinear;
@@ -4727,7 +4753,7 @@ var AreaChartComponent = /** @class */ (function (_super) {
         }
         this.activeEntries = [];
     };
-    var _a, _b, _c, _d;
+    var _a, _b, _c, _d, _e;
     __decorate([
         Input(),
         __metadata("design:type", Object)
@@ -4738,7 +4764,7 @@ var AreaChartComponent = /** @class */ (function (_super) {
     ], AreaChartComponent.prototype, "legendTitle", void 0);
     __decorate([
         Input(),
-        __metadata("design:type", String)
+        __metadata("design:type", Object)
     ], AreaChartComponent.prototype, "legendPosition", void 0);
     __decorate([
         Input(),
@@ -4798,7 +4824,7 @@ var AreaChartComponent = /** @class */ (function (_super) {
     ], AreaChartComponent.prototype, "activeEntries", void 0);
     __decorate([
         Input(),
-        __metadata("design:type", String)
+        __metadata("design:type", typeof (_a = typeof ScaleType !== "undefined" && ScaleType) === "function" ? _a : Object)
     ], AreaChartComponent.prototype, "schemeType", void 0);
     __decorate([
         Input(),
@@ -4862,19 +4888,19 @@ var AreaChartComponent = /** @class */ (function (_super) {
     ], AreaChartComponent.prototype, "yScaleMax", void 0);
     __decorate([
         Output(),
-        __metadata("design:type", typeof (_a = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _a : Object)
+        __metadata("design:type", typeof (_b = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _b : Object)
     ], AreaChartComponent.prototype, "activate", void 0);
     __decorate([
         Output(),
-        __metadata("design:type", typeof (_b = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _b : Object)
+        __metadata("design:type", typeof (_c = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _c : Object)
     ], AreaChartComponent.prototype, "deactivate", void 0);
     __decorate([
         ContentChild('tooltipTemplate', { static: false }),
-        __metadata("design:type", typeof (_c = typeof TemplateRef !== "undefined" && TemplateRef) === "function" ? _c : Object)
+        __metadata("design:type", typeof (_d = typeof TemplateRef !== "undefined" && TemplateRef) === "function" ? _d : Object)
     ], AreaChartComponent.prototype, "tooltipTemplate", void 0);
     __decorate([
         ContentChild('seriesTooltipTemplate', { static: false }),
-        __metadata("design:type", typeof (_d = typeof TemplateRef !== "undefined" && TemplateRef) === "function" ? _d : Object)
+        __metadata("design:type", typeof (_e = typeof TemplateRef !== "undefined" && TemplateRef) === "function" ? _e : Object)
     ], AreaChartComponent.prototype, "seriesTooltipTemplate", void 0);
     __decorate([
         HostListener('mouseleave'),
@@ -4900,7 +4926,7 @@ var AreaChartNormalizedComponent = /** @class */ (function (_super) {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.legend = false;
         _this.legendTitle = 'Legend';
-        _this.legendPosition = 'right';
+        _this.legendPosition = LegendPosition.right;
         _this.showGridLines = true;
         _this.curve = curveLinear;
         _this.activeEntries = [];
@@ -5166,7 +5192,7 @@ var AreaChartNormalizedComponent = /** @class */ (function (_super) {
         }
         this.activeEntries = [];
     };
-    var _a, _b, _c, _d;
+    var _a, _b, _c, _d, _e;
     __decorate([
         Input(),
         __metadata("design:type", Object)
@@ -5177,7 +5203,7 @@ var AreaChartNormalizedComponent = /** @class */ (function (_super) {
     ], AreaChartNormalizedComponent.prototype, "legendTitle", void 0);
     __decorate([
         Input(),
-        __metadata("design:type", String)
+        __metadata("design:type", Object)
     ], AreaChartNormalizedComponent.prototype, "legendPosition", void 0);
     __decorate([
         Input(),
@@ -5225,7 +5251,7 @@ var AreaChartNormalizedComponent = /** @class */ (function (_super) {
     ], AreaChartNormalizedComponent.prototype, "activeEntries", void 0);
     __decorate([
         Input(),
-        __metadata("design:type", String)
+        __metadata("design:type", typeof (_a = typeof ScaleType !== "undefined" && ScaleType) === "function" ? _a : Object)
     ], AreaChartNormalizedComponent.prototype, "schemeType", void 0);
     __decorate([
         Input(),
@@ -5273,19 +5299,19 @@ var AreaChartNormalizedComponent = /** @class */ (function (_super) {
     ], AreaChartNormalizedComponent.prototype, "tooltipDisabled", void 0);
     __decorate([
         Output(),
-        __metadata("design:type", typeof (_a = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _a : Object)
+        __metadata("design:type", typeof (_b = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _b : Object)
     ], AreaChartNormalizedComponent.prototype, "activate", void 0);
     __decorate([
         Output(),
-        __metadata("design:type", typeof (_b = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _b : Object)
+        __metadata("design:type", typeof (_c = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _c : Object)
     ], AreaChartNormalizedComponent.prototype, "deactivate", void 0);
     __decorate([
         ContentChild('tooltipTemplate', { static: false }),
-        __metadata("design:type", typeof (_c = typeof TemplateRef !== "undefined" && TemplateRef) === "function" ? _c : Object)
+        __metadata("design:type", typeof (_d = typeof TemplateRef !== "undefined" && TemplateRef) === "function" ? _d : Object)
     ], AreaChartNormalizedComponent.prototype, "tooltipTemplate", void 0);
     __decorate([
         ContentChild('seriesTooltipTemplate', { static: false }),
-        __metadata("design:type", typeof (_d = typeof TemplateRef !== "undefined" && TemplateRef) === "function" ? _d : Object)
+        __metadata("design:type", typeof (_e = typeof TemplateRef !== "undefined" && TemplateRef) === "function" ? _e : Object)
     ], AreaChartNormalizedComponent.prototype, "seriesTooltipTemplate", void 0);
     __decorate([
         HostListener('mouseleave'),
@@ -5311,7 +5337,7 @@ var AreaChartStackedComponent = /** @class */ (function (_super) {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.legend = false;
         _this.legendTitle = 'Legend';
-        _this.legendPosition = 'right';
+        _this.legendPosition = LegendPosition.right;
         _this.showGridLines = true;
         _this.curve = curveLinear;
         _this.activeEntries = [];
@@ -5585,7 +5611,7 @@ var AreaChartStackedComponent = /** @class */ (function (_super) {
         }
         this.activeEntries = [];
     };
-    var _a, _b, _c, _d;
+    var _a, _b, _c, _d, _e;
     __decorate([
         Input(),
         __metadata("design:type", Object)
@@ -5596,7 +5622,7 @@ var AreaChartStackedComponent = /** @class */ (function (_super) {
     ], AreaChartStackedComponent.prototype, "legendTitle", void 0);
     __decorate([
         Input(),
-        __metadata("design:type", String)
+        __metadata("design:type", Object)
     ], AreaChartStackedComponent.prototype, "legendPosition", void 0);
     __decorate([
         Input(),
@@ -5644,7 +5670,7 @@ var AreaChartStackedComponent = /** @class */ (function (_super) {
     ], AreaChartStackedComponent.prototype, "activeEntries", void 0);
     __decorate([
         Input(),
-        __metadata("design:type", String)
+        __metadata("design:type", typeof (_a = typeof ScaleType !== "undefined" && ScaleType) === "function" ? _a : Object)
     ], AreaChartStackedComponent.prototype, "schemeType", void 0);
     __decorate([
         Input(),
@@ -5708,19 +5734,19 @@ var AreaChartStackedComponent = /** @class */ (function (_super) {
     ], AreaChartStackedComponent.prototype, "yScaleMax", void 0);
     __decorate([
         Output(),
-        __metadata("design:type", typeof (_a = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _a : Object)
+        __metadata("design:type", typeof (_b = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _b : Object)
     ], AreaChartStackedComponent.prototype, "activate", void 0);
     __decorate([
         Output(),
-        __metadata("design:type", typeof (_b = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _b : Object)
+        __metadata("design:type", typeof (_c = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _c : Object)
     ], AreaChartStackedComponent.prototype, "deactivate", void 0);
     __decorate([
         ContentChild('tooltipTemplate', { static: false }),
-        __metadata("design:type", typeof (_c = typeof TemplateRef !== "undefined" && TemplateRef) === "function" ? _c : Object)
+        __metadata("design:type", typeof (_d = typeof TemplateRef !== "undefined" && TemplateRef) === "function" ? _d : Object)
     ], AreaChartStackedComponent.prototype, "tooltipTemplate", void 0);
     __decorate([
         ContentChild('seriesTooltipTemplate', { static: false }),
-        __metadata("design:type", typeof (_d = typeof TemplateRef !== "undefined" && TemplateRef) === "function" ? _d : Object)
+        __metadata("design:type", typeof (_e = typeof TemplateRef !== "undefined" && TemplateRef) === "function" ? _e : Object)
     ], AreaChartStackedComponent.prototype, "seriesTooltipTemplate", void 0);
     __decorate([
         HostListener('mouseleave'),
@@ -5739,6 +5765,74 @@ var AreaChartStackedComponent = /** @class */ (function (_super) {
     ], AreaChartStackedComponent);
     return AreaChartStackedComponent;
 }(BaseChartComponent));
+
+function gridSize(dims, len, minWidth) {
+    var rows = 1;
+    var cols = len;
+    var width = dims.width;
+    if (width > minWidth) {
+        while (width / cols < minWidth) {
+            rows += 1;
+            cols = Math.ceil(len / rows);
+        }
+    }
+    return [cols, rows];
+}
+function gridLayout(dims, data, minWidth, designatedTotal) {
+    var xScale = scaleBand();
+    var yScale = scaleBand();
+    var width = dims.width;
+    var height = dims.height;
+    var _a = gridSize(dims, data.length, minWidth), columns = _a[0], rows = _a[1];
+    var xDomain = [];
+    var yDomain = [];
+    for (var i = 0; i < rows; i++) {
+        yDomain.push(i);
+    }
+    for (var i = 0; i < columns; i++) {
+        xDomain.push(i);
+    }
+    xScale.domain(xDomain);
+    yScale.domain(yDomain);
+    xScale.rangeRound([0, width], 0.1);
+    yScale.rangeRound([0, height], 0.1);
+    var res = [];
+    var total = designatedTotal ? designatedTotal : getTotal(data);
+    var cardWidth = xScale.bandwidth();
+    var cardHeight = yScale.bandwidth();
+    for (var i = 0; i < data.length; i++) {
+        res[i] = {};
+        res[i].data = {
+            name: data[i] ? data[i].name : '',
+            value: data[i] ? data[i].value : undefined,
+            extra: data[i] ? data[i].extra : undefined,
+            label: data[i] ? data[i].label : ''
+        };
+        res[i].x = xScale(i % columns);
+        res[i].y = yScale(Math.floor(i / columns));
+        res[i].width = cardWidth;
+        res[i].height = cardHeight;
+        res[i].data.percent = total > 0 ? res[i].data.value / total : 0;
+        res[i].data.total = total;
+    }
+    return res;
+}
+function getTotal(results) {
+    return results.map(function (d) { return (d ? d.value : 0); }).reduce(function (sum, val) { return sum + val; }, 0);
+}
+
+function tickFormat(fieldType, groupByType) {
+    return function (label) {
+        if (label === 'No Value' || label === 'Other') {
+            return label;
+        }
+        if (fieldType === 'date' && groupByType === 'groupBy') {
+            var formatter = timeFormat('MM/DD/YYYY');
+            return formatter(label);
+        }
+        return label.toString();
+    };
+}
 
 var AreaSeriesComponent = /** @class */ (function () {
     function AreaSeriesComponent() {
@@ -5842,6 +5936,7 @@ var AreaSeriesComponent = /** @class */ (function () {
         });
         return item === undefined;
     };
+    var _a, _b;
     __decorate([
         Input(),
         __metadata("design:type", Object)
@@ -5860,11 +5955,11 @@ var AreaSeriesComponent = /** @class */ (function () {
     ], AreaSeriesComponent.prototype, "baseValue", void 0);
     __decorate([
         Input(),
-        __metadata("design:type", Object)
+        __metadata("design:type", typeof (_a = typeof ColorHelper !== "undefined" && ColorHelper) === "function" ? _a : Object)
     ], AreaSeriesComponent.prototype, "colors", void 0);
     __decorate([
         Input(),
-        __metadata("design:type", Object)
+        __metadata("design:type", typeof (_b = typeof ScaleType !== "undefined" && ScaleType) === "function" ? _b : Object)
     ], AreaSeriesComponent.prototype, "scaleType", void 0);
     __decorate([
         Input(),
@@ -6201,7 +6296,7 @@ var BarHorizontalComponent = /** @class */ (function (_super) {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.legend = false;
         _this.legendTitle = 'Legend';
-        _this.legendPosition = 'right';
+        _this.legendPosition = LegendPosition.right;
         _this.tooltipDisabled = false;
         _this.showGridLines = true;
         _this.activeEntries = [];
@@ -6364,7 +6459,7 @@ var BarHorizontalComponent = /** @class */ (function (_super) {
         this.activeEntries = this.activeEntries.slice();
         this.deactivate.emit({ value: item, entries: this.activeEntries });
     };
-    var _a, _b, _c;
+    var _a, _b, _c, _d;
     __decorate([
         Input(),
         __metadata("design:type", Object)
@@ -6375,7 +6470,7 @@ var BarHorizontalComponent = /** @class */ (function (_super) {
     ], BarHorizontalComponent.prototype, "legendTitle", void 0);
     __decorate([
         Input(),
-        __metadata("design:type", String)
+        __metadata("design:type", Object)
     ], BarHorizontalComponent.prototype, "legendPosition", void 0);
     __decorate([
         Input(),
@@ -6431,7 +6526,7 @@ var BarHorizontalComponent = /** @class */ (function (_super) {
     ], BarHorizontalComponent.prototype, "activeEntries", void 0);
     __decorate([
         Input(),
-        __metadata("design:type", String)
+        __metadata("design:type", typeof (_a = typeof ScaleType !== "undefined" && ScaleType) === "function" ? _a : Object)
     ], BarHorizontalComponent.prototype, "schemeType", void 0);
     __decorate([
         Input(),
@@ -6507,15 +6602,15 @@ var BarHorizontalComponent = /** @class */ (function (_super) {
     ], BarHorizontalComponent.prototype, "noBarWhenZero", void 0);
     __decorate([
         Output(),
-        __metadata("design:type", typeof (_a = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _a : Object)
+        __metadata("design:type", typeof (_b = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _b : Object)
     ], BarHorizontalComponent.prototype, "activate", void 0);
     __decorate([
         Output(),
-        __metadata("design:type", typeof (_b = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _b : Object)
+        __metadata("design:type", typeof (_c = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _c : Object)
     ], BarHorizontalComponent.prototype, "deactivate", void 0);
     __decorate([
         ContentChild('tooltipTemplate', { static: false }),
-        __metadata("design:type", typeof (_c = typeof TemplateRef !== "undefined" && TemplateRef) === "function" ? _c : Object)
+        __metadata("design:type", typeof (_d = typeof TemplateRef !== "undefined" && TemplateRef) === "function" ? _d : Object)
     ], BarHorizontalComponent.prototype, "tooltipTemplate", void 0);
     BarHorizontalComponent = __decorate([
         Component({
@@ -6535,7 +6630,7 @@ var BarHorizontal2DComponent = /** @class */ (function (_super) {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.legend = false;
         _this.legendTitle = 'Legend';
-        _this.legendPosition = 'right';
+        _this.legendPosition = LegendPosition.right;
         _this.tooltipDisabled = false;
         _this.showGridLines = true;
         _this.activeEntries = [];
@@ -6748,7 +6843,7 @@ var BarHorizontal2DComponent = /** @class */ (function (_super) {
         });
         this.deactivate.emit({ value: item, entries: this.activeEntries });
     };
-    var _a, _b, _c;
+    var _a, _b, _c, _d;
     __decorate([
         Input(),
         __metadata("design:type", Object)
@@ -6759,7 +6854,7 @@ var BarHorizontal2DComponent = /** @class */ (function (_super) {
     ], BarHorizontal2DComponent.prototype, "legendTitle", void 0);
     __decorate([
         Input(),
-        __metadata("design:type", String)
+        __metadata("design:type", Object)
     ], BarHorizontal2DComponent.prototype, "legendPosition", void 0);
     __decorate([
         Input(),
@@ -6819,7 +6914,7 @@ var BarHorizontal2DComponent = /** @class */ (function (_super) {
     ], BarHorizontal2DComponent.prototype, "activeEntries", void 0);
     __decorate([
         Input(),
-        __metadata("design:type", String)
+        __metadata("design:type", typeof (_a = typeof ScaleType !== "undefined" && ScaleType) === "function" ? _a : Object)
     ], BarHorizontal2DComponent.prototype, "schemeType", void 0);
     __decorate([
         Input(),
@@ -6895,15 +6990,15 @@ var BarHorizontal2DComponent = /** @class */ (function (_super) {
     ], BarHorizontal2DComponent.prototype, "noBarWhenZero", void 0);
     __decorate([
         Output(),
-        __metadata("design:type", typeof (_a = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _a : Object)
+        __metadata("design:type", typeof (_b = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _b : Object)
     ], BarHorizontal2DComponent.prototype, "activate", void 0);
     __decorate([
         Output(),
-        __metadata("design:type", typeof (_b = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _b : Object)
+        __metadata("design:type", typeof (_c = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _c : Object)
     ], BarHorizontal2DComponent.prototype, "deactivate", void 0);
     __decorate([
         ContentChild('tooltipTemplate', { static: false }),
-        __metadata("design:type", typeof (_c = typeof TemplateRef !== "undefined" && TemplateRef) === "function" ? _c : Object)
+        __metadata("design:type", typeof (_d = typeof TemplateRef !== "undefined" && TemplateRef) === "function" ? _d : Object)
     ], BarHorizontal2DComponent.prototype, "tooltipTemplate", void 0);
     BarHorizontal2DComponent = __decorate([
         Component({
@@ -6934,7 +7029,7 @@ var BarHorizontalNormalizedComponent = /** @class */ (function (_super) {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.legend = false;
         _this.legendTitle = 'Legend';
-        _this.legendPosition = 'right';
+        _this.legendPosition = LegendPosition.right;
         _this.tooltipDisabled = false;
         _this.showGridLines = true;
         _this.activeEntries = [];
@@ -7105,7 +7200,7 @@ var BarHorizontalNormalizedComponent = /** @class */ (function (_super) {
         });
         this.deactivate.emit({ value: item, entries: this.activeEntries });
     };
-    var _a, _b, _c;
+    var _a, _b, _c, _d;
     __decorate([
         Input(),
         __metadata("design:type", Object)
@@ -7116,7 +7211,7 @@ var BarHorizontalNormalizedComponent = /** @class */ (function (_super) {
     ], BarHorizontalNormalizedComponent.prototype, "legendTitle", void 0);
     __decorate([
         Input(),
-        __metadata("design:type", String)
+        __metadata("design:type", Object)
     ], BarHorizontalNormalizedComponent.prototype, "legendPosition", void 0);
     __decorate([
         Input(),
@@ -7168,7 +7263,7 @@ var BarHorizontalNormalizedComponent = /** @class */ (function (_super) {
     ], BarHorizontalNormalizedComponent.prototype, "activeEntries", void 0);
     __decorate([
         Input(),
-        __metadata("design:type", String)
+        __metadata("design:type", typeof (_a = typeof ScaleType !== "undefined" && ScaleType) === "function" ? _a : Object)
     ], BarHorizontalNormalizedComponent.prototype, "schemeType", void 0);
     __decorate([
         Input(),
@@ -7224,15 +7319,15 @@ var BarHorizontalNormalizedComponent = /** @class */ (function (_super) {
     ], BarHorizontalNormalizedComponent.prototype, "noBarWhenZero", void 0);
     __decorate([
         Output(),
-        __metadata("design:type", typeof (_a = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _a : Object)
+        __metadata("design:type", typeof (_b = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _b : Object)
     ], BarHorizontalNormalizedComponent.prototype, "activate", void 0);
     __decorate([
         Output(),
-        __metadata("design:type", typeof (_b = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _b : Object)
+        __metadata("design:type", typeof (_c = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _c : Object)
     ], BarHorizontalNormalizedComponent.prototype, "deactivate", void 0);
     __decorate([
         ContentChild('tooltipTemplate', { static: false }),
-        __metadata("design:type", typeof (_c = typeof TemplateRef !== "undefined" && TemplateRef) === "function" ? _c : Object)
+        __metadata("design:type", typeof (_d = typeof TemplateRef !== "undefined" && TemplateRef) === "function" ? _d : Object)
     ], BarHorizontalNormalizedComponent.prototype, "tooltipTemplate", void 0);
     BarHorizontalNormalizedComponent = __decorate([
         Component({
@@ -7263,7 +7358,7 @@ var BarHorizontalStackedComponent = /** @class */ (function (_super) {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.legend = false;
         _this.legendTitle = 'Legend';
-        _this.legendPosition = 'right';
+        _this.legendPosition = LegendPosition.right;
         _this.tooltipDisabled = false;
         _this.showGridLines = true;
         _this.activeEntries = [];
@@ -7477,7 +7572,7 @@ var BarHorizontalStackedComponent = /** @class */ (function (_super) {
         });
         this.deactivate.emit({ value: item, entries: this.activeEntries });
     };
-    var _a, _b, _c;
+    var _a, _b, _c, _d;
     __decorate([
         Input(),
         __metadata("design:type", Object)
@@ -7488,7 +7583,7 @@ var BarHorizontalStackedComponent = /** @class */ (function (_super) {
     ], BarHorizontalStackedComponent.prototype, "legendTitle", void 0);
     __decorate([
         Input(),
-        __metadata("design:type", String)
+        __metadata("design:type", Object)
     ], BarHorizontalStackedComponent.prototype, "legendPosition", void 0);
     __decorate([
         Input(),
@@ -7548,7 +7643,7 @@ var BarHorizontalStackedComponent = /** @class */ (function (_super) {
     ], BarHorizontalStackedComponent.prototype, "activeEntries", void 0);
     __decorate([
         Input(),
-        __metadata("design:type", String)
+        __metadata("design:type", typeof (_a = typeof ScaleType !== "undefined" && ScaleType) === "function" ? _a : Object)
     ], BarHorizontalStackedComponent.prototype, "schemeType", void 0);
     __decorate([
         Input(),
@@ -7616,15 +7711,15 @@ var BarHorizontalStackedComponent = /** @class */ (function (_super) {
     ], BarHorizontalStackedComponent.prototype, "noBarWhenZero", void 0);
     __decorate([
         Output(),
-        __metadata("design:type", typeof (_a = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _a : Object)
+        __metadata("design:type", typeof (_b = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _b : Object)
     ], BarHorizontalStackedComponent.prototype, "activate", void 0);
     __decorate([
         Output(),
-        __metadata("design:type", typeof (_b = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _b : Object)
+        __metadata("design:type", typeof (_c = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _c : Object)
     ], BarHorizontalStackedComponent.prototype, "deactivate", void 0);
     __decorate([
         ContentChild('tooltipTemplate', { static: false }),
-        __metadata("design:type", typeof (_c = typeof TemplateRef !== "undefined" && TemplateRef) === "function" ? _c : Object)
+        __metadata("design:type", typeof (_d = typeof TemplateRef !== "undefined" && TemplateRef) === "function" ? _d : Object)
     ], BarHorizontalStackedComponent.prototype, "tooltipTemplate", void 0);
     BarHorizontalStackedComponent = __decorate([
         Component({
@@ -7655,7 +7750,7 @@ var BarVerticalComponent = /** @class */ (function (_super) {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.legend = false;
         _this.legendTitle = 'Legend';
-        _this.legendPosition = 'right';
+        _this.legendPosition = LegendPosition.right;
         _this.tooltipDisabled = false;
         _this.showGridLines = true;
         _this.activeEntries = [];
@@ -7827,7 +7922,7 @@ var BarVerticalComponent = /** @class */ (function (_super) {
         this.activeEntries = this.activeEntries.slice();
         this.deactivate.emit({ value: item, entries: this.activeEntries });
     };
-    var _a, _b, _c;
+    var _a, _b, _c, _d;
     __decorate([
         Input(),
         __metadata("design:type", Object)
@@ -7838,7 +7933,7 @@ var BarVerticalComponent = /** @class */ (function (_super) {
     ], BarVerticalComponent.prototype, "legendTitle", void 0);
     __decorate([
         Input(),
-        __metadata("design:type", String)
+        __metadata("design:type", Object)
     ], BarVerticalComponent.prototype, "legendPosition", void 0);
     __decorate([
         Input(),
@@ -7894,7 +7989,7 @@ var BarVerticalComponent = /** @class */ (function (_super) {
     ], BarVerticalComponent.prototype, "activeEntries", void 0);
     __decorate([
         Input(),
-        __metadata("design:type", String)
+        __metadata("design:type", typeof (_a = typeof ScaleType !== "undefined" && ScaleType) === "function" ? _a : Object)
     ], BarVerticalComponent.prototype, "schemeType", void 0);
     __decorate([
         Input(),
@@ -7970,15 +8065,15 @@ var BarVerticalComponent = /** @class */ (function (_super) {
     ], BarVerticalComponent.prototype, "noBarWhenZero", void 0);
     __decorate([
         Output(),
-        __metadata("design:type", typeof (_a = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _a : Object)
+        __metadata("design:type", typeof (_b = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _b : Object)
     ], BarVerticalComponent.prototype, "activate", void 0);
     __decorate([
         Output(),
-        __metadata("design:type", typeof (_b = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _b : Object)
+        __metadata("design:type", typeof (_c = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _c : Object)
     ], BarVerticalComponent.prototype, "deactivate", void 0);
     __decorate([
         ContentChild('tooltipTemplate', { static: false }),
-        __metadata("design:type", typeof (_c = typeof TemplateRef !== "undefined" && TemplateRef) === "function" ? _c : Object)
+        __metadata("design:type", typeof (_d = typeof TemplateRef !== "undefined" && TemplateRef) === "function" ? _d : Object)
     ], BarVerticalComponent.prototype, "tooltipTemplate", void 0);
     BarVerticalComponent = __decorate([
         Component({
@@ -7998,7 +8093,7 @@ var BarVertical2DComponent = /** @class */ (function (_super) {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.legend = false;
         _this.legendTitle = 'Legend';
-        _this.legendPosition = 'right';
+        _this.legendPosition = LegendPosition.right;
         _this.tooltipDisabled = false;
         _this.scaleType = 'ordinal';
         _this.showGridLines = true;
@@ -8215,7 +8310,7 @@ var BarVertical2DComponent = /** @class */ (function (_super) {
         });
         this.deactivate.emit({ value: item, entries: this.activeEntries });
     };
-    var _a, _b, _c;
+    var _a, _b, _c, _d;
     __decorate([
         Input(),
         __metadata("design:type", Object)
@@ -8226,7 +8321,7 @@ var BarVertical2DComponent = /** @class */ (function (_super) {
     ], BarVertical2DComponent.prototype, "legendTitle", void 0);
     __decorate([
         Input(),
-        __metadata("design:type", String)
+        __metadata("design:type", Object)
     ], BarVertical2DComponent.prototype, "legendPosition", void 0);
     __decorate([
         Input(),
@@ -8274,7 +8369,7 @@ var BarVertical2DComponent = /** @class */ (function (_super) {
     ], BarVertical2DComponent.prototype, "activeEntries", void 0);
     __decorate([
         Input(),
-        __metadata("design:type", String)
+        __metadata("design:type", typeof (_a = typeof ScaleType !== "undefined" && ScaleType) === "function" ? _a : Object)
     ], BarVertical2DComponent.prototype, "schemeType", void 0);
     __decorate([
         Input(),
@@ -8350,15 +8445,15 @@ var BarVertical2DComponent = /** @class */ (function (_super) {
     ], BarVertical2DComponent.prototype, "noBarWhenZero", void 0);
     __decorate([
         Output(),
-        __metadata("design:type", typeof (_a = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _a : Object)
+        __metadata("design:type", typeof (_b = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _b : Object)
     ], BarVertical2DComponent.prototype, "activate", void 0);
     __decorate([
         Output(),
-        __metadata("design:type", typeof (_b = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _b : Object)
+        __metadata("design:type", typeof (_c = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _c : Object)
     ], BarVertical2DComponent.prototype, "deactivate", void 0);
     __decorate([
         ContentChild('tooltipTemplate', { static: false }),
-        __metadata("design:type", typeof (_c = typeof TemplateRef !== "undefined" && TemplateRef) === "function" ? _c : Object)
+        __metadata("design:type", typeof (_d = typeof TemplateRef !== "undefined" && TemplateRef) === "function" ? _d : Object)
     ], BarVertical2DComponent.prototype, "tooltipTemplate", void 0);
     BarVertical2DComponent = __decorate([
         Component({
@@ -8389,7 +8484,7 @@ var BarVertical2DStackedComponent = /** @class */ (function (_super) {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.legend = false;
         _this.legendTitle = 'Legend';
-        _this.legendPosition = 'right';
+        _this.legendPosition = LegendPosition.right;
         _this.tooltipDisabled = false;
         _this.scaleType = 'ordinal';
         _this.showGridLines = true;
@@ -8682,7 +8777,7 @@ var BarVertical2DStackedComponent = /** @class */ (function (_super) {
         });
         this.deactivate.emit({ value: item, entries: this.activeEntries });
     };
-    var _a, _b, _c;
+    var _a, _b, _c, _d;
     __decorate([
         Input(),
         __metadata("design:type", Object)
@@ -8693,7 +8788,7 @@ var BarVertical2DStackedComponent = /** @class */ (function (_super) {
     ], BarVertical2DStackedComponent.prototype, "legendTitle", void 0);
     __decorate([
         Input(),
-        __metadata("design:type", String)
+        __metadata("design:type", Object)
     ], BarVertical2DStackedComponent.prototype, "legendPosition", void 0);
     __decorate([
         Input(),
@@ -8753,7 +8848,7 @@ var BarVertical2DStackedComponent = /** @class */ (function (_super) {
     ], BarVertical2DStackedComponent.prototype, "activeEntries", void 0);
     __decorate([
         Input(),
-        __metadata("design:type", String)
+        __metadata("design:type", typeof (_a = typeof ScaleType !== "undefined" && ScaleType) === "function" ? _a : Object)
     ], BarVertical2DStackedComponent.prototype, "schemeType", void 0);
     __decorate([
         Input(),
@@ -8829,15 +8924,15 @@ var BarVertical2DStackedComponent = /** @class */ (function (_super) {
     ], BarVertical2DStackedComponent.prototype, "noBarWhenZero", void 0);
     __decorate([
         Output(),
-        __metadata("design:type", typeof (_a = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _a : Object)
+        __metadata("design:type", typeof (_b = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _b : Object)
     ], BarVertical2DStackedComponent.prototype, "activate", void 0);
     __decorate([
         Output(),
-        __metadata("design:type", typeof (_b = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _b : Object)
+        __metadata("design:type", typeof (_c = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _c : Object)
     ], BarVertical2DStackedComponent.prototype, "deactivate", void 0);
     __decorate([
         ContentChild('tooltipTemplate', { static: false }),
-        __metadata("design:type", typeof (_c = typeof TemplateRef !== "undefined" && TemplateRef) === "function" ? _c : Object)
+        __metadata("design:type", typeof (_d = typeof TemplateRef !== "undefined" && TemplateRef) === "function" ? _d : Object)
     ], BarVertical2DStackedComponent.prototype, "tooltipTemplate", void 0);
     BarVertical2DStackedComponent = __decorate([
         Component({
@@ -8868,7 +8963,7 @@ var BarVerticalNormalizedComponent = /** @class */ (function (_super) {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.legend = false;
         _this.legendTitle = 'Legend';
-        _this.legendPosition = 'right';
+        _this.legendPosition = LegendPosition.right;
         _this.tooltipDisabled = false;
         _this.showGridLines = true;
         _this.activeEntries = [];
@@ -9039,7 +9134,7 @@ var BarVerticalNormalizedComponent = /** @class */ (function (_super) {
         });
         this.deactivate.emit({ value: item, entries: this.activeEntries });
     };
-    var _a, _b, _c;
+    var _a, _b, _c, _d;
     __decorate([
         Input(),
         __metadata("design:type", Object)
@@ -9050,7 +9145,7 @@ var BarVerticalNormalizedComponent = /** @class */ (function (_super) {
     ], BarVerticalNormalizedComponent.prototype, "legendTitle", void 0);
     __decorate([
         Input(),
-        __metadata("design:type", String)
+        __metadata("design:type", Object)
     ], BarVerticalNormalizedComponent.prototype, "legendPosition", void 0);
     __decorate([
         Input(),
@@ -9094,7 +9189,7 @@ var BarVerticalNormalizedComponent = /** @class */ (function (_super) {
     ], BarVerticalNormalizedComponent.prototype, "activeEntries", void 0);
     __decorate([
         Input(),
-        __metadata("design:type", String)
+        __metadata("design:type", typeof (_a = typeof ScaleType !== "undefined" && ScaleType) === "function" ? _a : Object)
     ], BarVerticalNormalizedComponent.prototype, "schemeType", void 0);
     __decorate([
         Input(),
@@ -9150,15 +9245,15 @@ var BarVerticalNormalizedComponent = /** @class */ (function (_super) {
     ], BarVerticalNormalizedComponent.prototype, "noBarWhenZero", void 0);
     __decorate([
         Output(),
-        __metadata("design:type", typeof (_a = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _a : Object)
+        __metadata("design:type", typeof (_b = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _b : Object)
     ], BarVerticalNormalizedComponent.prototype, "activate", void 0);
     __decorate([
         Output(),
-        __metadata("design:type", typeof (_b = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _b : Object)
+        __metadata("design:type", typeof (_c = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _c : Object)
     ], BarVerticalNormalizedComponent.prototype, "deactivate", void 0);
     __decorate([
         ContentChild('tooltipTemplate', { static: false }),
-        __metadata("design:type", typeof (_c = typeof TemplateRef !== "undefined" && TemplateRef) === "function" ? _c : Object)
+        __metadata("design:type", typeof (_d = typeof TemplateRef !== "undefined" && TemplateRef) === "function" ? _d : Object)
     ], BarVerticalNormalizedComponent.prototype, "tooltipTemplate", void 0);
     BarVerticalNormalizedComponent = __decorate([
         Component({
@@ -9189,7 +9284,7 @@ var BarVerticalStackedComponent = /** @class */ (function (_super) {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.legend = false;
         _this.legendTitle = 'Legend';
-        _this.legendPosition = 'right';
+        _this.legendPosition = LegendPosition.right;
         _this.tooltipDisabled = false;
         _this.showGridLines = true;
         _this.activeEntries = [];
@@ -9407,7 +9502,7 @@ var BarVerticalStackedComponent = /** @class */ (function (_super) {
         });
         this.deactivate.emit({ value: item, entries: this.activeEntries });
     };
-    var _a, _b, _c;
+    var _a, _b, _c, _d;
     __decorate([
         Input(),
         __metadata("design:type", Object)
@@ -9418,7 +9513,7 @@ var BarVerticalStackedComponent = /** @class */ (function (_super) {
     ], BarVerticalStackedComponent.prototype, "legendTitle", void 0);
     __decorate([
         Input(),
-        __metadata("design:type", String)
+        __metadata("design:type", Object)
     ], BarVerticalStackedComponent.prototype, "legendPosition", void 0);
     __decorate([
         Input(),
@@ -9462,7 +9557,7 @@ var BarVerticalStackedComponent = /** @class */ (function (_super) {
     ], BarVerticalStackedComponent.prototype, "activeEntries", void 0);
     __decorate([
         Input(),
-        __metadata("design:type", String)
+        __metadata("design:type", typeof (_a = typeof ScaleType !== "undefined" && ScaleType) === "function" ? _a : Object)
     ], BarVerticalStackedComponent.prototype, "schemeType", void 0);
     __decorate([
         Input(),
@@ -9534,15 +9629,15 @@ var BarVerticalStackedComponent = /** @class */ (function (_super) {
     ], BarVerticalStackedComponent.prototype, "noBarWhenZero", void 0);
     __decorate([
         Output(),
-        __metadata("design:type", typeof (_a = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _a : Object)
+        __metadata("design:type", typeof (_b = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _b : Object)
     ], BarVerticalStackedComponent.prototype, "activate", void 0);
     __decorate([
         Output(),
-        __metadata("design:type", typeof (_b = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _b : Object)
+        __metadata("design:type", typeof (_c = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _c : Object)
     ], BarVerticalStackedComponent.prototype, "deactivate", void 0);
     __decorate([
         ContentChild('tooltipTemplate', { static: false }),
-        __metadata("design:type", typeof (_c = typeof TemplateRef !== "undefined" && TemplateRef) === "function" ? _c : Object)
+        __metadata("design:type", typeof (_d = typeof TemplateRef !== "undefined" && TemplateRef) === "function" ? _d : Object)
     ], BarVerticalStackedComponent.prototype, "tooltipTemplate", void 0);
     BarVerticalStackedComponent = __decorate([
         Component({
@@ -9784,7 +9879,7 @@ var SeriesVerticalComponent = /** @class */ (function () {
     SeriesVerticalComponent.prototype.trackDataLabelBy = function (index, barLabel) {
         return index + '#' + barLabel.series + '#' + barLabel.total;
     };
-    var _a;
+    var _a, _b;
     __decorate([
         Input(),
         __metadata("design:type", Object)
@@ -9807,7 +9902,7 @@ var SeriesVerticalComponent = /** @class */ (function () {
     ], SeriesVerticalComponent.prototype, "yScale", void 0);
     __decorate([
         Input(),
-        __metadata("design:type", Object)
+        __metadata("design:type", typeof (_a = typeof ColorHelper !== "undefined" && ColorHelper) === "function" ? _a : Object)
     ], SeriesVerticalComponent.prototype, "colors", void 0);
     __decorate([
         Input(),
@@ -9827,7 +9922,7 @@ var SeriesVerticalComponent = /** @class */ (function () {
     ], SeriesVerticalComponent.prototype, "tooltipDisabled", void 0);
     __decorate([
         Input(),
-        __metadata("design:type", typeof (_a = typeof TemplateRef !== "undefined" && TemplateRef) === "function" ? _a : Object)
+        __metadata("design:type", typeof (_b = typeof TemplateRef !== "undefined" && TemplateRef) === "function" ? _b : Object)
     ], SeriesVerticalComponent.prototype, "tooltipTemplate", void 0);
     __decorate([
         Input(),
@@ -10088,7 +10183,7 @@ var SeriesHorizontal = /** @class */ (function () {
     SeriesHorizontal.prototype.click = function (data) {
         this.select.emit(data);
     };
-    var _a;
+    var _a, _b;
     __decorate([
         Input(),
         __metadata("design:type", Object)
@@ -10111,7 +10206,7 @@ var SeriesHorizontal = /** @class */ (function () {
     ], SeriesHorizontal.prototype, "yScale", void 0);
     __decorate([
         Input(),
-        __metadata("design:type", Object)
+        __metadata("design:type", typeof (_a = typeof ColorHelper !== "undefined" && ColorHelper) === "function" ? _a : Object)
     ], SeriesHorizontal.prototype, "colors", void 0);
     __decorate([
         Input(),
@@ -10131,7 +10226,7 @@ var SeriesHorizontal = /** @class */ (function () {
     ], SeriesHorizontal.prototype, "seriesName", void 0);
     __decorate([
         Input(),
-        __metadata("design:type", typeof (_a = typeof TemplateRef !== "undefined" && TemplateRef) === "function" ? _a : Object)
+        __metadata("design:type", typeof (_b = typeof TemplateRef !== "undefined" && TemplateRef) === "function" ? _b : Object)
     ], SeriesHorizontal.prototype, "tooltipTemplate", void 0);
     __decorate([
         Input(),
@@ -10379,7 +10474,7 @@ var BubbleChartComponent = /** @class */ (function (_super) {
         _this.legend = false;
         _this.clip = false;
         _this.legendTitle = 'Legend';
-        _this.legendPosition = 'right';
+        _this.legendPosition = LegendPosition.right;
         _this.xAxis = true;
         _this.yAxis = true;
         _this.trimXAxisTicks = true;
@@ -10390,7 +10485,7 @@ var BubbleChartComponent = /** @class */ (function (_super) {
         _this.roundDomains = false;
         _this.maxRadius = 10;
         _this.minRadius = 3;
-        _this.schemeType = 'ordinal';
+        _this.schemeType = ScaleType.ordinal;
         _this.tooltipDisabled = false;
         _this.activate = new EventEmitter();
         _this.deactivate = new EventEmitter();
@@ -10611,7 +10706,7 @@ var BubbleChartComponent = /** @class */ (function (_super) {
     ], BubbleChartComponent.prototype, "legendTitle", void 0);
     __decorate([
         Input(),
-        __metadata("design:type", String)
+        __metadata("design:type", Object)
     ], BubbleChartComponent.prototype, "legendPosition", void 0);
     __decorate([
         Input(),
@@ -10857,7 +10952,7 @@ var BubbleSeriesComponent = /** @class */ (function () {
     BubbleSeriesComponent.prototype.trackBy = function (index, circle) {
         return circle.data.series + " " + circle.data.name;
     };
-    var _a;
+    var _a, _b;
     __decorate([
         Input(),
         __metadata("design:type", Object)
@@ -10884,7 +10979,7 @@ var BubbleSeriesComponent = /** @class */ (function () {
     ], BubbleSeriesComponent.prototype, "yScaleType", void 0);
     __decorate([
         Input(),
-        __metadata("design:type", Object)
+        __metadata("design:type", typeof (_a = typeof ColorHelper !== "undefined" && ColorHelper) === "function" ? _a : Object)
     ], BubbleSeriesComponent.prototype, "colors", void 0);
     __decorate([
         Input(),
@@ -10908,7 +11003,7 @@ var BubbleSeriesComponent = /** @class */ (function () {
     ], BubbleSeriesComponent.prototype, "tooltipDisabled", void 0);
     __decorate([
         Input(),
-        __metadata("design:type", typeof (_a = typeof TemplateRef !== "undefined" && TemplateRef) === "function" ? _a : Object)
+        __metadata("design:type", typeof (_b = typeof TemplateRef !== "undefined" && TemplateRef) === "function" ? _b : Object)
     ], BubbleSeriesComponent.prototype, "tooltipTemplate", void 0);
     __decorate([
         Output(),
@@ -10973,7 +11068,7 @@ var ForceDirectedGraphComponent = /** @class */ (function (_super) {
             .force('y', forceY());
         _this.forceLink = forceLink().id(function (node) { return node.value; });
         _this.legendTitle = 'Legend';
-        _this.legendPosition = 'right';
+        _this.legendPosition = LegendPosition.right;
         _this.nodes = [];
         _this.links = [];
         _this.activeEntries = [];
@@ -11035,11 +11130,11 @@ var ForceDirectedGraphComponent = /** @class */ (function (_super) {
         return node.value;
     };
     ForceDirectedGraphComponent.prototype.setColors = function () {
-        this.colors = new ColorHelper(this.scheme, 'ordinal', this.seriesDomain, this.customColors);
+        this.colors = new ColorHelper(this.scheme, ScaleType.ordinal, this.seriesDomain, this.customColors);
     };
     ForceDirectedGraphComponent.prototype.getLegendOptions = function () {
         return {
-            scaleType: 'ordinal',
+            scaleType: ScaleType.ordinal,
             domain: this.seriesDomain,
             colors: this.colors,
             title: this.legendTitle,
@@ -11089,7 +11184,7 @@ var ForceDirectedGraphComponent = /** @class */ (function (_super) {
     ], ForceDirectedGraphComponent.prototype, "legendTitle", void 0);
     __decorate([
         Input(),
-        __metadata("design:type", String)
+        __metadata("design:type", Object)
     ], ForceDirectedGraphComponent.prototype, "legendPosition", void 0);
     __decorate([
         Input(),
@@ -11151,11 +11246,7 @@ var ForceDirectedGraphComponent = /** @class */ (function (_super) {
         Component({
             selector: 'ngx-charts-force-directed-graph',
             template: "\n    <ngx-charts-chart\n      [view]=\"[width, height]\"\n      [showLegend]=\"legend\"\n      [legendOptions]=\"legendOptions\"\n      [animations]=\"animations\"\n      (legendLabelClick)=\"onClick($event)\"\n      (legendLabelActivate)=\"onActivate($event)\"\n      (legendLabelDeactivate)=\"onDeactivate($event)\"\n    >\n      <svg:g [attr.transform]=\"transform\" class=\"force-directed-graph chart\">\n        <svg:g class=\"links\">\n          <svg:g *ngFor=\"let link of links; trackBy: trackLinkBy\">\n            <ng-template\n              *ngIf=\"linkTemplate\"\n              [ngTemplateOutlet]=\"linkTemplate\"\n              [ngTemplateOutletContext]=\"{ $implicit: link }\"\n            ></ng-template>\n            <svg:line\n              *ngIf=\"!linkTemplate\"\n              strokeWidth=\"1\"\n              class=\"edge\"\n              [attr.x1]=\"link.source.x\"\n              [attr.y1]=\"link.source.y\"\n              [attr.x2]=\"link.target.x\"\n              [attr.y2]=\"link.target.y\"\n            />\n          </svg:g>\n        </svg:g>\n        <svg:g class=\"nodes\">\n          <svg:g\n            *ngFor=\"let node of nodes; trackBy: trackNodeBy\"\n            [attr.transform]=\"'translate(' + node.x + ',' + node.y + ')'\"\n            [attr.fill]=\"colors.getColor(groupResultsBy(node))\"\n            [attr.stroke]=\"colors.getColor(groupResultsBy(node))\"\n            (mousedown)=\"onDragStart(node, $event)\"\n            (click)=\"onClick({ name: node.value })\"\n            ngx-tooltip\n            [tooltipDisabled]=\"tooltipDisabled\"\n            [tooltipPlacement]=\"'top'\"\n            [tooltipType]=\"'tooltip'\"\n            [tooltipTitle]=\"tooltipTemplate ? undefined : escape(node.value)\"\n            [tooltipTemplate]=\"tooltipTemplate\"\n            [tooltipContext]=\"node\"\n          >\n            <ng-template\n              *ngIf=\"nodeTemplate\"\n              [ngTemplateOutlet]=\"nodeTemplate\"\n              [ngTemplateOutletContext]=\"{ $implicit: node }\"\n            ></ng-template>\n            <svg:circle *ngIf=\"!nodeTemplate\" r=\"5\" />\n          </svg:g>\n        </svg:g>\n      </svg:g>\n    </ngx-charts-chart>\n  ",
-<<<<<<< HEAD
             styles: [".ngx-charts{float:left;overflow:visible}.ngx-charts .arc,.ngx-charts .bar,.ngx-charts .circle{cursor:pointer}.ngx-charts .axis-label{font-size:14px}.ngx-charts .arc.active,.ngx-charts .arc:hover,.ngx-charts .bar.active,.ngx-charts .bar:hover,.ngx-charts .card.active,.ngx-charts .card:hover,.ngx-charts .cell.active,.ngx-charts .cell:hover{opacity:.8;transition:opacity .1s ease-in-out}.ngx-charts .arc:focus,.ngx-charts .bar:focus,.ngx-charts .card:focus,.ngx-charts .cell:focus{outline:0}.ngx-charts .arc.hidden,.ngx-charts .bar.hidden,.ngx-charts .card.hidden,.ngx-charts .cell.hidden{display:none}.ngx-charts g:focus{outline:0}.ngx-charts .area-series.inactive,.ngx-charts .line-series-range.inactive,.ngx-charts .line-series.inactive,.ngx-charts .polar-series-area.inactive,.ngx-charts .polar-series-path.inactive{transition:opacity .1s ease-in-out;opacity:.2}.ngx-charts .line-highlight{display:none}.ngx-charts .line-highlight.active{display:block}.ngx-charts .area{opacity:.6}.ngx-charts .circle:hover{cursor:pointer}.ngx-charts .label{font-size:12px;font-weight:400}.ngx-charts .tooltip-anchor{fill:#000}.ngx-charts .gridline-path{stroke:#ddd;stroke-width:1;fill:none}.ngx-charts .refline-path{stroke:#a8b2c7;stroke-width:1;stroke-dasharray:5;stroke-dashoffset:5}.ngx-charts .refline-label{font-size:9px}.ngx-charts .reference-area{fill-opacity:.05;fill:#000}.ngx-charts .gridline-path-dotted{stroke:#ddd;stroke-width:1;fill:none;stroke-dasharray:1,20;stroke-dashoffset:3}.ngx-charts .grid-panel rect{fill:none}.ngx-charts .grid-panel.odd rect{fill:rgba(0,0,0,.05)}", ".force-directed-graph .edge{stroke:#333}"],
-=======
-            styles: [".ngx-charts{float:left;overflow:visible}.ngx-charts .arc,.ngx-charts .bar,.ngx-charts .circle{cursor:pointer}.ngx-charts .arc.active,.ngx-charts .arc:hover,.ngx-charts .bar.active,.ngx-charts .bar:hover,.ngx-charts .card.active,.ngx-charts .card:hover,.ngx-charts .cell.active,.ngx-charts .cell:hover{opacity:.8;transition:opacity .1s ease-in-out}.ngx-charts .arc:focus,.ngx-charts .bar:focus,.ngx-charts .card:focus,.ngx-charts .cell:focus{outline:0}.ngx-charts .arc.hidden,.ngx-charts .bar.hidden,.ngx-charts .card.hidden,.ngx-charts .cell.hidden{display:none}.ngx-charts g:focus{outline:0}.ngx-charts .area-series.inactive,.ngx-charts .line-series-range.inactive,.ngx-charts .line-series.inactive,.ngx-charts .polar-series-area.inactive,.ngx-charts .polar-series-path.inactive{transition:opacity .1s ease-in-out;opacity:.2}.ngx-charts .line-highlight{display:none}.ngx-charts .line-highlight.active{display:block}.ngx-charts .area{opacity:.6}.ngx-charts .circle:hover{cursor:pointer}.ngx-charts .label{font-size:12px;font-weight:400}.ngx-charts .tooltip-anchor{fill:#000}.ngx-charts .gridline-path{stroke:#ddd;stroke-width:1;fill:none}.ngx-charts .refline-path{stroke:#a8b2c7;stroke-width:1;stroke-dasharray:5;stroke-dashoffset:5}.ngx-charts .refline-label{font-size:9px}.ngx-charts .reference-area{fill-opacity:.05;fill:#000}.ngx-charts .gridline-path-dotted{stroke:#ddd;stroke-width:1;fill:none;stroke-dasharray:1,20;stroke-dashoffset:3}.ngx-charts .grid-panel rect{fill:none}.ngx-charts .grid-panel.odd rect{fill:rgba(0,0,0,.05)}", ".force-directed-graph .edge{stroke:#333}"],
->>>>>>> db0aea47d1499142de488614059c7b256bcc718f
             encapsulation: ViewEncapsulation.None,
             changeDetection: ChangeDetectionStrategy.OnPush
         })
@@ -11358,14 +11449,14 @@ var HeatCellSeriesComponent = /** @class */ (function () {
     HeatCellSeriesComponent.prototype.onClick = function (data) {
         this.select.emit(data);
     };
-    var _a, _b, _c;
+    var _a, _b, _c, _d;
     __decorate([
         Input(),
         __metadata("design:type", Object)
     ], HeatCellSeriesComponent.prototype, "data", void 0);
     __decorate([
         Input(),
-        __metadata("design:type", Object)
+        __metadata("design:type", typeof (_a = typeof ColorHelper !== "undefined" && ColorHelper) === "function" ? _a : Object)
     ], HeatCellSeriesComponent.prototype, "colors", void 0);
     __decorate([
         Input(),
@@ -11389,7 +11480,7 @@ var HeatCellSeriesComponent = /** @class */ (function () {
     ], HeatCellSeriesComponent.prototype, "tooltipText", void 0);
     __decorate([
         Input(),
-        __metadata("design:type", typeof (_a = typeof TemplateRef !== "undefined" && TemplateRef) === "function" ? _a : Object)
+        __metadata("design:type", typeof (_b = typeof TemplateRef !== "undefined" && TemplateRef) === "function" ? _b : Object)
     ], HeatCellSeriesComponent.prototype, "tooltipTemplate", void 0);
     __decorate([
         Input(),
@@ -11401,11 +11492,11 @@ var HeatCellSeriesComponent = /** @class */ (function () {
     ], HeatCellSeriesComponent.prototype, "select", void 0);
     __decorate([
         Output(),
-        __metadata("design:type", typeof (_b = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _b : Object)
+        __metadata("design:type", typeof (_c = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _c : Object)
     ], HeatCellSeriesComponent.prototype, "activate", void 0);
     __decorate([
         Output(),
-        __metadata("design:type", typeof (_c = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _c : Object)
+        __metadata("design:type", typeof (_d = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _d : Object)
     ], HeatCellSeriesComponent.prototype, "deactivate", void 0);
     HeatCellSeriesComponent = __decorate([
         Component({
@@ -11422,7 +11513,7 @@ var HeatMapComponent = /** @class */ (function (_super) {
     function HeatMapComponent() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.legendTitle = 'Legend';
-        _this.legendPosition = 'right';
+        _this.legendPosition = LegendPosition.right;
         _this.innerPadding = 8;
         _this.trimXAxisTicks = true;
         _this.trimYAxisTicks = true;
@@ -11436,7 +11527,7 @@ var HeatMapComponent = /** @class */ (function (_super) {
         _this.margin = [10, 20, 10, 20];
         _this.xAxisHeight = 0;
         _this.yAxisWidth = 0;
-        _this.scaleType = 'linear';
+        _this.scaleType = ScaleType.linear;
         return _this;
     }
     HeatMapComponent.prototype.update = function () {
@@ -11637,7 +11728,7 @@ var HeatMapComponent = /** @class */ (function (_super) {
     ], HeatMapComponent.prototype, "legendTitle", void 0);
     __decorate([
         Input(),
-        __metadata("design:type", String)
+        __metadata("design:type", Object)
     ], HeatMapComponent.prototype, "legendPosition", void 0);
     __decorate([
         Input(),
@@ -11854,7 +11945,7 @@ var LineChartComponent = /** @class */ (function (_super) {
     function LineChartComponent() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.legendTitle = 'Legend';
-        _this.legendPosition = 'right';
+        _this.legendPosition = LegendPosition.right;
         _this.showGridLines = true;
         _this.curve = curveLinear;
         _this.activeEntries = [];
@@ -12102,7 +12193,7 @@ var LineChartComponent = /** @class */ (function (_super) {
         }
         this.activeEntries = [];
     };
-    var _a, _b, _c, _d;
+    var _a, _b, _c, _d, _e;
     __decorate([
         Input(),
         __metadata("design:type", Object)
@@ -12113,7 +12204,7 @@ var LineChartComponent = /** @class */ (function (_super) {
     ], LineChartComponent.prototype, "legendTitle", void 0);
     __decorate([
         Input(),
-        __metadata("design:type", String)
+        __metadata("design:type", Object)
     ], LineChartComponent.prototype, "legendPosition", void 0);
     __decorate([
         Input(),
@@ -12165,7 +12256,7 @@ var LineChartComponent = /** @class */ (function (_super) {
     ], LineChartComponent.prototype, "activeEntries", void 0);
     __decorate([
         Input(),
-        __metadata("design:type", String)
+        __metadata("design:type", typeof (_a = typeof ScaleType !== "undefined" && ScaleType) === "function" ? _a : Object)
     ], LineChartComponent.prototype, "schemeType", void 0);
     __decorate([
         Input(),
@@ -12245,19 +12336,19 @@ var LineChartComponent = /** @class */ (function (_super) {
     ], LineChartComponent.prototype, "yScaleMax", void 0);
     __decorate([
         Output(),
-        __metadata("design:type", typeof (_a = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _a : Object)
+        __metadata("design:type", typeof (_b = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _b : Object)
     ], LineChartComponent.prototype, "activate", void 0);
     __decorate([
         Output(),
-        __metadata("design:type", typeof (_b = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _b : Object)
+        __metadata("design:type", typeof (_c = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _c : Object)
     ], LineChartComponent.prototype, "deactivate", void 0);
     __decorate([
         ContentChild('tooltipTemplate', { static: false }),
-        __metadata("design:type", typeof (_c = typeof TemplateRef !== "undefined" && TemplateRef) === "function" ? _c : Object)
+        __metadata("design:type", typeof (_d = typeof TemplateRef !== "undefined" && TemplateRef) === "function" ? _d : Object)
     ], LineChartComponent.prototype, "tooltipTemplate", void 0);
     __decorate([
         ContentChild('seriesTooltipTemplate', { static: false }),
-        __metadata("design:type", typeof (_d = typeof TemplateRef !== "undefined" && TemplateRef) === "function" ? _d : Object)
+        __metadata("design:type", typeof (_e = typeof TemplateRef !== "undefined" && TemplateRef) === "function" ? _e : Object)
     ], LineChartComponent.prototype, "seriesTooltipTemplate", void 0);
     __decorate([
         HostListener('mouseleave'),
@@ -12418,6 +12509,7 @@ var LineSeriesComponent = /** @class */ (function () {
         });
         return item === undefined;
     };
+    var _a, _b;
     __decorate([
         Input(),
         __metadata("design:type", Object)
@@ -12432,11 +12524,11 @@ var LineSeriesComponent = /** @class */ (function () {
     ], LineSeriesComponent.prototype, "yScale", void 0);
     __decorate([
         Input(),
-        __metadata("design:type", Object)
+        __metadata("design:type", typeof (_a = typeof ColorHelper !== "undefined" && ColorHelper) === "function" ? _a : Object)
     ], LineSeriesComponent.prototype, "colors", void 0);
     __decorate([
         Input(),
-        __metadata("design:type", Object)
+        __metadata("design:type", typeof (_b = typeof ScaleType !== "undefined" && ScaleType) === "function" ? _b : Object)
     ], LineSeriesComponent.prototype, "scaleType", void 0);
     __decorate([
         Input(),
@@ -12495,7 +12587,7 @@ var PolarChartComponent = /** @class */ (function (_super) {
     function PolarChartComponent() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.legendTitle = 'Legend';
-        _this.legendPosition = 'right';
+        _this.legendPosition = LegendPosition.right;
         _this.showGridLines = true;
         _this.curve = curveCardinalClosed;
         _this.activeEntries = [];
@@ -12765,7 +12857,7 @@ var PolarChartComponent = /** @class */ (function (_super) {
     PolarChartComponent.prototype.trackBy = function (index, item) {
         return item.name;
     };
-    var _a, _b, _c;
+    var _a, _b, _c, _d;
     __decorate([
         Input(),
         __metadata("design:type", Boolean)
@@ -12776,7 +12868,7 @@ var PolarChartComponent = /** @class */ (function (_super) {
     ], PolarChartComponent.prototype, "legendTitle", void 0);
     __decorate([
         Input(),
-        __metadata("design:type", String)
+        __metadata("design:type", Object)
     ], PolarChartComponent.prototype, "legendPosition", void 0);
     __decorate([
         Input(),
@@ -12820,7 +12912,7 @@ var PolarChartComponent = /** @class */ (function (_super) {
     ], PolarChartComponent.prototype, "activeEntries", void 0);
     __decorate([
         Input(),
-        __metadata("design:type", String)
+        __metadata("design:type", typeof (_a = typeof ScaleType !== "undefined" && ScaleType) === "function" ? _a : Object)
     ], PolarChartComponent.prototype, "schemeType", void 0);
     __decorate([
         Input(),
@@ -12872,15 +12964,15 @@ var PolarChartComponent = /** @class */ (function (_super) {
     ], PolarChartComponent.prototype, "labelTrimSize", void 0);
     __decorate([
         Output(),
-        __metadata("design:type", typeof (_a = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _a : Object)
+        __metadata("design:type", typeof (_b = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _b : Object)
     ], PolarChartComponent.prototype, "activate", void 0);
     __decorate([
         Output(),
-        __metadata("design:type", typeof (_b = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _b : Object)
+        __metadata("design:type", typeof (_c = typeof EventEmitter !== "undefined" && EventEmitter) === "function" ? _c : Object)
     ], PolarChartComponent.prototype, "deactivate", void 0);
     __decorate([
         ContentChild('tooltipTemplate', { static: false }),
-        __metadata("design:type", typeof (_c = typeof TemplateRef !== "undefined" && TemplateRef) === "function" ? _c : Object)
+        __metadata("design:type", typeof (_d = typeof TemplateRef !== "undefined" && TemplateRef) === "function" ? _d : Object)
     ], PolarChartComponent.prototype, "tooltipTemplate", void 0);
     PolarChartComponent = __decorate([
         Component({
@@ -13022,7 +13114,7 @@ var PolarSeriesComponent = /** @class */ (function () {
             this.gradientStops = undefined;
         }
     };
-    var _a;
+    var _a, _b, _c;
     __decorate([
         Input(),
         __metadata("design:type", Object)
@@ -13041,11 +13133,11 @@ var PolarSeriesComponent = /** @class */ (function () {
     ], PolarSeriesComponent.prototype, "yScale", void 0);
     __decorate([
         Input(),
-        __metadata("design:type", Object)
+        __metadata("design:type", typeof (_a = typeof ColorHelper !== "undefined" && ColorHelper) === "function" ? _a : Object)
     ], PolarSeriesComponent.prototype, "colors", void 0);
     __decorate([
         Input(),
-        __metadata("design:type", Object)
+        __metadata("design:type", typeof (_b = typeof ScaleType !== "undefined" && ScaleType) === "function" ? _b : Object)
     ], PolarSeriesComponent.prototype, "scaleType", void 0);
     __decorate([
         Input(),
@@ -13073,7 +13165,7 @@ var PolarSeriesComponent = /** @class */ (function () {
     ], PolarSeriesComponent.prototype, "gradient", void 0);
     __decorate([
         Input(),
-        __metadata("design:type", typeof (_a = typeof TemplateRef !== "undefined" && TemplateRef) === "function" ? _a : Object)
+        __metadata("design:type", typeof (_c = typeof TemplateRef !== "undefined" && TemplateRef) === "function" ? _c : Object)
     ], PolarSeriesComponent.prototype, "tooltipTemplate", void 0);
     __decorate([
         Input(),
@@ -13137,7 +13229,7 @@ var AdvancedPieChartComponent = /** @class */ (function (_super) {
         this.select.emit(data);
     };
     AdvancedPieChartComponent.prototype.setColors = function () {
-        this.colors = new ColorHelper(this.scheme, 'ordinal', this.domain, this.customColors);
+        this.colors = new ColorHelper(this.scheme, ScaleType.ordinal, this.domain, this.customColors);
     };
     AdvancedPieChartComponent.prototype.onActivate = function (item, fromLegend) {
         if (fromLegend === void 0) { fromLegend = false; }
@@ -13570,9 +13662,10 @@ var PieChartComponent = /** @class */ (function (_super) {
         _this.legend = false;
         _this.legendAdvanced = false;
         _this.legendTitle = 'Legend';
-        _this.legendPosition = 'right';
+        _this.legendPosition = LegendPosition.right;
         _this.explodeSlices = false;
         _this.doughnut = false;
+        _this.showDoughnutSum = false;
         _this.arcWidth = 0.25;
         _this.activeEntries = [];
         _this.tooltipDisabled = false;
@@ -13664,11 +13757,11 @@ var PieChartComponent = /** @class */ (function (_super) {
         this.select.emit(data);
     };
     PieChartComponent.prototype.setColors = function () {
-        this.colors = new ColorHelper(this.scheme, 'ordinal', this.domain, this.customColors);
+        this.colors = new ColorHelper(this.scheme, ScaleType.ordinal, this.domain, this.customColors);
     };
     PieChartComponent.prototype.getLegendOptions = function () {
         return {
-            scaleType: 'ordinal',
+            scaleType: ScaleType.ordinal,
             domain: this.domain,
             colors: this.colors,
             title: this.legendTitle,
@@ -13733,7 +13826,7 @@ var PieChartComponent = /** @class */ (function (_super) {
     ], PieChartComponent.prototype, "legendTitle", void 0);
     __decorate([
         Input(),
-        __metadata("design:type", String)
+        __metadata("design:type", Object)
     ], PieChartComponent.prototype, "legendPosition", void 0);
     __decorate([
         Input(),
@@ -13754,6 +13847,10 @@ var PieChartComponent = /** @class */ (function (_super) {
     __decorate([
         Input(),
         __metadata("design:type", Object)
+    ], PieChartComponent.prototype, "showDoughnutSum", void 0);
+    __decorate([
+        Input(),
+        __metadata("design:type", Object)
     ], PieChartComponent.prototype, "arcWidth", void 0);
     __decorate([
         Input(),
@@ -13771,6 +13868,10 @@ var PieChartComponent = /** @class */ (function (_super) {
         Input(),
         __metadata("design:type", Object)
     ], PieChartComponent.prototype, "labelFormatting", void 0);
+    __decorate([
+        Input(),
+        __metadata("design:type", Function)
+    ], PieChartComponent.prototype, "labelVisibility", void 0);
     __decorate([
         Input(),
         __metadata("design:type", Boolean)
@@ -13810,7 +13911,7 @@ var PieChartComponent = /** @class */ (function (_super) {
     PieChartComponent = __decorate([
         Component({
             selector: 'ngx-charts-pie-chart',
-            template: "\n    <ngx-charts-chart\n      [view]=\"[width, height]\"\n      [showLegend]=\"legend\"\n      [legendAdvanced]=\"legendAdvanced\"\n      [advancedData]=\"data\"\n      [legendOptions]=\"legendOptions\"\n      [activeEntries]=\"activeEntries\"\n      [animations]=\"animations\"\n      (legendLabelActivate)=\"onActivate($event, true)\"\n      (legendLabelDeactivate)=\"onDeactivate($event, true)\"\n      (legendLabelClick)=\"onClick($event)\"\n    >\n      <svg:g [attr.transform]=\"translation\" class=\"pie-chart chart\">\n        <svg:g\n          ngx-charts-pie-series\n          [colors]=\"colors\"\n          [series]=\"data\"\n          [showLabels]=\"labels\"\n          [labelFormatting]=\"labelFormatting\"\n          [trimLabels]=\"trimLabels\"\n          [maxLabelLength]=\"maxLabelLength\"\n          [activeEntries]=\"activeEntries\"\n          [innerRadius]=\"innerRadius\"\n          [outerRadius]=\"outerRadius\"\n          [explodeSlices]=\"explodeSlices\"\n          [gradient]=\"gradient\"\n          [animations]=\"animations\"\n          [tooltipDisabled]=\"tooltipDisabled\"\n          [tooltipTemplate]=\"tooltipTemplate\"\n          [tooltipText]=\"tooltipText\"\n          (dblclick)=\"dblclick.emit($event)\"\n          (select)=\"onClick($event)\"\n          (activate)=\"onActivate($event)\"\n          (deactivate)=\"onDeactivate($event)\"\n        />\n      </svg:g>\n    </ngx-charts-chart>\n    \n    <div class=\"totalValue\"  *ngIf=\"doughnut\" [ngStyle]=\"setMyStyles()\">\n      <div \n        *ngIf=\"animations\"\n        class=\"item-value\"\n        ngx-charts-count-up\n        [countTo]=\"totalNumber\"\n      ></div>\n      <p>{{totalLabel}}</p>\n    </div>\n\n  ",
+            template: "\n    <ngx-charts-chart\n      [view]=\"[width, height]\"\n      [showLegend]=\"legend\"\n      [legendAdvanced]=\"legendAdvanced\"\n      [advancedData]=\"data\"\n      [legendOptions]=\"legendOptions\"\n      [activeEntries]=\"activeEntries\"\n      [animations]=\"animations\"\n      (legendLabelActivate)=\"onActivate($event, true)\"\n      (legendLabelDeactivate)=\"onDeactivate($event, true)\"\n      (legendLabelClick)=\"onClick($event)\"\n    >\n      <svg:g [attr.transform]=\"translation\" class=\"pie-chart chart\">\n        <svg:g\n          ngx-charts-pie-series\n          [colors]=\"colors\"\n          [series]=\"data\"\n          [showLabels]=\"labels\"\n          [labelFormatting]=\"labelFormatting\"\n          [labelVisibility]=\"labelVisibility\"\n          [trimLabels]=\"trimLabels\"\n          [maxLabelLength]=\"maxLabelLength\"\n          [activeEntries]=\"activeEntries\"\n          [innerRadius]=\"innerRadius\"\n          [outerRadius]=\"outerRadius\"\n          [explodeSlices]=\"explodeSlices\"\n          [gradient]=\"gradient\"\n          [animations]=\"animations\"\n          [tooltipDisabled]=\"tooltipDisabled\"\n          [tooltipTemplate]=\"tooltipTemplate\"\n          [tooltipText]=\"tooltipText\"\n          [showSum]=\"doughnut && showDoughnutSum\"\n          (dblclick)=\"dblclick.emit($event)\"\n          (select)=\"onClick($event)\"\n          (activate)=\"onActivate($event)\"\n          (deactivate)=\"onDeactivate($event)\"\n        />\n      </svg:g>\n    </ngx-charts-chart>\n    \n    <div class=\"totalValue\"  *ngIf=\"doughnut\" [ngStyle]=\"setMyStyles()\">\n      <div \n        *ngIf=\"animations\"\n        class=\"item-value\"\n        ngx-charts-count-up\n        [countTo]=\"totalNumber\"\n      ></div>\n      <p>{{totalLabel}}</p>\n    </div>\n\n  ",
             styles: [".ngx-charts{float:left;overflow:visible}.ngx-charts .arc,.ngx-charts .bar,.ngx-charts .circle{cursor:pointer}.ngx-charts .axis-label{font-size:14px}.ngx-charts .arc.active,.ngx-charts .arc:hover,.ngx-charts .bar.active,.ngx-charts .bar:hover,.ngx-charts .card.active,.ngx-charts .card:hover,.ngx-charts .cell.active,.ngx-charts .cell:hover{opacity:.8;transition:opacity .1s ease-in-out}.ngx-charts .arc:focus,.ngx-charts .bar:focus,.ngx-charts .card:focus,.ngx-charts .cell:focus{outline:0}.ngx-charts .arc.hidden,.ngx-charts .bar.hidden,.ngx-charts .card.hidden,.ngx-charts .cell.hidden{display:none}.ngx-charts g:focus{outline:0}.ngx-charts .area-series.inactive,.ngx-charts .line-series-range.inactive,.ngx-charts .line-series.inactive,.ngx-charts .polar-series-area.inactive,.ngx-charts .polar-series-path.inactive{transition:opacity .1s ease-in-out;opacity:.2}.ngx-charts .line-highlight{display:none}.ngx-charts .line-highlight.active{display:block}.ngx-charts .area{opacity:.6}.ngx-charts .circle:hover{cursor:pointer}.ngx-charts .label{font-size:12px;font-weight:400}.ngx-charts .tooltip-anchor{fill:#000}.ngx-charts .gridline-path{stroke:#ddd;stroke-width:1;fill:none}.ngx-charts .refline-path{stroke:#a8b2c7;stroke-width:1;stroke-dasharray:5;stroke-dashoffset:5}.ngx-charts .refline-label{font-size:9px}.ngx-charts .reference-area{fill-opacity:.05;fill:#000}.ngx-charts .gridline-path-dotted{stroke:#ddd;stroke-width:1;fill:none;stroke-dasharray:1,20;stroke-dashoffset:3}.ngx-charts .grid-panel rect{fill:none}.ngx-charts .grid-panel.odd rect{fill:rgba(0,0,0,.05)}", "text.total-attribute{fill:#fff}.totalValue{font-weight:700;font-size:30px;color:#414141}.totalValue p{margin:.5em 0 0 0;font-size:14px;color:#999;font-weight:400}.pie-label{font-size:11px}.pie-label.animation{animation:750ms ease-in fadeIn}@keyframes fadeIn{from{opacity:0}to{opacity:1}}.pie-label-line{stroke-dasharray:100%}.pie-label-line.animation{animation:3s linear drawOut;transition:d 750ms}@keyframes drawOut{from{stroke-dashoffset:100%}to{stroke-dashoffset:0}}"],
             encapsulation: ViewEncapsulation.None,
             changeDetection: ChangeDetectionStrategy.OnPush
@@ -13818,61 +13919,6 @@ var PieChartComponent = /** @class */ (function (_super) {
     ], PieChartComponent);
     return PieChartComponent;
 }(BaseChartComponent));
-
-function gridSize(dims, len, minWidth) {
-    var rows = 1;
-    var cols = len;
-    var width = dims.width;
-    if (width > minWidth) {
-        while (width / cols < minWidth) {
-            rows += 1;
-            cols = Math.ceil(len / rows);
-        }
-    }
-    return [cols, rows];
-}
-function gridLayout(dims, data, minWidth, designatedTotal) {
-    var xScale = scaleBand();
-    var yScale = scaleBand();
-    var width = dims.width;
-    var height = dims.height;
-    var _a = gridSize(dims, data.length, minWidth), columns = _a[0], rows = _a[1];
-    var xDomain = [];
-    var yDomain = [];
-    for (var i = 0; i < rows; i++) {
-        yDomain.push(i);
-    }
-    for (var i = 0; i < columns; i++) {
-        xDomain.push(i);
-    }
-    xScale.domain(xDomain);
-    yScale.domain(yDomain);
-    xScale.rangeRound([0, width], 0.1);
-    yScale.rangeRound([0, height], 0.1);
-    var res = [];
-    var total = designatedTotal ? designatedTotal : getTotal(data);
-    var cardWidth = xScale.bandwidth();
-    var cardHeight = yScale.bandwidth();
-    for (var i = 0; i < data.length; i++) {
-        res[i] = {};
-        res[i].data = {
-            name: data[i] ? data[i].name : '',
-            value: data[i] ? data[i].value : undefined,
-            extra: data[i] ? data[i].extra : undefined,
-            label: data[i] ? data[i].label : ''
-        };
-        res[i].x = xScale(i % columns);
-        res[i].y = yScale(Math.floor(i / columns));
-        res[i].width = cardWidth;
-        res[i].height = cardHeight;
-        res[i].data.percent = total > 0 ? res[i].data.value / total : 0;
-        res[i].data.total = total;
-    }
-    return res;
-}
-function getTotal(results) {
-    return results.map(function (d) { return (d ? d.value : 0); }).reduce(function (sum, val) { return sum + val; }, 0);
-}
 
 var PieGridComponent = /** @class */ (function (_super) {
     __extends(PieGridComponent, _super);
@@ -13964,7 +14010,7 @@ var PieGridComponent = /** @class */ (function (_super) {
         this.select.emit(data);
     };
     PieGridComponent.prototype.setColors = function () {
-        this.colorScale = new ColorHelper(this.scheme, 'ordinal', this.domain, this.customColors);
+        this.colorScale = new ColorHelper(this.scheme, ScaleType.ordinal, this.domain, this.customColors);
     };
     PieGridComponent.prototype.onActivate = function (item, fromLegend) {
         if (fromLegend === void 0) { fromLegend = false; }
@@ -14155,6 +14201,7 @@ var PieSeriesComponent = /** @class */ (function () {
         this.maxLabelLength = 10;
         this.tooltipDisabled = false;
         this.animations = true;
+        this.showSum = false;
         this.select = new EventEmitter();
         this.activate = new EventEmitter();
         this.deactivate = new EventEmitter();
@@ -14217,7 +14264,13 @@ var PieSeriesComponent = /** @class */ (function () {
         return labelPositions;
     };
     PieSeriesComponent.prototype.labelVisible = function (myArc) {
-        return this.showLabels && myArc.endAngle - myArc.startAngle > Math.PI / 30;
+        if (!this.showLabels) {
+            return false;
+        }
+        if (this.labelVisibility) {
+            return this.labelVisibility(myArc);
+        }
+        return myArc.endAngle - myArc.startAngle > Math.PI / 30;
     };
     PieSeriesComponent.prototype.getTooltipTitle = function (a) {
         return this.tooltipTemplate ? undefined : this.tooltipText(a);
@@ -14256,10 +14309,17 @@ var PieSeriesComponent = /** @class */ (function () {
         });
         return item !== undefined;
     };
-    var _a;
+    PieSeriesComponent.prototype.sum = function () {
+        var total = 0;
+        if (this.series != null && this.series.length > 0) {
+            total = this.series.reduce(function (sum, val) { return sum += val.value; }, 0);
+        }
+        return formatLabel(total);
+    };
+    var _a, _b;
     __decorate([
         Input(),
-        __metadata("design:type", Object)
+        __metadata("design:type", typeof (_a = typeof ColorHelper !== "undefined" && ColorHelper) === "function" ? _a : Object)
     ], PieSeriesComponent.prototype, "colors", void 0);
     __decorate([
         Input(),
@@ -14299,6 +14359,10 @@ var PieSeriesComponent = /** @class */ (function () {
     ], PieSeriesComponent.prototype, "labelFormatting", void 0);
     __decorate([
         Input(),
+        __metadata("design:type", Function)
+    ], PieSeriesComponent.prototype, "labelVisibility", void 0);
+    __decorate([
+        Input(),
         __metadata("design:type", Boolean)
     ], PieSeriesComponent.prototype, "trimLabels", void 0);
     __decorate([
@@ -14315,12 +14379,16 @@ var PieSeriesComponent = /** @class */ (function () {
     ], PieSeriesComponent.prototype, "tooltipDisabled", void 0);
     __decorate([
         Input(),
-        __metadata("design:type", typeof (_a = typeof TemplateRef !== "undefined" && TemplateRef) === "function" ? _a : Object)
+        __metadata("design:type", typeof (_b = typeof TemplateRef !== "undefined" && TemplateRef) === "function" ? _b : Object)
     ], PieSeriesComponent.prototype, "tooltipTemplate", void 0);
     __decorate([
         Input(),
         __metadata("design:type", Boolean)
     ], PieSeriesComponent.prototype, "animations", void 0);
+    __decorate([
+        Input(),
+        __metadata("design:type", Boolean)
+    ], PieSeriesComponent.prototype, "showSum", void 0);
     __decorate([
         Output(),
         __metadata("design:type", Object)
@@ -14340,7 +14408,7 @@ var PieSeriesComponent = /** @class */ (function () {
     PieSeriesComponent = __decorate([
         Component({
             selector: 'g[ngx-charts-pie-series]',
-            template: "\n    <svg:g *ngFor=\"let arc of data; trackBy: trackBy\">\n      <svg:g\n        ngx-charts-pie-label\n        *ngIf=\"labelVisible(arc)\"\n        [data]=\"arc\"\n        [radius]=\"outerRadius\"\n        [color]=\"color(arc)\"\n        [label]=\"labelText(arc)\"\n        [labelTrim]=\"trimLabels\"\n        [labelTrimSize]=\"maxLabelLength\"\n        [max]=\"max\"\n        [value]=\"arc.value\"\n        [explodeSlices]=\"explodeSlices\"\n        [animations]=\"animations\"\n      ></svg:g>\n      <svg:g\n        ngx-charts-pie-arc\n        [startAngle]=\"arc.startAngle\"\n        [endAngle]=\"arc.endAngle\"\n        [innerRadius]=\"innerRadius\"\n        [outerRadius]=\"outerRadius\"\n        [fill]=\"color(arc)\"\n        [value]=\"arc.data.value\"\n        [gradient]=\"gradient\"\n        [data]=\"arc.data\"\n        [max]=\"max\"\n        [explodeSlices]=\"explodeSlices\"\n        [isActive]=\"isActive(arc.data)\"\n        [animate]=\"animations\"\n        (select)=\"onClick($event)\"\n        (hover)=\"onHover($event)\"\n        (activate)=\"activate.emit($event)\"\n        (deactivate)=\"deactivate.emit($event)\"\n        (dblclick)=\"dblclick.emit($event)\"\n        ngx-tooltip\n        [tooltipDisabled]=\"tooltipDisabled\"\n        [tooltipPlacement]=\"'top'\"\n        [tooltipType]=\"'tooltip'\"\n        [tooltipTitle]=\"getTooltipTitle(arc)\"\n        [tooltipTemplate]=\"tooltipTemplate\"\n        [tooltipContext]=\"arc.data\"\n        [tooltipprecisePosition]=\"precisePosition\"\n      ></svg:g>\n    </svg:g>\n  ",
+            template: "\n    <svg:g *ngFor=\"let arc of data; trackBy: trackBy\">\n      <svg:g\n        ngx-charts-pie-label\n        *ngIf=\"labelVisible(arc)\"\n        [data]=\"arc\"\n        [radius]=\"outerRadius\"\n        [color]=\"color(arc)\"\n        [label]=\"labelText(arc)\"\n        [labelTrim]=\"trimLabels\"\n        [labelTrimSize]=\"maxLabelLength\"\n        [max]=\"max\"\n        [value]=\"arc.value\"\n        [explodeSlices]=\"explodeSlices\"\n        [animations]=\"animations\"\n      ></svg:g>\n      <svg:g\n        ngx-charts-pie-arc\n        [startAngle]=\"arc.startAngle\"\n        [endAngle]=\"arc.endAngle\"\n        [innerRadius]=\"innerRadius\"\n        [outerRadius]=\"outerRadius\"\n        [fill]=\"color(arc)\"\n        [value]=\"arc.data.value\"\n        [gradient]=\"gradient\"\n        [data]=\"arc.data\"\n        [max]=\"max\"\n        [explodeSlices]=\"explodeSlices\"\n        [isActive]=\"isActive(arc.data)\"\n        [animate]=\"animations\"\n        (select)=\"onClick($event)\"\n        (hover)=\"onHover($event)\"\n        (activate)=\"activate.emit($event)\"\n        (deactivate)=\"deactivate.emit($event)\"\n        (dblclick)=\"dblclick.emit($event)\"\n        ngx-tooltip\n        [tooltipDisabled]=\"tooltipDisabled\"\n        [tooltipPlacement]=\"'top'\"\n        [tooltipType]=\"'tooltip'\"\n        [tooltipTitle]=\"getTooltipTitle(arc)\"\n        [tooltipTemplate]=\"tooltipTemplate\"\n        [tooltipContext]=\"arc.data\"\n        [tooltipprecisePosition]=\"precisePosition\"\n      ></svg:g>\n    </svg:g>\n    <svg:text *ngIf=\"showSum\" class=\"label\" x=\"0\" y=\"5\" text-anchor=\"middle\">\n      {{ sum() }}\n    </svg:text>\n  ",
             changeDetection: ChangeDetectionStrategy.OnPush
         })
     ], PieSeriesComponent);
@@ -14423,7 +14491,7 @@ var CardComponent = /** @class */ (function () {
             var valueFormatting = _this.valueFormatting || (function (card) { return card.value.toLocaleString(); });
             var labelFormatting = _this.labelFormatting || (function (card) { return escapeLabel(trimLabel(card.label, 55)); });
             _this.transform = "translate(" + _this.x + " , " + _this.y + ")";
-            _this.textWidth = Math.max(0, _this.width) - _this.textPadding[1] - _this.textPadding[3];
+            _this.textWidth = Math.max(0, _this.width - _this.textPadding[1] - _this.textPadding[3]);
             _this.cardWidth = Math.max(0, _this.width);
             _this.cardHeight = Math.max(0, _this.height);
             _this.label = _this.label ? _this.label : _this.data.name;
@@ -14444,7 +14512,7 @@ var CardComponent = /** @class */ (function () {
                 if (hasValue && !_this.initialized) {
                     setTimeout(function () { return _this.startCount(); }, 20);
                 }
-            }, 8);
+            }, 700);
         });
     };
     CardComponent.prototype.paddedValue = function (value) {
@@ -14640,6 +14708,7 @@ var CardSeriesComponent = /** @class */ (function () {
     CardSeriesComponent.prototype.onClick = function (data) {
         this.select.emit(data);
     };
+    var _a;
     __decorate([
         Input(),
         __metadata("design:type", Array)
@@ -14654,7 +14723,7 @@ var CardSeriesComponent = /** @class */ (function () {
     ], CardSeriesComponent.prototype, "dims", void 0);
     __decorate([
         Input(),
-        __metadata("design:type", Object)
+        __metadata("design:type", typeof (_a = typeof ColorHelper !== "undefined" && ColorHelper) === "function" ? _a : Object)
     ], CardSeriesComponent.prototype, "colors", void 0);
     __decorate([
         Input(),
@@ -14744,7 +14813,7 @@ var NumberCardComponent = /** @class */ (function (_super) {
         this.select.emit(data);
     };
     NumberCardComponent.prototype.setColors = function () {
-        this.colors = new ColorHelper(this.scheme, 'ordinal', this.domain, this.customColors);
+        this.colors = new ColorHelper(this.scheme, ScaleType.ordinal, this.domain, this.customColors);
     };
     __decorate([
         Input(),
@@ -15043,7 +15112,7 @@ var TreeMapCellSeriesComponent = /** @class */ (function () {
         });
         return item !== undefined;
     };
-    var _a;
+    var _a, _b;
     __decorate([
         Input(),
         __metadata("design:type", Object)
@@ -15054,7 +15123,7 @@ var TreeMapCellSeriesComponent = /** @class */ (function () {
     ], TreeMapCellSeriesComponent.prototype, "dims", void 0);
     __decorate([
         Input(),
-        __metadata("design:type", Object)
+        __metadata("design:type", typeof (_a = typeof ColorHelper !== "undefined" && ColorHelper) === "function" ? _a : Object)
     ], TreeMapCellSeriesComponent.prototype, "colors", void 0);
     __decorate([
         Input(),
@@ -15074,7 +15143,7 @@ var TreeMapCellSeriesComponent = /** @class */ (function () {
     ], TreeMapCellSeriesComponent.prototype, "tooltipDisabled", void 0);
     __decorate([
         Input(),
-        __metadata("design:type", typeof (_a = typeof TemplateRef !== "undefined" && TemplateRef) === "function" ? _a : Object)
+        __metadata("design:type", typeof (_b = typeof TemplateRef !== "undefined" && TemplateRef) === "function" ? _b : Object)
     ], TreeMapCellSeriesComponent.prototype, "tooltipTemplate", void 0);
     __decorate([
         Input(),
@@ -15121,7 +15190,7 @@ var TreeMapComponent = /** @class */ (function (_super) {
         _this.activeEntries = [];
         _this.legend = true;
         _this.legendTitle = 'Legend';
-        _this.legendPosition = 'bottom';
+        _this.legendPosition = LegendPosition.below;
         _this.tooltipDisabled = false;
         _this.gradient = false;
         _this.showLabel = true;
@@ -15229,7 +15298,7 @@ var TreeMapComponent = /** @class */ (function (_super) {
         this.select.emit(data);
     };
     TreeMapComponent.prototype.setColors = function () {
-        this.colors = new ColorHelper(this.scheme, 'ordinal', this.domain, this.customColors);
+        this.colors = new ColorHelper(this.scheme, ScaleType.ordinal, this.domain, this.customColors);
     };
     var _a, _b, _c;
     __decorate([
@@ -15246,7 +15315,7 @@ var TreeMapComponent = /** @class */ (function (_super) {
     ], TreeMapComponent.prototype, "legendTitle", void 0);
     __decorate([
         Input(),
-        __metadata("design:type", String)
+        __metadata("design:type", Object)
     ], TreeMapComponent.prototype, "legendPosition", void 0);
     __decorate([
         Input(),
@@ -15429,7 +15498,7 @@ var LinearGaugeComponent = /** @class */ (function (_super) {
         });
     };
     LinearGaugeComponent.prototype.setColors = function () {
-        this.colors = new ColorHelper(this.scheme, 'ordinal', [this.value], this.customColors);
+        this.colors = new ColorHelper(this.scheme, ScaleType.ordinal, [this.value], this.customColors);
     };
     var _a, _b;
     __decorate([
@@ -15482,7 +15551,7 @@ var GaugeComponent = /** @class */ (function (_super) {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.legend = false;
         _this.legendTitle = 'Legend';
-        _this.legendPosition = 'right';
+        _this.legendPosition = LegendPosition.right;
         _this.min = 0;
         _this.max = 100;
         _this.bigSegments = 10;
@@ -15648,7 +15717,7 @@ var GaugeComponent = /** @class */ (function (_super) {
     };
     GaugeComponent.prototype.getLegendOptions = function () {
         return {
-            scaleType: 'ordinal',
+            scaleType: ScaleType.ordinal,
             colors: this.colors,
             domain: this.domain,
             title: this.legendTitle,
@@ -15656,7 +15725,7 @@ var GaugeComponent = /** @class */ (function (_super) {
         };
     };
     GaugeComponent.prototype.setColors = function () {
-        this.colors = new ColorHelper(this.scheme, 'ordinal', this.domain, this.customColors);
+        this.colors = new ColorHelper(this.scheme, ScaleType.ordinal, this.domain, this.customColors);
     };
     GaugeComponent.prototype.onActivate = function (item) {
         var idx = this.activeEntries.findIndex(function (d) {
@@ -15698,7 +15767,7 @@ var GaugeComponent = /** @class */ (function (_super) {
     ], GaugeComponent.prototype, "legendTitle", void 0);
     __decorate([
         Input(),
-        __metadata("design:type", String)
+        __metadata("design:type", Object)
     ], GaugeComponent.prototype, "legendPosition", void 0);
     __decorate([
         Input(),
@@ -16042,18 +16111,5 @@ var NgxChartsModule = /** @class */ (function () {
     ], NgxChartsModule);
     return NgxChartsModule;
 }());
-
-function tickFormat(fieldType, groupByType) {
-    return function (label) {
-        if (label === 'No Value' || label === 'Other') {
-            return label;
-        }
-        if (fieldType === 'date' && groupByType === 'groupBy') {
-            var formatter = timeFormat('MM/DD/YYYY');
-            return formatter(label);
-        }
-        return label.toString();
-    };
-}
 
 export { NgxChartsModule, ChartCommonModule, LegendComponent, ScaleLegendComponent, LegendEntryComponent, AdvancedLegendComponent, TooltipModule, TooltipService, TooltipContentComponent, TooltipDirective, StyleTypes, AlignmentTypes, ShowTypes, AxesModule, AxisLabelComponent, XAxisComponent, XAxisTicksComponent, YAxisComponent, YAxisTicksComponent, reduceTicks, CountUpDirective, count, decimalChecker, Timeline, ColorHelper, ChartComponent, AreaComponent, BaseChartComponent, CircleComponent, CircleSeriesComponent, gridSize, gridLayout, GridPanelComponent, GridPanelSeriesComponent, SvgLinearGradientComponent, SvgRadialGradientComponent, TooltipArea, tickFormat, trimLabel, calculateViewDimensions, formatLabel, escapeLabel, getUniqueXDomainValues, getScaleType, AreaChartModule, AreaChartComponent, AreaChartNormalizedComponent, AreaChartStackedComponent, AreaSeriesComponent, BarChartModule, BarComponent, BarHorizontalComponent, BarHorizontal2DComponent, BarHorizontalNormalizedComponent, BarHorizontalStackedComponent, SeriesHorizontal, BarLabelComponent, BarVerticalComponent, BarVertical2DComponent, BarVerticalNormalizedComponent, BarVerticalStackedComponent, D0Types, SeriesVerticalComponent, BubbleChartModule, BubbleChartComponent, getDomain, getScale, BubbleSeriesComponent, ForceDirectedGraphModule, ForceDirectedGraphComponent, HeatMapModule, HeatMapComponent, HeatMapCellComponent, HeatCellSeriesComponent, LineChartModule, LineChartComponent, LineComponent, LineSeriesComponent, PolarChartModule, PolarChartComponent, PolarSeriesComponent, NumberCardModule, NumberCardComponent, CardComponent, CardSeriesComponent, PieChartModule, AdvancedPieChartComponent, PieChartComponent, PieArcComponent, PieGridComponent, PieGridSeriesComponent, PieSeriesComponent, PieLabelComponent, TreeMapModule, TreeMapComponent, TreeMapCellComponent, TreeMapCellSeriesComponent, GaugeModule, GaugeArcComponent, GaugeAxisComponent, GaugeComponent, LinearGaugeComponent };
