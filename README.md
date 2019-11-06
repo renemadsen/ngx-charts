@@ -1,11 +1,12 @@
 # ngx-charts
 
-[![Join the chat at https://gitter.im/swimlane/ngx-charts](https://badges.gitter.im/swimlane/ngx-charts.svg)](https://gitter.im/swimlane/ngx-charts?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![Build Status](https://travis-ci.org/swimlane/ngx-charts.svg?branch=master)](https://travis-ci.org/swimlane/ngx-charts)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/b097196f7f544412a79a99080a41bbc1)](https://www.codacy.com/app/Swimlane/ngx-charts?utm_source=github.com&utm_medium=referral&utm_content=swimlane/ngx-charts&utm_campaign=Badge_Grade)
-[![Test Coverage](https://codeclimate.com/github/swimlane/ngx-charts/badges/coverage.svg)](https://codeclimate.com/github/swimlane/ngx-charts/coverage)
-[![npm version](https://badge.fury.io/js/%40swimlane%2Fngx-charts.svg)](https://badge.fury.io/js/%40swimlane%2Fngx-charts)
-[![npm downloads](https://img.shields.io/npm/dm/@swimlane/ngx-charts.svg)](https://npmjs.org/@swimlane/ngx-charts)
+[![Join the chat at https://gitter.im/microting/ngx-charts](https://badges.gitter.im/microting/ngx-charts.svg)](https://gitter.im/microting/ngx-charts?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Build Status](https://travis-ci.org/microting/ngx-charts.svg?branch=master)](https://travis-ci.org/microting/ngx-charts)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/b31e071b23ef48b1aec1378126f910aa)](https://www.codacy.com/manual/renemadsen/ngx-charts?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=microting/ngx-charts&amp;utm_campaign=Badge_Grade)
+[![Maintainability](https://api.codeclimate.com/v1/badges/1d99d6b63c857e886854/maintainability)](https://codeclimate.com/github/microting/ngx-charts/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/1d99d6b63c857e886854/test_coverage)](https://codeclimate.com/github/microting/ngx-charts/test_coverage)
+[![npm version](https://badge.fury.io/js/%40microting%2Fngx-charts.svg)](https://badge.fury.io/js/%40microting%2Fngx-charts)
+[![npm downloads](https://img.shields.io/npm/dm/@microting/ngx-charts.svg)](https://npmjs.org/@microting/ngx-charts)
 
 Declarative Charting Framework for Angular2 and beyond!
 
@@ -15,7 +16,7 @@ Data visualization is a science but that doesn't mean it has to be ugly. One of 
 
 Also, constructing custom charts is possible by leveraging the various ngx-charts components that are exposed through the ngx-charts module.
 
-For more info, check out the [documentation](https://swimlane.gitbook.io/ngx-charts) and the [demos](https://swimlane.github.io/ngx-charts/).
+For more info, check out the [documentation](https://microting.gitbook.io/ngx-charts) and the [demos](https://microting.github.io/ngx-charts/).
 
 ## Features
 
@@ -28,7 +29,7 @@ For more info, check out the [documentation](https://swimlane.gitbook.io/ngx-cha
 - Bubble
 - Donut
 - Gauge (Linear & Radial)
-- Force Directed Graph (deprecated, please use [ngx-graph](https://github.com/swimlane/ngx-graph) instead)
+- Force Directed Graph (deprecated, please use [ngx-graph](https://github.com/microting/ngx-graph) instead)
 - Heatmap
 - Treemap
 - Number Cards
@@ -48,15 +49,15 @@ For more info, check out the [documentation](https://swimlane.gitbook.io/ngx-cha
 
 ## Install
 
-To use ngx-charts in your project install it via [npm](https://www.npmjs.com/package/@swimlane/ngx-charts):
+To use ngx-charts in your project install it via [npm](https://www.npmjs.com/package/@microting/ngx-charts):
 
 ```
-npm i @swimlane/ngx-charts --save
+npm i @microting/ngx-charts --save
 ```
 
 ## Custom Charts
 
-To learn how to use the ngx-charts components to build custom charts and find examples, please refer to our [Custom Charts Page](https://github.com/swimlane/ngx-charts/blob/master/docs/custom-charts.md).
+To learn how to use the ngx-charts components to build custom charts and find examples, please refer to our [Custom Charts Page](https://github.com/microting/ngx-charts/blob/master/docs/custom-charts.md).
 
 ## Credits
 
