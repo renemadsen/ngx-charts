@@ -39,28 +39,26 @@ import { ColorHelper } from '../color.helper';
             (mouseleave)="deactivate.emit(legendItem.data)"
             (click)="select.emit(legendItem.data)"
           >
-            <div class="item-color" [style.background]="legendItem.color"></div>
-            <div>
-              <div class="item-label">{{ legendItem.displayLabel }}</div>
-              <div
-                *ngIf="animations"
-                class="item-value"
-                ngx-charts-count-up
-                [countTo]="legendItem._value"
-                [valueFormatting]="valueFormatting"
-              ></div>
-              <div *ngIf="!animations" class="item-value">
-                {{ valueFormatting ? valueFormatting(legendItem.value) : defaultValueFormatting(legendItem.value) }}
-              </div>
-              <div
-                *ngIf="animations"
-                class="item-percent"
-                ngx-charts-count-up
-                [countTo]="legendItem.percentage"
-                [countSuffix]="'%'"
-              ></div>
-              <div *ngIf="!animations" class="item-percent">{{ legendItem.percentage.toLocaleString() }}%</div>
+            <div class="item-color" [style.border-left-color]="legendItem.color"></div>
+            <div
+              *ngIf="animations"
+              class="item-value"
+              ngx-charts-count-up
+              [countTo]="legendItem._value"
+              [valueFormatting]="valueFormatting"
+            ></div>
+            <div *ngIf="!animations" class="item-value">
+              {{ valueFormatting ? valueFormatting(legendItem.value) : defaultValueFormatting(legendItem.value) }}
             </div>
+            <div class="item-label">{{ legendItem.displayLabel }}</div>
+            <div
+              *ngIf="animations"
+              class="item-percent"
+              ngx-charts-count-up
+              [countTo]="legendItem.percentage"
+              [countSuffix]="'%'"
+            ></div>
+            <div *ngIf="!animations" class="item-percent">{{ legendItem.percentage.toLocaleString() }}%</div>
           </div>
         </div>
       </div>

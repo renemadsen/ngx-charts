@@ -131,7 +131,7 @@ export class ChartComponent implements OnChanges {
     const chartColumns = 12 - legendColumns;
 
     this.chartWidth = Math.max(0, Math.floor((this.view[0] * chartColumns / 12.0)));
-    this.legendWidth = (!this.legendOptions || this.legendOptions.position === 'right' || this.advancedData)
+    this.legendWidth = (!this.legendOptions || this.legendOptions.position === 'right' || this.legendAdvanced)
       ? Math.floor((this.view[0] * legendColumns / 12.0))
       : this.chartWidth;
   }

@@ -333,6 +333,7 @@ const chartGroups = [
           'gradient',
           'showLegend',
           'legendTitle',
+          'legendAdvanced',
           'legendPosition',
           'doughnut',
           'showDoughnutSum',

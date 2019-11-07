@@ -358,14 +358,14 @@
         [scheme]="colorScheme"
         [results]="single"
         [animations]="animations"
-        [legend]="false"
+        [legend]="showLegend"
         [totalValue]="3000"
         [totalLabel]="totalLabel"
         [legendTitle]="legendTitle"
-        [legendAdvanced]="true"
+        [legendAdvanced]="legendAdvanced"
         [legendPosition]="legendPosition"
         [explodeSlices]="explodeSlices"
-        [labels]="false"
+        [labels]="showLabels"
         [doughnut]="doughnut"
         [showDoughnutSum]="showDoughnutSum"
         [arcWidth]="arcWidth"
@@ -1368,6 +1368,13 @@
           <label>
             <input type="checkbox" [checked]="showLegend" (change)="showLegend = $event.target.checked" />
             Show Legend
+          </label>
+          <br />
+        </div>
+        <div *ngIf="chart.options.includes('legendAdvanced')">
+          <label>
+            <input type="checkbox" [checked]="legendAdvanced" (change)="legendAdvanced = $event.target.checked" />
+            Advanced Legend
           </label>
           <br />
         </div>

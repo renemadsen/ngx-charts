@@ -1,8 +1,8 @@
 import {
-  Component, 
-  Input, 
-  Output, 
-  ChangeDetectionStrategy,   
+  Component,
+  Input,
+  Output,
+  ChangeDetectionStrategy,
   HostListener,
   EventEmitter
  } from '@angular/core';
@@ -10,7 +10,7 @@ import {
 @Component({
   selector: 'ngx-charts-legend-entry',
   template: `
-    <span 
+    <span
       [title]="formattedLabel"
       tabindex="-1"
       [class.active]="isActive"
@@ -22,7 +22,6 @@ import {
       </span>
       <span class="legend-label-text">
         {{trimmedLabel}}
-        <span *ngIf="value" class="legend-label-value">{{value}}</span>
       </span>
     </span>
   `,

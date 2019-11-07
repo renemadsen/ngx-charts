@@ -47,7 +47,7 @@ function multiFormat(value) {
 export class AppComponent implements OnInit {
   version = APP_VERSION;
 
-  theme = 'light';
+  theme = 'dark';
   chartType: string;
   chartGroups: any[];
   chart: any;
@@ -79,6 +79,7 @@ export class AppComponent implements OnInit {
   showLegend = true;
   legendTitle = 'Legend';
   legendPosition = 'right';
+  legendAdvanced = false;
   showXAxisLabel = true;
   tooltipDisabled = false;
   showText = true;
@@ -168,7 +169,7 @@ export class AppComponent implements OnInit {
   doughnut = false;
   showDoughnutSum = false;
   arcWidth = 0.25;
-  totalLabel = 'This is some lorem headline';
+  totalLabel = 'headline';
 
   // line, area
   autoScale = true;

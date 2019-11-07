@@ -59,15 +59,15 @@ import { ScaleType } from '../utils/scale-type.enum';
       </svg:g>
     </ngx-charts-chart>
     
-    <div class="totalValue"  *ngIf="doughnut" [ngStyle]="setMyStyles()">
-      <div 
-        *ngIf="animations"
-        class="item-value"
-        ngx-charts-count-up
-        [countTo]="totalNumber"
-      ></div>
-      <p>{{totalLabel}}</p>
-    </div>
+<!--    <div class="totalValue"  *ngIf="doughnut" [ngStyle]="setMyStyles()">-->
+<!--      <div -->
+<!--        *ngIf="animations"-->
+<!--        class="item-value"-->
+<!--        ngx-charts-count-up-->
+<!--        [countTo]="totalNumber"-->
+<!--      ></div>-->
+<!--      <p>{{totalLabel}}</p>-->
+<!--    </div>-->
 
   `,
   styleUrls: ['../common/base-chart.component.scss', './pie-chart.component.scss'],
@@ -77,7 +77,7 @@ import { ScaleType } from '../utils/scale-type.enum';
 export class PieChartComponent extends BaseChartComponent {
   @Input() labels = false;
   @Input() legend = false;
-  @Input() legendAdvanced: boolean = false;
+  @Input() legendAdvanced = false;
   @Input() legendTitle: string = 'Legend';
   @Input() legendPosition = LegendPosition.right;
   @Input() explodeSlices = false;
@@ -128,17 +128,15 @@ export class PieChartComponent extends BaseChartComponent {
       this.margins = [20, 20, 20, 20];
     }
 
-    let showLegend = this.legend;
-
     if (this.legendAdvanced) {
-      showLegend = true;
+      this.legend = false;
     }
 
     this.dims = calculateViewDimensions({
       width: this.width,
       height: this.height,
       margins: this.margins,
-      showLegend,
+      showLegend: this.legend,
       legendPosition: this.legendPosition
     });
 
