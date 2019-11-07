@@ -74,15 +74,9 @@ describe('<ngx-charts-advanced-legend>', () => {
         legendItemPercentElements
       } = loadLegendItemElements(fixture);
 
-      console.log(JSON.stringify(labelElement));
-      console.log(JSON.stringify(roundedTotalElement));
-      // debugger;
       expect(labelElement).toBeDefined();
       expect(roundedTotalElement).toBeDefined();
 
-      // setTimeout(function() {
-      //   window.postMessage('annother bam', '*');
-      // }, 50000);
       expect(labelElement.textContent).toContain('Test legend label');
       expect(roundedTotalElement.textContent).toContain('140');
       expect(legendItemsElements.childElementCount).toBe(6);
