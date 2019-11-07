@@ -16,6 +16,19 @@ import { ColorHelper } from '../color.helper';
   selector: 'ngx-charts-advanced-legend',
   template: `
     <div class="advanced-pie-legend" [style.width.px]="width" [style.height.px]="height">
+      <div
+        *ngIf="animations"
+        class="total-value"
+        ngx-charts-count-up
+        [countTo]="roundedTotal"
+        [valueFormatting]="valueFormatting"
+      ></div>
+      <div class="total-value" *ngIf="!animations">
+        {{ valueFormatting ? valueFormatting(roundedTotal) : defaultValueFormatting(roundedTotal) }}
+      </div>
+      <div class="total-label">
+        {{ label }}
+      </div>
       <div class="legend-items-container">
         <div class="legend-items">
           <div
@@ -39,6 +52,14 @@ import { ColorHelper } from '../color.helper';
               <div *ngIf="!animations" class="item-value">
                 {{ valueFormatting ? valueFormatting(legendItem.value) : defaultValueFormatting(legendItem.value) }}
               </div>
+              <div
+                *ngIf="animations"
+                class="item-percent"
+                ngx-charts-count-up
+                [countTo]="legendItem.percentage"
+                [countSuffix]="'%'"
+              ></div>
+              <div *ngIf="!animations" class="item-percent">{{ legendItem.percentage.toLocaleString() }}%</div>
             </div>
           </div>
         </div>
