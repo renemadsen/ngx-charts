@@ -1,31 +1,16 @@
 .advanced-pie-legend {
-  // float: right;
-  display: inline-block;
+  float: left;
   position: relative;
-  // top: 50%;
-  // transform: translate(0, -50%);
+  top: 50%;
+  transform: translate(0, -50%);
 
-  .total-value-container {
-    display: inline-block;
-    clear: both;
-    cursor: pointer;
-    width: auto;
+  .total-value {
+    font-size: 36px
+  }
 
-    &:hover {
-      color: #000;
-      -webkit-transition: 0.2s;
-      -moz-transition: 0.2s;
-      transition: 0.2s;
-    }
-
-    .total-value {
-      font-size: 36px
-    }
-  
-    .total-label {
-      font-size: 24px;
-      margin-bottom: 19px;
-    }
+  .total-label {
+    font-size: 24px;
+    margin-bottom: 19px;
   }
 
   .legend-items-container {
@@ -33,14 +18,12 @@
 
     .legend-items {
       white-space: nowrap;
+      overflow: auto;
 
       .legend-item {
-        position: relative;
-        margin-right: 0;
+        margin-right: 20px;
+        display: inline-block;
         cursor: pointer;
-        display: block;
-        padding-left: 15px;
-        margin-bottom: 6px;
 
         &:focus {
           outline: none;
@@ -54,27 +37,30 @@
         }
 
         .item-value {
-          font-size: 14px;
+          font-size: 24px;
           margin-top: -6px;
           margin-left: 11px;
-          color: #999999;
         }
 
         .item-label {
           font-size: 14px;
           opacity: 0.7;
           margin-left: 11px;
-          margin-top: -14px;
-          color: #414141;
+          margin-top: -6px;
+        }
+
+        .item-percent {
+          font-size: 24px;
+          opacity: 0.7;
+          margin-left: 11px;
         }
 
         .item-color {
-          position: absolute;
-          top: 9px;
-          left: 0px;
-          width: 15px;
-          height: 15px;
-          border-radius: 50%;
+          border-left: 4px solid;
+          width: 4px;
+          height: 42px;
+          float: left;
+          margin-right: 7px;
         }
       }
     }
