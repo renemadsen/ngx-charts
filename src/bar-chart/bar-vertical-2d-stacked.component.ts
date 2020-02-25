@@ -39,6 +39,22 @@ import {LegendPosition} from '../common/legend/legend-position.enum';
           [dims]="dims"
           orient="vertical"
         ></svg:g>
+<!--        <svg:g-->
+<!--          ngx-charts-x-axis-->
+<!--          *ngIf="xAxis"-->
+<!--          [xScale]="xScale"-->
+<!--          [dims]="dims"-->
+<!--          [showLabel]="showXAxisLabel"-->
+<!--          [labelText]="xAxisLabel"-->
+<!--          [showXAxisLineTop]="showXAxisLineTop"-->
+<!--          [trimTicks]="trimXAxisTicks"-->
+<!--          [rotateTicks]="rotateXAxisTicks"-->
+<!--          [maxTickLength]="maxXAxisTickLength"-->
+<!--          [tickFormatting]="xAxisTickFormatting"-->
+<!--          [ticks]="xAxisStackedTicks"-->
+<!--          [xAxisOffset]="dataLabelMaxHeight.negative"-->
+<!--          (dimensionsChanged)="updateXAxisHeight($event)"-->
+<!--        ></svg:g>-->
         <svg:g
           ngx-charts-x-axis
           *ngIf="xAxis"
@@ -153,6 +169,7 @@ export class BarVertical2DStackedComponent extends BaseChartComponent {
   @Input() xAxisTickFormatting: any;
   @Input() yAxisTickFormatting: any;
   @Input() xAxisTicks: any[];
+  @Input() xAxisStackedTicks: any[];
   @Input() yAxisTicks: any[];
   @Input() groupPadding = 16;
   @Input() barPadding = 8;
@@ -219,6 +236,9 @@ export class BarVertical2DStackedComponent extends BaseChartComponent {
 
     this.formatDates();
 
+
+    debugger;
+
     this.groupDomain = this.getGroupDomain();
     this.groupStackedDomain = this.getGroupStackedDomain();
     this.innerDomain = this.getInnerDomain();
@@ -231,6 +251,7 @@ export class BarVertical2DStackedComponent extends BaseChartComponent {
     this.valueScale = this.getValueScale();
 
     this.setColors();
+
     this.legendOptions = this.getLegendOptions();
     this.transform = `translate(${this.dims.xOffset} , ${this.margin[0] + this.dataLabelMaxHeight.negative})`;
   }
@@ -300,7 +321,7 @@ export class BarVertical2DStackedComponent extends BaseChartComponent {
 
   getGroupStackedDomain() {
     const domain = [];
-    
+
     for (const group of this.results) {
       for(const stack of group.series) {
 
@@ -331,8 +352,8 @@ export class BarVertical2DStackedComponent extends BaseChartComponent {
     for (const group of this.results) {
       for(const stack of group.series) {
         for (const d of stack.series) {
-          if (!domain.includes(d.label)) {
-            domain.push(d.label);
+          if (!domain.includes(d.name)) {
+            domain.push(d.name);
           }
         }
       }
@@ -360,7 +381,7 @@ export class BarVertical2DStackedComponent extends BaseChartComponent {
     const domain = [];
     let smallest = 0;
     let biggest = 0;
-    
+
     for (const group of this.results) {
 
       for(const stack of group.series) {
@@ -409,9 +430,9 @@ export class BarVertical2DStackedComponent extends BaseChartComponent {
   setColors(): void {
     let domain;
     if (this.schemeType === 'ordinal') {
-      domain = this.innerDomain;
+      domain = this.innerStackedDomain;
     } else {
-      domain = this.valuesDomain;
+      domain = this.innerDomain;
     }
 
     this.colors = new ColorHelper(this.scheme, this.schemeType, domain, this.customColors);
@@ -426,7 +447,7 @@ export class BarVertical2DStackedComponent extends BaseChartComponent {
       position: this.legendPosition
     };
     if (opts.scaleType === 'ordinal') {
-      opts.domain = this.innerDomain;
+      opts.domain = this.innerStackedDomain;
       opts.colors = this.colors;
       opts.title = this.legendTitle;
     } else {
@@ -455,14 +476,14 @@ export class BarVertical2DStackedComponent extends BaseChartComponent {
 
     const items = this.results
       .map(g => g.series)
-      .flat()
-      .filter(i => {
-        if (fromLegend) {
-          return i.label === item.name;
-        } else {
-          return i.name === item.name && i.series === item.series;
-        }
-      });
+      .flat();
+      // .filter(i => {
+      //   if (fromLegend) {
+      //     return i.label === item.name;
+      //   } else {
+      //     return i.name === item.name && i.series === item.series;
+      //   }
+      // });
 
     this.activeEntries = [...items];
     this.activate.emit({ value: item, entries: this.activeEntries });

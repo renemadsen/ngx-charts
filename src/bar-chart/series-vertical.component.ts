@@ -11,7 +11,7 @@ export enum D0Types {
 
 @Component({
   selector: 'g[ngx-charts-series-vertical]',
-  template: `
+  template: `    
     <svg:g
       ngx-charts-bar
       *ngFor="let bar of bars; trackBy: trackBy"
@@ -223,13 +223,13 @@ export class SeriesVerticalComponent implements OnChanges {
       if (this.colors.scaleType === 'ordinal') {
         bar.color = this.colors.getColor(label);
 
-        if (this.stackNumber >= 1) {
-          bar.color = this.colors.colorDomain[0];
-          
-          if (index === this.series.length - 1) {
-            bar.color = this.colors.colorDomain[1];
-          }
-        }
+        // if (this.stackNumber >= 1) {
+        //   bar.color = this.colors.colorDomain[0];
+        //
+        //   if (index === this.series.length - 1) {
+        //     bar.color = this.colors.colorDomain[1];
+        //   }
+        // }
 
       } else {
         if (this.type === 'standard') {
