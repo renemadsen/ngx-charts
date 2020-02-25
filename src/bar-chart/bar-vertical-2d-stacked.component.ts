@@ -236,9 +236,6 @@ export class BarVertical2DStackedComponent extends BaseChartComponent {
 
     this.formatDates();
 
-
-    debugger;
-
     this.groupDomain = this.getGroupDomain();
     this.groupStackedDomain = this.getGroupStackedDomain();
     this.innerDomain = this.getInnerDomain();
