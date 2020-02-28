@@ -39,22 +39,6 @@ import {LegendPosition} from '../common/legend/legend-position.enum';
           [dims]="dims"
           orient="vertical"
         ></svg:g>
-<!--        <svg:g-->
-<!--          ngx-charts-x-axis-->
-<!--          *ngIf="xAxis"-->
-<!--          [xScale]="xScale"-->
-<!--          [dims]="dims"-->
-<!--          [showLabel]="showXAxisLabel"-->
-<!--          [labelText]="xAxisLabel"-->
-<!--          [showXAxisLineTop]="showXAxisLineTop"-->
-<!--          [trimTicks]="trimXAxisTicks"-->
-<!--          [rotateTicks]="rotateXAxisTicks"-->
-<!--          [maxTickLength]="maxXAxisTickLength"-->
-<!--          [tickFormatting]="xAxisTickFormatting"-->
-<!--          [ticks]="xAxisStackedTicks"-->
-<!--          [xAxisOffset]="dataLabelMaxHeight.negative"-->
-<!--          (dimensionsChanged)="updateXAxisHeight($event)"-->
-<!--        ></svg:g>-->
         <svg:g
           ngx-charts-x-axis
           *ngIf="xAxis"
@@ -64,11 +48,12 @@ import {LegendPosition} from '../common/legend/legend-position.enum';
           [showXAxisLineTop]="showXAxisLineTop"
           [labelText]="xAxisLabel"
           [trimTicks]="trimXAxisTicks"
+          [xOrient]="'top'"
           [rotateTicks]="rotateXAxisTicks"
           [maxTickLength]="maxXAxisTickLength"
           [tickFormatting]="xAxisTickFormatting"
           [ticks]="xAxisTicks"
-          [xAxisOffset]="dataLabelMaxHeight.negative"
+          [xAxisOffset]="dataLabelMaxHeight.negative + 40"
           (dimensionsChanged)="updateXAxisHeight($event)"
         ></svg:g>
         <svg:g
@@ -91,6 +76,22 @@ import {LegendPosition} from '../common/legend/legend-position.enum';
           *ngFor="let group of results; let index = index; trackBy: trackBy"
           [attr.transform]="groupTransform(group)"
         >
+          <svg:g
+            ngx-charts-x-axis
+            *ngIf="xAxis"
+            [xScale]="innerScale"
+            [dims]="innerDims"
+            [showLabel]="false"
+            [trimTicks]="true"
+            [rotateTicks]="true"
+            [xOrient]="'bottom'"
+            [xAxisTickInterval]=""
+            [maxTickLength]="maxXAxisTickLength"
+            [tickFormatting]="xAxisTickFormatting"
+            [ticks]="xAxisTicks"
+            [xAxisOffset]="dataLabelMaxHeight.negative"
+            (dimensionsChanged)="updateXAxisHeight($event)"
+          ></svg:g>
           <svg:g
           *ngFor="let stack of group.series; let index = index; trackBy: trackBy"
           [@animationState]="'active'"
@@ -187,6 +188,8 @@ export class BarVertical2DStackedComponent extends BaseChartComponent {
   @ContentChild('tooltipTemplate', { static: false }) tooltipTemplate: TemplateRef<any>;
 
   dims: ViewDimensions;
+  innerDims: ViewDimensions;
+  innerChartWidth: number;
   groupDomain: any[];
   groupStackedDomain: any[];
   innerDomain: any[];
@@ -219,6 +222,22 @@ export class BarVertical2DStackedComponent extends BaseChartComponent {
       width: this.width,
       height: this.height,
       margins: this.margin,
+      showXAxis: this.xAxis,
+      showYAxis: this.yAxis,
+      xAxisHeight: this.xAxisHeight,
+      yAxisWidth: this.yAxisWidth,
+      showXLabel: this.showXAxisLabel,
+      showYLabel: this.showYAxisLabel,
+      showLegend: this.legend,
+      legendType: this.schemeType,
+      legendPosition: this.legendPosition
+    });
+
+    this.innerDims = calculateViewDimensions({
+      // TODO: FIX HERE
+      width: this.width / 3,
+      height: this.height,
+      margins: [10, 20, 10, 20],
       showXAxis: this.xAxis,
       showYAxis: this.yAxis,
       xAxisHeight: this.xAxisHeight,
@@ -275,11 +294,13 @@ export class BarVertical2DStackedComponent extends BaseChartComponent {
   }
 
   getInnerScale(): any {
-    const width = this.groupScale.bandwidth();
-    const spacing = this.innerDomain.length / (width / this.barPadding + 1);
+    // TODO: FIX HERE
+    this.innerChartWidth = this.groupScale.bandwidth();
+
+    const spacing = this.innerDomain.length / (this.innerChartWidth / this.barPadding + 1);
     return scaleBand()
-      .rangeRound([0, width])
-      .paddingInner(spacing)
+      .rangeRound([0, this.innerChartWidth])
+      .paddingInner(spacing / 2)
       .domain(this.innerDomain);
   }
 
