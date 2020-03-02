@@ -771,135 +771,251 @@ export const treemap: TreeMapData = [
 
 export const groupedStacked: GroupedStackedBarChartData = [
   {
-    name: 'October',
-    series: 
-      [
-        {
-          name: '18',
-          series: [
+    name: 'Location 1',
+    series: [
+      {
+        name: '17-K3',
+        series: [
           {
-            name: 'France',
-            value: 400,
-            extra: {
-              code: 'fr'
-            }
+            name: '100',
+            value: 69.0
           },
           {
-            name: 'Japan',
-            value: 600,
-            extra: {
-              code: 'jp'
-            }
+            name: '75',
+            value: 24.0
+          },
+          {
+            name: '50',
+            value: 7.0
           }
         ]
-        },
-        {
-          name: '19',
-          series: [
+      },
+      {
+        name: '17-K2',
+        series: [
           {
-            name: 'France',
-            value: 500,
-            extra: {
-              code: 'fr'
-            }
+            name: '100',
+            value: 74.0
           },
           {
-            name: 'Japan',
-            value: 300,
-            extra: {
-              code: 'jp'
-            }
+            name: '75',
+            value: 26.0
+          }
+        ]
+      },
+      {
+        name: '17-K1',
+        series: [
+          {
+            name: '100',
+            value: 59.0
+          },
+          {
+            name: '75',
+            value: 29.0
+          },
+          {
+            name: '0',
+            value: 6.0
+          },
+          {
+            name: '999',
+            value: 6.0
+          }
+        ]
+      },
+      {
+        name: '16-K4',
+        series: [
+          {
+            name: '100',
+            value: 62.0
+          },
+          {
+            name: '75',
+            value: 23.0
+          },
+          {
+            name: '50',
+            value: 8.0
+          },
+          {
+            name: '25',
+            value: 8.0
+          }
+        ]
+      },
+      {
+        name: '16-K3',
+        series: [
+          {
+            name: '100',
+            value: 69.0
+          },
+          {
+            name: '75',
+            value: 31.0
+          }
+        ]
+      },
+      {
+        name: '16-K2',
+        series: [
+          {
+            name: '100',
+            value: 33.0
+          },
+          {
+            name: '75',
+            value: 33.0
+          },
+          {
+            name: '50',
+            value: 22.0
+          },
+          {
+            name: '25',
+            value: 11.0
+          }
+        ]
+      },
+      {
+        name: '16-K1',
+        series: [
+          {
+            name: '100',
+            value: 40.0
+          },
+          {
+            name: '75',
+            value: 60.0
           }
         ]
       }
     ]
   },
   {
-    name: 'November',
-    series: 
-      [
-        {
-          name: '18',
-          series: [
+    name: 'Location 2',
+    series: [
+      {
+        name: '17-K3',
+        series: [
           {
-            name: 'France',
-            value: 300,
-            extra: {
-              code: 'fr'
-            }
+            name: '100',
+            value: 72.0
           },
           {
-            name: 'Japan',
-            value: 100,
-            extra: {
-              code: 'jp'
-            }
+            name: '75',
+            value: 21.0
+          },
+          {
+            name: '50',
+            value: 3.0
+          },
+          {
+            name: '999',
+            value: 3.0
           }
         ]
-        },
-        {
-          name: '19',
-          series: [
+      },
+      {
+        name: '17-K2',
+        series: [
           {
-            name: 'France',
-            value: 100,
-            extra: {
-              code: 'fr'
-            }
+            name: '100',
+            value: 76.0
           },
           {
-            name: 'Japan',
-            value: 50,
-            extra: {
-              code: 'jp'
-            }
+            name: '75',
+            value: 14.0
+          },
+          {
+            name: '50',
+            value: 5.0
+          },
+          {
+            name: '25',
+            value: 5.0
           }
         ]
-      }
-    ]
-  },
-  {
-    name: 'Dezember',
-    series: 
-      [
-        {
-          name: '18',
-          series: [
+      },
+      {
+        name: '17-K1',
+        series: [
           {
-            name: 'France',
-            value: 800,
-            extra: {
-              code: 'fr'
-            }
+            name: '100',
+            value: 62.0
           },
           {
-            name: 'Japan',
-            value: 1300,
-            extra: {
-              code: 'jp'
-            }
+            name: '75',
+            value: 25.0
+          },
+          {
+            name: '999',
+            value: 12.0
           }
         ]
-        },
-        {
-          name: '19',
-          series: [
+      },
+      {
+        name: '16-K4',
+        series: [
           {
-            name: 'France',
-            value: 110,
-            extra: {
-              code: 'fr'
-            }
+            name: '100',
+            value: 47.0
           },
           {
-            name: 'Japan',
-            value: 490,
-            extra: {
-              code: 'jp'
-            }
+            name: '75',
+            value: 53.0
+          }
+        ]
+      },
+      {
+        name: '16-K3',
+        series: [
+          {
+            name: '100',
+            value: 60.0
+          },
+          {
+            name: '75',
+            value: 30.0
+          },
+          {
+            name: '50',
+            value: 10.0
+          }
+        ]
+      },
+      {
+        name: '16-K2',
+        series: [
+          {
+            name: '100',
+            value: 45.0
+          },
+          {
+            name: '75',
+            value: 55.0
+          }
+        ]
+      },
+      {
+        name: '16-K1',
+        series: [
+          {
+            name: '100',
+            value: 43.0
+          },
+          {
+            name: '75',
+            value: 43.0
+          },
+          {
+            name: '0',
+            value: 14.0
           }
         ]
       }
     ]
   }
-];
+    ];

@@ -89,6 +89,7 @@ import {LegendPosition} from '../common/legend/legend-position.enum';
             [maxTickLength]="maxXAxisTickLength"
             [tickFormatting]="xAxisTickFormatting"
             [ticks]="xAxisTicks"
+            [attr.transform]="groupLabelTransform(group)"
             [xAxisOffset]="dataLabelMaxHeight.negative"
             (dimensionsChanged)="updateXAxisHeight($event)"
           ></svg:g>
@@ -300,7 +301,8 @@ export class BarVertical2DStackedComponent extends BaseChartComponent {
     const spacing = this.innerDomain.length / (this.innerChartWidth / this.barPadding + 1);
     return scaleBand()
       .rangeRound([0, this.innerChartWidth])
-      .paddingInner(spacing / 2)
+      .paddingInner(spacing / 4)
+      .paddingOuter(spacing * 6)
       .domain(this.innerDomain);
   }
 
@@ -430,7 +432,11 @@ export class BarVertical2DStackedComponent extends BaseChartComponent {
   }
 
   groupTransform(group) {
-    return `translate(${this.groupScale(group.label)}, 0)`;
+    return `translate(${this.groupScale(group.label)  - 25}, 0)`;
+  }
+
+  groupLabelTransform(group) {
+    return `translate(${this.margin[0] + 23}, 0)`;
   }
 
   onClick(data, group?) {
