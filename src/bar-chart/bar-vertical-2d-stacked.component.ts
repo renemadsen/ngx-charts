@@ -301,8 +301,8 @@ export class BarVertical2DStackedComponent extends BaseChartComponent {
     const spacing = this.innerDomain.length / (this.innerChartWidth / this.barPadding + 1);
     return scaleBand()
       .rangeRound([0, this.innerChartWidth])
-      .paddingInner(spacing / 4)
-      .paddingOuter(spacing * 6)
+      // .paddingInner(spacing / 4)
+      // .paddingOuter(spacing * 6)
       .domain(this.innerDomain);
   }
 
@@ -432,11 +432,11 @@ export class BarVertical2DStackedComponent extends BaseChartComponent {
   }
 
   groupTransform(group) {
-    return `translate(${this.groupScale(group.label)  - 25}, 0)`;
+    return `translate(${this.groupScale(group.label) - 10}, 0)`;
   }
 
   groupLabelTransform(group) {
-    return `translate(${this.margin[0] + 23}, 0)`;
+    return `translate(${this.margin[0] + 5}, 0)`;
   }
 
   onClick(data, group?) {
