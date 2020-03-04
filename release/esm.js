@@ -8583,8 +8583,6 @@ var BarVertical2DStackedComponent = /** @class */ (function (_super) {
         var spacing = this.innerDomain.length / (this.innerChartWidth / this.barPadding + 1);
         return scaleBand()
             .rangeRound([0, this.innerChartWidth])
-            .paddingInner(spacing / 4)
-            .paddingOuter(spacing * 6)
             .domain(this.innerDomain);
     };
     BarVertical2DStackedComponent.prototype.getValueScale = function () {
@@ -8705,10 +8703,10 @@ var BarVertical2DStackedComponent = /** @class */ (function (_super) {
         return [min$$1, max$$1];
     };
     BarVertical2DStackedComponent.prototype.groupTransform = function (group) {
-        return "translate(" + (this.groupScale(group.label) - 25) + ", 0)";
+        return "translate(" + (this.groupScale(group.label) - 10) + ", 0)";
     };
     BarVertical2DStackedComponent.prototype.groupLabelTransform = function (group) {
-        return "translate(" + (this.margin[0] + 23) + ", 0)";
+        return "translate(" + (this.margin[0] + 5) + ", 0)";
     };
     BarVertical2DStackedComponent.prototype.onClick = function (data, group) {
         if (group) {
