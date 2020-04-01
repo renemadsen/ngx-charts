@@ -297,7 +297,6 @@ export class BarVertical2DStackedComponent extends BaseChartComponent {
 
   getInnerScale(): any {
     // TODO: FIX HERE
-    debugger;
     this.innerChartWidth = this.groupScale.bandwidth();
 
     const spacing = this.innerDomain.length / (this.innerChartWidth / this.barPadding + 1);

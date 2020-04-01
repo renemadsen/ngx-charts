@@ -107,7 +107,6 @@ export class XAxisTicksComponent implements OnChanges, AfterViewInit {
 
     let angle = null;
 
-
     if (this.rotateTicks && this.forcedRotationAngle) {
       angle = this.forcedRotationAngle;
     } else {
