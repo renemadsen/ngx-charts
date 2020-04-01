@@ -2393,7 +2393,13 @@ var XAxisTicksComponent = /** @class */ (function () {
                 return d.toLocaleString();
             };
         }
-        var angle = this.rotateTicks ? this.getRotationAngle(this.ticks) : null;
+        var angle = null;
+        if (this.rotateTicks && this.forcedRotationAngle) {
+            angle = this.forcedRotationAngle;
+        }
+        else {
+            angle = this.rotateTicks ? this.getRotationAngle(this.ticks) : null;
+        }
         this.adjustedScale = this.scale.bandwidth
             ? function (d) {
                 return this.scale(d) + this.scale.bandwidth() * 0.5;
@@ -2513,6 +2519,10 @@ var XAxisTicksComponent = /** @class */ (function () {
         __metadata("design:type", Boolean)
     ], XAxisTicksComponent.prototype, "rotateTicks", void 0);
     __decorate([
+        Input(),
+        __metadata("design:type", Object)
+    ], XAxisTicksComponent.prototype, "forcedRotationAngle", void 0);
+    __decorate([
         Output(),
         __metadata("design:type", Object)
     ], XAxisTicksComponent.prototype, "dimensionsChanged", void 0);
@@ -2581,6 +2591,10 @@ var XAxisComponent = /** @class */ (function () {
     ], XAxisComponent.prototype, "dims", void 0);
     __decorate([
         Input(),
+        __metadata("design:type", Object)
+    ], XAxisComponent.prototype, "forcedRotationAngle", void 0);
+    __decorate([
+        Input(),
         __metadata("design:type", Boolean)
     ], XAxisComponent.prototype, "trimTicks", void 0);
     __decorate([
@@ -2646,7 +2660,7 @@ var XAxisComponent = /** @class */ (function () {
     XAxisComponent = __decorate([
         Component({
             selector: 'g[ngx-charts-x-axis]',
-            template: "\n    <svg:g [attr.class]=\"xAxisClassName\" [attr.transform]=\"transform\">\n      <svg:g\n        ngx-charts-x-axis-ticks\n        *ngIf=\"xScale\"\n        [trimTicks]=\"trimTicks\"\n        [rotateTicks]=\"rotateTicks\"\n        [maxTickLength]=\"maxTickLength\"\n        [tickFormatting]=\"tickFormatting\"\n        [tickArguments]=\"tickArguments\"\n        [tickStroke]=\"tickStroke\"\n        [scale]=\"xScale\"\n        [orient]=\"xOrient\"\n        [showGridLines]=\"showGridLines\"\n        [gridLineHeight]=\"dims.height\"\n        [width]=\"dims.width\"\n        [tickValues]=\"ticks\"\n        (dimensionsChanged)=\"emitTicksHeight($event)\"\n      />\n      <svg:g *ngIf=\"showXAxisLineTop\" [attr.transform]=\"gridLineTransform()\">\n        <svg:line \n          class=\"gridline-path gridline-path-vertical\"\n          [attr.x1]=\"0\"\n          [attr.x2]=\"dims.width\"\n          [attr.y1]=\"-dims.height\"\n          [attr.y2]=\"-dims.height\"\n        />\n      </svg:g>\n      <svg:g *ngIf=\"showXAxisLineBottom\" [attr.transform]=\"gridLineTransform()\">\n        <svg:line class=\"gridline-path gridline-path-vertical\"  [attr.x1]=\"0\" [attr.x2]=\"dims.width\" />\n      </svg:g>\n      <svg:g\n        ngx-charts-axis-label\n        [attr.class]=\"'axis-label'\"\n        *ngIf=\"showLabel\"\n        [label]=\"labelText\"\n        [offset]=\"labelOffset\"\n        [orient]=\"'bottom'\"\n        [height]=\"dims.height\"\n        [width]=\"dims.width\"\n      ></svg:g>\n    </svg:g>\n  ",
+            template: "\n    <svg:g [attr.class]=\"xAxisClassName\" [attr.transform]=\"transform\">\n      <svg:g\n        ngx-charts-x-axis-ticks\n        *ngIf=\"xScale\"\n        [trimTicks]=\"trimTicks\"\n        [forcedRotationAngle]=\"forcedRotationAngle\"\n        [rotateTicks]=\"rotateTicks\"\n        [maxTickLength]=\"maxTickLength\"\n        [tickFormatting]=\"tickFormatting\"\n        [tickArguments]=\"tickArguments\"\n        [tickStroke]=\"tickStroke\"\n        [scale]=\"xScale\"\n        [orient]=\"xOrient\"\n        [showGridLines]=\"showGridLines\"\n        [gridLineHeight]=\"dims.height\"\n        [width]=\"dims.width\"\n        [tickValues]=\"ticks\"\n        (dimensionsChanged)=\"emitTicksHeight($event)\"\n      />\n      <svg:g *ngIf=\"showXAxisLineTop\" [attr.transform]=\"gridLineTransform()\">\n        <svg:line \n          class=\"gridline-path gridline-path-vertical\"\n          [attr.x1]=\"0\"\n          [attr.x2]=\"dims.width\"\n          [attr.y1]=\"-dims.height\"\n          [attr.y2]=\"-dims.height\"\n        />\n      </svg:g>\n      <svg:g *ngIf=\"showXAxisLineBottom\" [attr.transform]=\"gridLineTransform()\">\n        <svg:line class=\"gridline-path gridline-path-vertical\"  [attr.x1]=\"0\" [attr.x2]=\"dims.width\" />\n      </svg:g>\n      <svg:g\n        ngx-charts-axis-label\n        [attr.class]=\"'axis-label'\"\n        *ngIf=\"showLabel\"\n        [label]=\"labelText\"\n        [offset]=\"labelOffset\"\n        [orient]=\"'bottom'\"\n        [height]=\"dims.height\"\n        [width]=\"dims.width\"\n      ></svg:g>\n    </svg:g>\n  ",
             changeDetection: ChangeDetectionStrategy.OnPush
         })
     ], XAxisComponent);
@@ -8571,7 +8585,7 @@ var BarVertical2DStackedComponent = /** @class */ (function (_super) {
         }
     };
     BarVertical2DStackedComponent.prototype.getGroupScale = function () {
-        var spacing = this.groupDomain.length / (this.dims.height / this.groupPadding + 1);
+        var spacing = this.groupDomain.length / (this.dims.height / this.groupPadding);
         return scaleBand()
             .rangeRound([0, this.dims.width])
             .paddingInner(spacing)
@@ -8579,10 +8593,12 @@ var BarVertical2DStackedComponent = /** @class */ (function (_super) {
             .domain(this.groupDomain);
     };
     BarVertical2DStackedComponent.prototype.getInnerScale = function () {
+        debugger;
         this.innerChartWidth = this.groupScale.bandwidth();
         var spacing = this.innerDomain.length / (this.innerChartWidth / this.barPadding + 1);
         return scaleBand()
             .rangeRound([0, this.innerChartWidth])
+            .paddingOuter(this.innerChartWidth - ((this.barWidth + this.barPadding) * 6))
             .domain(this.innerDomain);
     };
     BarVertical2DStackedComponent.prototype.getValueScale = function () {
@@ -8703,10 +8719,11 @@ var BarVertical2DStackedComponent = /** @class */ (function (_super) {
         return [min$$1, max$$1];
     };
     BarVertical2DStackedComponent.prototype.groupTransform = function (group) {
-        return "translate(" + (this.groupScale(group.label) - 10) + ", 0)";
+        var scale = this.groupScale(group.label);
+        return "translate(" + scale + ", 0)";
     };
     BarVertical2DStackedComponent.prototype.groupLabelTransform = function (group) {
-        return "translate(" + (this.margin[0] + 5) + ", 0)";
+        return "translate(" + this.margin[0] + ", 0)";
     };
     BarVertical2DStackedComponent.prototype.onClick = function (data, group) {
         if (group) {
@@ -8948,7 +8965,7 @@ var BarVertical2DStackedComponent = /** @class */ (function (_super) {
     BarVertical2DStackedComponent = __decorate([
         Component({
             selector: 'ngx-charts-bar-vertical-2d-stacked',
-            template: "\n    <ngx-charts-chart\n      [view]=\"[width, height]\"\n      [showLegend]=\"legend\"\n      [legendOptions]=\"legendOptions\"\n      [activeEntries]=\"activeEntries\"\n      [animations]=\"animations\"\n      (legendLabelActivate)=\"onActivate($event, undefined, true)\"\n      (legendLabelDeactivate)=\"onDeactivate($event, undefined, true)\"\n      (legendLabelClick)=\"onClick($event)\"\n    >\n      <svg:g [attr.transform]=\"transform\" class=\"bar-chart chart\">\n        <svg:g\n          ngx-charts-grid-panel-series\n          [xScale]=\"groupScale\"\n          [yScale]=\"valueScale\"\n          [data]=\"results\"\n          [dims]=\"dims\"\n          orient=\"vertical\"\n        ></svg:g>\n        <svg:g\n          ngx-charts-x-axis\n          *ngIf=\"xAxis\"\n          [xScale]=\"groupScale\"\n          [dims]=\"dims\"\n          [showLabel]=\"showXAxisLabel\"\n          [showXAxisLineTop]=\"showXAxisLineTop\"\n          [labelText]=\"xAxisLabel\"\n          [trimTicks]=\"trimXAxisTicks\"\n          [xOrient]=\"'top'\"\n          [rotateTicks]=\"rotateXAxisTicks\"\n          [maxTickLength]=\"maxXAxisTickLength\"\n          [tickFormatting]=\"xAxisTickFormatting\"\n          [ticks]=\"xAxisTicks\"\n          [xAxisOffset]=\"dataLabelMaxHeight.negative + 40\"\n          (dimensionsChanged)=\"updateXAxisHeight($event)\"\n        ></svg:g>\n        <svg:g\n          ngx-charts-y-axis\n          *ngIf=\"yAxis\"\n          [yScale]=\"valueScale\"\n          [dims]=\"dims\"\n          [showYAxisLineLeft]=\"showYAxisLineLeft\"\n          [showYAxisLineRight]=\"showYAxisLineRight\"\n          [showGridLines]=\"showGridLines\"\n          [showLabel]=\"showYAxisLabel\"\n          [labelText]=\"yAxisLabel\"\n          [trimTicks]=\"trimYAxisTicks\"\n          [maxTickLength]=\"maxYAxisTickLength\"\n          [tickFormatting]=\"yAxisTickFormatting\"\n          [ticks]=\"yAxisTicks\"\n          (dimensionsChanged)=\"updateYAxisWidth($event)\"\n        ></svg:g>\n        <svg:g\n          *ngFor=\"let group of results; let index = index; trackBy: trackBy\"\n          [attr.transform]=\"groupTransform(group)\"\n        >\n          <svg:g\n            ngx-charts-x-axis\n            *ngIf=\"xAxis\"\n            [xScale]=\"innerScale\"\n            [dims]=\"innerDims\"\n            [showLabel]=\"false\"\n            [trimTicks]=\"true\"\n            [rotateTicks]=\"true\"\n            [xOrient]=\"'bottom'\"\n            [xAxisTickInterval]=\"\"\n            [maxTickLength]=\"maxXAxisTickLength\"\n            [tickFormatting]=\"xAxisTickFormatting\"\n            [ticks]=\"xAxisTicks\"\n            [attr.transform]=\"groupLabelTransform(group)\"\n            [xAxisOffset]=\"dataLabelMaxHeight.negative\"\n            (dimensionsChanged)=\"updateXAxisHeight($event)\"\n          ></svg:g>\n          <svg:g\n          *ngFor=\"let stack of group.series; let index = index; trackBy: trackBy\"\n          [@animationState]=\"'active'\"\n          >\n            <svg:g\n              ngx-charts-series-vertical\n              type=\"stacked\"\n              [@animationState]=\"'active'\"\n              [activeEntries]=\"activeEntries\"\n              [xScale]=\"groupScale\"\n              [yScale]=\"valueScale\"\n              [colors]=\"colors\"\n              [series]=\"stack.series\"\n              [dims]=\"dims\"\n              [gradient]=\"gradient\"\n              [tooltipDisabled]=\"tooltipDisabled\"\n              [tooltipTemplate]=\"tooltipTemplate\"\n              [showDataLabel]=\"showDataLabel\"\n              [dataLabelFormatting]=\"dataLabelFormatting\"\n              [seriesName]=\"stack.name\"\n              [stackNumber]=\"index\"\n              [stackCount]=\"group.series.length\"\n              [roundEdges]=\"roundEdges\"\n              [barWidth]=\"barWidth\"\n              [animations]=\"animations\"\n              [noBarWhenZero]=\"noBarWhenZero\"\n              (select)=\"onClick($event, group)\"\n              (activate)=\"onActivate($event, group)\"\n              (deactivate)=\"onDeactivate($event, group)\"\n              (dataLabelHeightChanged)=\"onDataLabelMaxHeightChanged($event, index)\"\n            />\n          </svg:g>\n        </svg:g>\n      </svg:g>\n    </ngx-charts-chart>\n  ",
+            template: "\n    <ngx-charts-chart\n      [view]=\"[width, height]\"\n      [showLegend]=\"legend\"\n      [legendOptions]=\"legendOptions\"\n      [activeEntries]=\"activeEntries\"\n      [animations]=\"animations\"\n      (legendLabelActivate)=\"onActivate($event, undefined, true)\"\n      (legendLabelDeactivate)=\"onDeactivate($event, undefined, true)\"\n      (legendLabelClick)=\"onClick($event)\"\n    >\n      <svg:g [attr.transform]=\"transform\" class=\"bar-chart chart\">\n        <svg:g\n          ngx-charts-grid-panel-series\n          [xScale]=\"groupScale\"\n          [yScale]=\"valueScale\"\n          [data]=\"results\"\n          [dims]=\"dims\"\n          orient=\"vertical\"\n        ></svg:g>\n        <svg:g\n          ngx-charts-x-axis\n          *ngIf=\"xAxis\"\n          [xScale]=\"groupScale\"\n          [dims]=\"dims\"\n          [showLabel]=\"showXAxisLabel\"\n          [showXAxisLineTop]=\"showXAxisLineTop\"\n          [labelText]=\"xAxisLabel\"\n          [trimTicks]=\"trimXAxisTicks\"\n          [xOrient]=\"'top'\"\n          [rotateTicks]=\"rotateXAxisTicks\"\n          [maxTickLength]=\"maxXAxisTickLength\"\n          [tickFormatting]=\"xAxisTickFormatting\"\n          [ticks]=\"xAxisTicks\"\n          [xAxisOffset]=\"dataLabelMaxHeight.negative + 40\"\n          (dimensionsChanged)=\"updateXAxisHeight($event)\"\n        ></svg:g>\n        <svg:g\n          ngx-charts-y-axis\n          *ngIf=\"yAxis\"\n          [yScale]=\"valueScale\"\n          [dims]=\"dims\"\n          [showYAxisLineLeft]=\"showYAxisLineLeft\"\n          [showYAxisLineRight]=\"showYAxisLineRight\"\n          [showGridLines]=\"showGridLines\"\n          [showLabel]=\"showYAxisLabel\"\n          [labelText]=\"yAxisLabel\"\n          [trimTicks]=\"trimYAxisTicks\"\n          [maxTickLength]=\"maxYAxisTickLength\"\n          [tickFormatting]=\"yAxisTickFormatting\"\n          [ticks]=\"yAxisTicks\"\n          (dimensionsChanged)=\"updateYAxisWidth($event)\"\n        ></svg:g>\n        <svg:g\n          *ngFor=\"let group of results; let index = index; trackBy: trackBy\"\n          [attr.transform]=\"groupTransform(group)\"\n        >\n          <svg:g\n            ngx-charts-x-axis\n            *ngIf=\"xAxis\"\n            [xScale]=\"innerScale\"\n            [dims]=\"innerDims\"\n            [showLabel]=\"false\"\n            [trimTicks]=\"true\"\n            [rotateTicks]=\"true\"\n            [xOrient]=\"'bottom'\"\n            [xAxisTickInterval]=\"\"\n            [maxTickLength]=\"maxXAxisTickLength\"\n            [tickFormatting]=\"xAxisTickFormatting\"\n            [ticks]=\"xAxisTicks\"\n            [forcedRotationAngle]=\"300\"\n            [attr.transform]=\"groupLabelTransform(group)\"\n            [xAxisOffset]=\"dataLabelMaxHeight.negative\"\n            (dimensionsChanged)=\"updateXAxisHeight($event)\"\n          ></svg:g>\n          <svg:g\n          *ngFor=\"let stack of group.series; let index = index; trackBy: trackBy\"\n          [@animationState]=\"'active'\"\n          >\n            <svg:g\n              ngx-charts-series-vertical\n              type=\"stacked\"\n              [@animationState]=\"'active'\"\n              [activeEntries]=\"activeEntries\"\n              [xScale]=\"groupScale\"\n              [yScale]=\"valueScale\"\n              [colors]=\"colors\"\n              [series]=\"stack.series\"\n              [dims]=\"dims\"\n              [gradient]=\"gradient\"\n              [tooltipDisabled]=\"tooltipDisabled\"\n              [tooltipTemplate]=\"tooltipTemplate\"\n              [showDataLabel]=\"showDataLabel\"\n              [dataLabelFormatting]=\"dataLabelFormatting\"\n              [seriesName]=\"stack.name\"\n              [stackNumber]=\"index\"\n              [stackCount]=\"group.series.length\"\n              [roundEdges]=\"roundEdges\"\n              [barWidth]=\"barWidth\"\n              [animations]=\"animations\"\n              [noBarWhenZero]=\"noBarWhenZero\"\n              (select)=\"onClick($event, group)\"\n              (activate)=\"onActivate($event, group)\"\n              (deactivate)=\"onDeactivate($event, group)\"\n              (dataLabelHeightChanged)=\"onDataLabelMaxHeightChanged($event, index)\"\n            />\n          </svg:g>\n        </svg:g>\n      </svg:g>\n    </ngx-charts-chart>\n  ",
             styles: [".ngx-charts{float:left;overflow:visible}.ngx-charts .arc,.ngx-charts .bar,.ngx-charts .circle{cursor:pointer}.ngx-charts .axis-label{font-size:14px}.ngx-charts .arc.active,.ngx-charts .arc:hover,.ngx-charts .bar.active,.ngx-charts .bar:hover,.ngx-charts .card.active,.ngx-charts .card:hover,.ngx-charts .cell.active,.ngx-charts .cell:hover{opacity:.8;transition:opacity .1s ease-in-out}.ngx-charts .arc:focus,.ngx-charts .bar:focus,.ngx-charts .card:focus,.ngx-charts .cell:focus{outline:0}.ngx-charts .arc.hidden,.ngx-charts .bar.hidden,.ngx-charts .card.hidden,.ngx-charts .cell.hidden{display:none}.ngx-charts g:focus{outline:0}.ngx-charts .area-series.inactive,.ngx-charts .line-series-range.inactive,.ngx-charts .line-series.inactive,.ngx-charts .polar-series-area.inactive,.ngx-charts .polar-series-path.inactive{transition:opacity .1s ease-in-out;opacity:.2}.ngx-charts .line-highlight{display:none}.ngx-charts .line-highlight.active{display:block}.ngx-charts .area{opacity:.6}.ngx-charts .circle:hover{cursor:pointer}.ngx-charts .label{font-size:12px;font-weight:400}.ngx-charts .tooltip-anchor{fill:#000}.ngx-charts .gridline-path{stroke:#ddd;stroke-width:1;fill:none}.ngx-charts .refline-path{stroke:#a8b2c7;stroke-width:1;stroke-dasharray:5;stroke-dashoffset:5}.ngx-charts .refline-label{font-size:9px}.ngx-charts .reference-area{fill-opacity:.05;fill:#000}.ngx-charts .gridline-path-dotted{stroke:#ddd;stroke-width:1;fill:none;stroke-dasharray:1,20;stroke-dashoffset:3}.ngx-charts .grid-panel rect{fill:none}.ngx-charts .grid-panel.odd rect{fill:rgba(0,0,0,.05)}"],
             encapsulation: ViewEncapsulation.None,
             changeDetection: ChangeDetectionStrategy.OnPush,

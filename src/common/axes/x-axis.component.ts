@@ -19,6 +19,7 @@ import { XAxisTicksComponent } from './x-axis-ticks.component';
         ngx-charts-x-axis-ticks
         *ngIf="xScale"
         [trimTicks]="trimTicks"
+        [forcedRotationAngle]="forcedRotationAngle"
         [rotateTicks]="rotateTicks"
         [maxTickLength]="maxTickLength"
         [tickFormatting]="tickFormatting"
@@ -61,6 +62,7 @@ import { XAxisTicksComponent } from './x-axis-ticks.component';
 export class XAxisComponent implements OnChanges {
   @Input() xScale;
   @Input() dims;
+  @Input() forcedRotationAngle;
   @Input() trimTicks: boolean;
   @Input() rotateTicks: boolean = true;
   @Input() maxTickLength: number;

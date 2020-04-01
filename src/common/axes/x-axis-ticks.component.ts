@@ -51,6 +51,7 @@ export class XAxisTicksComponent implements OnChanges, AfterViewInit {
   @Input() gridLineHeight;
   @Input() width;
   @Input() rotateTicks: boolean = true;
+  @Input() forcedRotationAngle;
 
   @Output() dimensionsChanged = new EventEmitter();
 
@@ -104,7 +105,14 @@ export class XAxisTicksComponent implements OnChanges, AfterViewInit {
       };
     }
 
-    const angle = this.rotateTicks ? this.getRotationAngle(this.ticks) : null;
+    let angle = null;
+
+
+    if (this.rotateTicks && this.forcedRotationAngle) {
+      angle = this.forcedRotationAngle;
+    } else {
+      angle = this.rotateTicks ? this.getRotationAngle(this.ticks) : null;
+    }
 
     this.adjustedScale = this.scale.bandwidth
       ? function(d) {
